@@ -1,0 +1,4 @@
+winegame is a simple utility, written in Qt4, as a front-end to Wine.
+It can set up a wine envs, and run game installation in one click.
+Thanks, pashazz.
+(c) Pavel Zinin, 2010, GNU GPLv3
