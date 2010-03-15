@@ -4,7 +4,9 @@
 TARGET = winegame
 TEMPLATE = app
 SOURCES += main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    engine.cpp
 HEADERS += mainwindow.h \
-    linux.h
+    linux.h \
+    engine.h
 FORMS += mainwindow.ui

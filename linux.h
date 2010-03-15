@@ -12,5 +12,7 @@ QString diskpath;
 bool cdMode;
 
 //важные константы
-const gamepath = "/usr/share/winegame";
+const QString gamepath = "/usr/share/winegame";
+const QString winepath = "/Windows";
+const QString GET = "wget"; //you can replace with curl,  etc
 #endif // LINUX_H

@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtGui>
 
 namespace Ui {
     class MainWindow;
@@ -18,6 +18,12 @@ protected:
 
 private:
     Ui::MainWindow *ui;
+
+    void buildList();
+    void lauchEngine(QString pkgpath);
+private slots:
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
 };
 
 #endif // MAINWINDOW_H
