@@ -3,6 +3,7 @@
 
 #include <QtGui>
 
+#include "engine.h"
 namespace Ui {
     class MainWindow;
 }

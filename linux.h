@@ -1,5 +1,6 @@
 #ifndef LINUX_H
 #define LINUX_H
+
 #include <QString>
 #include <QTextStream>
 //Linux text console output
@@ -15,4 +16,5 @@ bool cdMode;
 const QString gamepath = "/usr/share/winegame";
 const QString winepath = "/Windows";
 const QString GET = "wget"; //you can replace with curl,  etc
+const QString TMP = "/tmp";
 #endif // LINUX_H

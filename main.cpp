@@ -1,4 +1,3 @@
-#include <QtGui>
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
@@ -11,7 +10,16 @@ int main(int argc, char *argv[])
     //set Linux console encoding to UTF-8
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
       QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-
+//Проверяем, установлен ли Wine
+      QProcess *proc = new QProcess (0);
+      proc->start("which wine");
+      proc->waitForFinished();
+      QString wine = proc->readAll();
+      if ((!QFile::exists(wine)) || wine.isEmpty())
+      {
+          QMessageBox::critical(0,"Error", "Wine installation not found! Exiting.");
+          return -4;
+      }
     MainWindow w;
     w.show();
     return a.exec();

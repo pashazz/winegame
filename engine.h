@@ -1,9 +1,13 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include <QtCore>
 #include <QMessageBox> //для показа сообщений об ошибках
-
+#include <QString>
+#include <QStringList>
+#include <QProcess>
+#include <QFile>
+#include <QDir>
+#include "linux.h"
 class engine : public QObject
 {
 Q_OBJECT
