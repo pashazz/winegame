@@ -1,21 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "engine.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //also check for argument
-    if (qApp->arguments().empty())
-        cdMode = false; //Not to check CD
-    else
-    {
-        QString cdpath = qApp->arguments().at(0);
-        QDir td (QDir::rootPath());
-        cdMode = td.exists(cdpath);
-        diskpath = cdpath;
-    }
+
     //показываем в статусбаре пть к диску
     if (diskpath != qApp->applicationFilePath())
     {

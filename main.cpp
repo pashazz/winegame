@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-
+#include "linux.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -19,6 +19,17 @@ int main(int argc, char *argv[])
       {
           QMessageBox::critical(0,"Error", "Wine installation not found! Exiting.");
           return -4;
+      }
+
+      //also check for argument
+      if (qApp->arguments().empty())
+          cdMode = false; //Not to check CD
+      else
+      {
+          QString cdpath = qApp->arguments().at(0);
+          QDir td (QDir::rootPath());
+          cdMode = td.exists(cdpath);
+          diskpath = cdpath;
       }
     MainWindow w;
     w.show();
