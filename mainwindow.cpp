@@ -1,12 +1,20 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "engine.h"
+#include <iostream>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    if (qApp->arguments().empty())
+        cdMode = false; //Not to check CD
+    else
+    {
+        QString cdpath = qApp->arguments().at(0);
+        QDir td (QDir::rootPath());
+        cdMode = td.exists(cdpath);
+        diskpath = cdpath;
+    }
     //показываем в статусбаре пть к диску
     if (diskpath != qApp->applicationFilePath())
     {
@@ -51,10 +59,20 @@ void MainWindow::buildList()
 }
 void MainWindow::lauchEngine(QString pkgpath)
 {
+    engine *eng = new engine (this);
+   eng->setDiskpath(diskpath);
+   eng->setCdMode(cdMode);
+   eng->lauch(pkgpath);
 
 }
 
 void MainWindow::on_buttonBox_accepted()
 {
-    lauchEngine(ui->lstGames->currentItem()->data(Qt::UserRole).toString());
+    if (!ui->lstGames->selectedItems().isEmpty()) {
+        lauchEngine(ui->lstGames->selectedItems().first()->data(Qt::UserRole).toString());
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Warning"), tr("Select item to run"));
+    }
 }

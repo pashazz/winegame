@@ -3,10 +3,12 @@
 
 #include <QMessageBox> //для показа сообщений об ошибках
 #include <QString>
+#include <QTextStream>
 #include <QStringList>
 #include <QProcess>
 #include <QFile>
 #include <QDir>
+#include <QFileDialog>
 #include "linux.h"
 class engine : public QObject
 {
@@ -14,14 +16,19 @@ Q_OBJECT
 public:
     explicit engine(QObject *parent = 0);
  void lauch (QString workdir);
+ void setCdMode (bool mode){cdMode=mode;}
+ void setDiskpath (QString path){diskpath = path;}
 signals:
 
 public slots:
 
 private:
- QString getExe ();
+// QString getExe ();
  QString getVariableValue (QString value, const QStringList &vars);
+bool cdMode;
+QString diskpath;
 
+QTextStream lout;
 };
 
 #endif // ENGINE_H
