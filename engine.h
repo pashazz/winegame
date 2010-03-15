@@ -9,6 +9,9 @@
 #include <QFile>
 #include <QDir>
 #include <QFileDialog>
+#include <QtCore>
+#include <QUrl>
+#include <QProgressDialog>
 #include "linux.h"
 class engine : public QObject
 {
@@ -28,7 +31,8 @@ private:
 bool cdMode;
 QString diskpath;
 
-QTextStream lout;
+//Функции собственно движка (исп. с QtConcurrent)
+QString downloadWine (QString);
 };
 
 #endif // ENGINE_H

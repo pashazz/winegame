@@ -1,6 +1,7 @@
 #include "engine.h"
 #include <iostream>
 using namespace std;
+using namespace QtConcurrent;
 engine::engine(QObject *parent) : //сейчас мы не делаем ничего
     QObject(parent)
 {
@@ -28,12 +29,9 @@ if (!getVariableValue("WINEDISTR", vars).isEmpty())
 {
     QString distr = getVariableValue("WINEDISTR", vars);
 //здесь запускаем процесс закачки и распаковки данного дистрибутива Wine
-    QProcess *proc =  new QProcess(this);
-    cout << "Process starts: " << GET.toStdString() + " " +  distr.toStdString();
-    proc->setWorkingDirectory(TMP);
-    proc->start(GET + " " +  distr);
-    proc->waitForFinished();
-    QString destination  = QDir::homePath() + winepath + "/wines/" + getVariableValue("PREFIX", vars);
+  QFuture<QString> fWine = run (downloadWine, distr);
+
+
     cout << "engine: archive unpack destination is " << destination.toStdString();
 //получаем значение переменной WINEDISTRNAME - имени архива.
 QString distrname =     getVariableValue("WINEDISTRNAME", vars);
@@ -140,4 +138,19 @@ foreach (QString item, vars)
 
 }
 return QString();
+}
+QString engine::downloadWine(QString url)
+{
+    //сначала отделим имя бинаря
+ QUrl myurl (url);
+QFileInfo inf (myurl.path());
+QString wineFileName = inf.completeBaseName();
+//наш процесс
+    QProcess *proc = new QProcess (this);
+    //не меняем переменные окружения (ну кроме PWD :D)
+    proc->setWorkingDirectory(TMP);
+ proc->start(GET, QStringList(url));
+ proc->waitForFinished(-1);
+ cout << tr("engine: wine downloading finished, file %1 in directory %2").arg(wineFileName).arg(TMP).toStdString();
+ return wineFileName;
 }

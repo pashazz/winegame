@@ -10,3 +10,4 @@ HEADERS += mainwindow.h \
     linux.h \
     engine.h
 FORMS += mainwindow.ui
+
