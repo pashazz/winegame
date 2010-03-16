@@ -3,6 +3,7 @@
 
 #include <QMessageBox> //для показа сообщений об ошибках
 #include <QString>
+#include <QLabel>
 #include <QTextStream>
 #include <QStringList>
 #include <QProcess>

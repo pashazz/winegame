@@ -1,7 +1,6 @@
 #include "engine.h"
 #include "enginefunc.h"
-#include <iostream>
-using namespace std;
+#include <QtDebug>
 using namespace QtConcurrent;
 engine::engine(QObject *parent) : //сейчас мы не делаем ничего
     QObject(parent)
@@ -10,6 +9,9 @@ engine::engine(QObject *parent) : //сейчас мы не делаем ниче
 }
 void engine::lauch(QString workdir)
 {
+    QLabel *myLabel = new QLabel (0);
+    myLabel->setWindowModality(Qt::ApplicationModal);
+    myLabel->setCursor(Qt::BusyCursor);
     QString winebin;
     QFile file (workdir + QDir::separator() + "control");
     //хех, прочитаем файл
@@ -20,28 +22,42 @@ void engine::lauch(QString workdir)
         return;
     }
     QTextStream in (&file);
-
 while (!in.atEnd())
     {
     vars.append(in.readLine());
 }
+QString note = getVariableValue("NOTE", vars);
+if (note.isEmpty())
+    note = tr("This application has no notes");
+myLabel->setText (tr("Please wait while WineGame is doing operations.<br>Read this note:<br>%1").arg(note));
 //найдем переменную WINEDISTR для развертывания Wine (если есть)
 if (!getVariableValue("WINEDISTR", vars).isEmpty())
 {
     QString distr = getVariableValue("WINEDISTR", vars);
 
 //здесь запускаем процесс закачки и распаковки данного дистрибутива Wine
-    QString distrname ;
 
-    QFuture<QString> fWine = QtConcurrent::run (downloadWine, distr);
-
+  //  QFuture<QString> fWine = run (downloadWine, distr);
+//QString distrname = fWine.result();
+    myLabel->show();
+    QString distrname =     downloadWine(distr);
+   myLabel->hide();
 QString destination = QDir::homePath() + winepath + "/wines/" + getVariableValue("PREFIX", vars);
-
-proc->start(tr("tar xvf %1 -C %2").arg(distrname).arg(destination));
-proc->waitForFinished();
+QDir dir (QDir::homePath() + winepath + "/wines");
+if (!dir.exists())
+    dir.mkdir(dir.path());
+if (!dir.exists(getVariableValue("PREFIX", vars)))
+    dir.mkdir(getVariableValue("PREFIX", vars));
+//а может быть Wine уже распакован, м?
 //теперь устанавливаем переменную winebin
 winebin = destination + "/usr/bin/wine"; //дададада!
-std::cout << "engine: setting wine binary to " << winebin.toStdString();
+qDebug() << "engine: setting wine binary to " << winebin;
+if (!QFile::exists(winebin))
+{
+    myLabel->show();
+    unpackWine(distrname, destination);
+    myLabel->hide();
+}
 //выходим из условия
 
 }
@@ -53,21 +69,21 @@ else
     proc->waitForFinished();
 
      winebin = proc->readAll();
-     std::cout << "engine: setting wine binary to " << winebin.toStdString(); // да я знаю, что можно было обойтись одной строкой
+     qDebug() << "engine: setting wine binary to " << winebin; // да я знаю, что можно было обойтись одной строкой
 
 }
 //если winebin все еще не установлен
 if (winebin.isEmpty())
 {
     QMessageBox::warning(0, tr("Error"), tr("Wine installation not found."));
-    cout << "engine: exiting";
+    qDebug() << "engine: exiting";
     return;
 }
 //что делать теперь? Хм
 //запускаем preinst с набором variables
 QStringList myEnv = QProcess::systemEnvironment();
 QString prefixdir = QDir::homePath() + winepath  + QDir::separator() + getVariableValue("PREFIX", vars);
-cout << tr("engine: setting Prefix: %1").arg(prefixdir).toStdString();
+qDebug() << tr("engine: setting Prefix: %1").arg(prefixdir);
 myEnv.append(tr("FILESDIR=%1").arg(workdir + "/files"));
 myEnv.append(tr("RUN=%1").arg(winebin));
 myEnv.append(tr("WINEPREFIX=%1").arg(prefixdir)); //для совместимости
@@ -76,11 +92,13 @@ myEnv.append(tr("PREFIX=%1").arg(prefixdir));
 QProcess *proc = new QProcess (this);
 proc->setEnvironment(myEnv);
 proc->setWorkingDirectory(workdir);
+qDebug() << "DEBUG: Workdir is" << workdir;
 if (QFile::exists(workdir + "/preinst"))
 {
-proc->start (workdir + "/preinst");
-proc->waitForFinished();
-cout << tr("engine: preinst script returned this: %1").arg(QString (proc->readAll())).toStdString();
+    qDebug() << "DEBUG: Preinst commandline is " << workdir + "/preinst";
+    proc->start ("\"" +workdir + "/preinst\"");
+proc->waitForFinished(-1);
+qDebug() << tr("engine: preinst script returned this: %1").arg(QString (proc->readAll()));
 }
 //теперь ищем упоминание о запускаемом файле в control (e.g. vars)
 QString exefile =   getVariableValue("SETUP", vars);
@@ -108,16 +126,17 @@ else
        return;
    }
 }
-cout << tr("engine: starting Windows program %1").arg(exe).toStdString();
+qDebug() << tr("engine: starting Windows program %1").arg(exe);
 proc->start(winebin, QStringList(exe));
-proc->waitForFinished();
+proc->waitForFinished(-1);
 
 //ну а теперь финальная часть, запуск postinst
 if (QFile::exists(workdir + "/postinst"))
 {
-proc->start(workdir + "/postinst");
-proc->waitForFinished();
-cout << tr("engine: postinst script returned this: %1").arg(QString (proc->readAll())).toStdString();
+    qDebug() << "DEBUG: Postinst commandline is" << workdir +  "/postinst";
+proc->start("\"" + workdir + "/postinst\"");
+proc->waitForFinished(-1);
+qDebug() << tr("engine: postinst script returned this: %1").arg(QString (proc->readAll()));
 
 }
 //А здесь должен быть вызов ф-ции по работе с desktop-файлами... эх
