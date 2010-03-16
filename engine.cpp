@@ -36,6 +36,7 @@ if (!getVariableValue("WINEDISTR", vars).isEmpty())
     QFuture<QString> fWine = QtConcurrent::run (downloadWine, distr);
 
 QString destination = QDir::homePath() + winepath + "/wines/" + getVariableValue("PREFIX", vars);
+
 proc->start(tr("tar xvf %1 -C %2").arg(distrname).arg(destination));
 proc->waitForFinished();
 //теперь устанавливаем переменную winebin
