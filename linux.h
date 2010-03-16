@@ -5,6 +5,6 @@
 //важные константы
 const QString gamepath = "/usr/share/winegame";
 const QString winepath = "/Windows";
-const QString GET = "wget"; //you can replace with curl,  etc
+const QString GET = "xterm -e wget"; //you can replace with curl,  etc
 const QString TMP = "/tmp";
 #endif

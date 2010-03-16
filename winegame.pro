@@ -8,6 +8,6 @@ SOURCES += main.cpp \
     engine.cpp
 HEADERS += mainwindow.h \
     linux.h \
-    engine.h
+    engine.h \
+    enginefunc.h
 FORMS += mainwindow.ui
-

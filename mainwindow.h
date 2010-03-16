@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QtGui>
-
+#include "linux.h"
+#include "engine.h"
 namespace Ui {
     class MainWindow;
 }
@@ -18,6 +19,8 @@ protected:
 
 private:
     Ui::MainWindow *ui;
+QString diskpath;
+bool cdMode;
 
     void buildList();
     void lauchEngine(QString pkgpath);

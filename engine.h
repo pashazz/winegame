@@ -31,8 +31,8 @@ private:
 bool cdMode;
 QString diskpath;
 
-//Функции собственно движка (исп. с QtConcurrent)
-QString downloadWine (QString);
+//Функции собственно движка (исп. с QtConcurrent) объявлены в enginefunc.h
+
 };
 
 #endif // ENGINE_H
