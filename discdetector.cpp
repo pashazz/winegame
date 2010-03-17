@@ -40,7 +40,7 @@ bool DiscDetector::tryDetect(QString path)
             if (disclist.contains(str, Qt::CaseInsensitive))
                 i++;
         }
-        if (i>2)
+        if (i>4)
         {
             gamefolder = gamepath + QDir::separator() + dir;
             return true;

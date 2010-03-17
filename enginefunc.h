@@ -33,6 +33,8 @@ QString wineFileName = inf.fileName();
 if (QFile::exists(TMP + QDir::separator() + wineFileName))
     return wineFileName;
 //наш процесс
+QMessageBox::information(0,QObject::tr("WineGame"), QObject::tr("Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!"));
+
     QProcess *proc = new QProcess (0);
     //показываем нотификацию
     showNotify(QObject::tr("Downloading required components"), QObject::tr("It`s near 40 MB. Please establish your Internet connection"), 40);
