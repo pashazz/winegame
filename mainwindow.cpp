@@ -53,6 +53,12 @@ void MainWindow::buildList()
         QListWidgetItem *it = new QListWidgetItem (ui->lstGames);
         it->setData(Qt::UserRole, gamepath + QDir::separator() + entry);
         it->setText(engine::getName( gamepath + QDir::separator() + entry));
+        //загружаем icon.png как значок игры (если есть)
+        if (QFile::exists(gamepath + QDir::separator() + entry + "/icon"))
+        {
+            QIcon icon (gamepath + QDir::separator() + entry + "/icon");
+            it->setIcon(icon);
+        }
     }
 }
 void MainWindow::lauchEngine(QString pkgpath)

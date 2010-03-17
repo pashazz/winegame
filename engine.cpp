@@ -24,6 +24,13 @@ while (!in.atEnd())
     {
     vars.append(in.readLine());
 }
+QString prefixdir = QDir::homePath() + winepath  + QDir::separator() + getVariableValue("PREFIX", vars);
+//ищем контейнер префикса
+if (!getVariableValue("CONTAINER", vars).isEmpty())
+{
+    QString container = downloadWine(getVariableValue("CONTAINER", vars));
+    unpackWine(TMP + QDir::separator() + container, prefixdir);
+}
 QString note = getVariableValue("NOTE", vars);
 if (note.isEmpty())
     note = tr("This application has no notes");
@@ -75,7 +82,6 @@ if (winebin.isEmpty())
 //что делать теперь? Хм
 //запускаем preinst с набором variables
 QProcessEnvironment myEnv = QProcessEnvironment::systemEnvironment();
-QString prefixdir = QDir::homePath() + winepath  + QDir::separator() + getVariableValue("PREFIX", vars);
 qDebug() << tr("engine: setting Prefix: %1").arg(prefixdir);
 myEnv.insert("FILESDIR", workdir + "/files");
 myEnv.insert("WINEPREFIX", prefixdir);
@@ -155,8 +161,10 @@ return QString();
 
 QString engine::getName(QString path)
 {
+    //попробуем найти локализованный файл name сначала
+
     //ищем файл .name в данном path
-    QFile file (path + QDir::separator() + ".name");
+    QFile file (path + QDir::separator() + ".name." + QLocale::system().name() );
     if (file.exists())
     {
         file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -166,8 +174,21 @@ QString engine::getName(QString path)
     }
     else
     {
-       QDir dir (path);
-       return dir.dirName();
+ //cначала попробуем открыть просто .name
+        file.setFileName(path + QDir::separator() + ".name");
+        if (file.exists())
+        {
+            file.open(QIODevice::ReadOnly | QIODevice::Text);
+            QString ret = file.readAll();
+            file.close();
+            return ret;
+        }
+        else
+        {
+            QDir dir (path);
+            return dir.dirName();
+        }
+
     }
 }
 QString engine::getNote(QString path)

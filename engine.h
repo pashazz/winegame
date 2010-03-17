@@ -33,6 +33,7 @@ private:
 static  QString getVariableValue (QString value, const QStringList &vars);
 bool cdMode;
 QString diskpath;
+void getPrefix (QString url);
 void doPkgs (QString pkgs, const QProcessEnvironment &env);
 //Функции собственно движка (исп. с QtConcurrent) объявлены в enginefunc.h
 

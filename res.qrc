@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/ts">
+        <file>l10n/wg_ru.qm</file>
+    </qresource>
+</RCC>

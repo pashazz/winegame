@@ -10,4 +10,6 @@ HEADERS += mainwindow.h \
     linux.h \
     engine.h \
     enginefunc.h
+TRANSLATIONS = l10n/wg_ru.ts
 FORMS += mainwindow.ui
+RESOURCES += res.qrc
