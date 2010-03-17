@@ -36,14 +36,12 @@ if (a.arguments().length() > 1) {
     DiscDetector det;
     if (det.tryDetect(a.arguments().at(1)))
     {
-        qDebug() << "DEBUG: Disc detected";
         det.lauchApp();
         return 0;
     }
-    else
-        qDebug() << "DEBUG: Disc undetected";
 }
     MainWindow w;
     w.show();
     return a.exec();
+
 }

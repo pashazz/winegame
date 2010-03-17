@@ -39,7 +39,6 @@ bool DiscDetector::tryDetect(QString path)
         {
             if (disclist.contains(str, Qt::CaseInsensitive))
                 i++;
-            qDebug() << "DEBUG: DDT detect index  is " << i;
         }
         if (i>2)
         {

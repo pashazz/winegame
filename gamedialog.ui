@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Установка Windows-приложение</string>
+   <string>Install Windows application from CD/DVD</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="6" column="2">

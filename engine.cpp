@@ -7,7 +7,7 @@ engine::engine(QObject *parent) : //сейчас мы не делаем ниче
 {
 
 }
-void engine::lauch(QString workdir)
+void engine::lauch(QString workdir, bool msg)
 {
 
     QString winebin;
