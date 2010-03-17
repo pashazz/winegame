@@ -22,16 +22,18 @@ public:
  void lauch (QString workdir);
  void setCdMode (bool mode){cdMode=mode;}
  void setDiskpath (QString path){diskpath = path;}
+ static QString getName (QString path);
+ static QString getNote(QString path);
 signals:
 
 public slots:
 
 private:
 // QString getExe ();
- QString getVariableValue (QString value, const QStringList &vars);
+static  QString getVariableValue (QString value, const QStringList &vars);
 bool cdMode;
 QString diskpath;
-
+void doPkgs (QString pkgs, const QProcessEnvironment &env);
 //Функции собственно движка (исп. с QtConcurrent) объявлены в enginefunc.h
 
 };

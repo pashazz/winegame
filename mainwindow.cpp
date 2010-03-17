@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <iostream>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -10,19 +9,18 @@ MainWindow::MainWindow(QWidget *parent) :
         cdMode = false; //Not to check CD
     else
     {
-        QString cdpath = qApp->arguments().at(0);
+        if (qApp->arguments().length() > 1) {
+        QString cdpath = qApp->arguments().at(1);
         QDir td (QDir::rootPath());
         cdMode = td.exists(cdpath);
         diskpath = cdpath;
     }
+        else
+            cdMode = false;
+    }
     //показываем в статусбаре пть к диску
-    if (diskpath != qApp->applicationFilePath())
-    {
     QLabel * cdlab = new QLabel (diskpath);
    statusBar()->addWidget(cdlab);
-
-
-}
 buildList();
 }
 
@@ -54,11 +52,12 @@ void MainWindow::buildList()
     {
         QListWidgetItem *it = new QListWidgetItem (ui->lstGames);
         it->setData(Qt::UserRole, gamepath + QDir::separator() + entry);
-        it->setText(entry);
+        it->setText(engine::getName( gamepath + QDir::separator() + entry));
     }
 }
 void MainWindow::lauchEngine(QString pkgpath)
 {
+
     engine *eng = new engine (this);
    eng->setDiskpath(diskpath);
    eng->setCdMode(cdMode);
@@ -75,4 +74,11 @@ void MainWindow::on_buttonBox_accepted()
     {
         QMessageBox::warning(this, tr("Warning"), tr("Select item to run"));
     }
+}
+
+
+
+void MainWindow::on_lstGames_itemClicked(QListWidgetItem* item)
+{
+    ui->lblNote->setText(engine::getNote(item->data(Qt::UserRole).toString()));
 }

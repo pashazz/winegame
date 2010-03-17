@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 //          QMessageBox::critical(0,"Error", QObject::tr("Wine installation not found (%1)! Exiting. ").arg(wine));
 //          return -4;
 //      }
-QDir dir (winepath);
+      QDir dir (QDir::homePath() + QDir::separator() + winepath);
 if (!dir.exists())
     dir.mkdir(dir.path()); //проверяем главную папочку  WineGame
     MainWindow w;
