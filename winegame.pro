@@ -5,11 +5,17 @@ TARGET = winegame
 TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
-    engine.cpp
+    engine.cpp \
+    discdetector.cpp \
+    gamedialog.cpp
 HEADERS += mainwindow.h \
     linux.h \
     engine.h \
-    enginefunc.h
+    enginefunc.h \
+    ../diskdetector.h \
+    discdetector.h \
+    gamedialog.h
 TRANSLATIONS = l10n/wg_ru.ts
-FORMS += mainwindow.ui
+FORMS += mainwindow.ui \
+    gamedialog.ui
 RESOURCES += res.qrc

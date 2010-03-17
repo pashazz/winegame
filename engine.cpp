@@ -139,10 +139,11 @@ qDebug() << tr("engine: postinst script returned this: %1").arg(QString (proc->r
 
 }
 //А здесь должен быть вызов ф-ции по работе с desktop-файлами... эх
-
+if (msg) {
 int result = QMessageBox::question(0, tr("Question"), tr("Would you like to install a new game?"), QMessageBox::Yes, QMessageBox::No);
 if (result == QMessageBox::No)
     qApp->quit();
+}
               }
 QString engine::getVariableValue(QString value, const QStringList &vars)
 {
@@ -214,3 +215,14 @@ void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
     p->start("/usr/bin/winetricks", QStringList (pkgs));
     p->waitForFinished(-1);
  }
+
+QIcon engine::getIcon(QString path)
+{
+    if (QFile::exists(path + "/icon"))
+    {
+        QIcon icon (path + "/icon");
+        return icon;
+}
+    else
+        return QIcon();
+}

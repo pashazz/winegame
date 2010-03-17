@@ -13,17 +13,19 @@
 #include <QtCore>
 #include <QUrl>
 #include <QProgressDialog>
+#include <QIcon>
 #include "linux.h"
 class engine : public QObject
 {
 Q_OBJECT
 public:
     explicit engine(QObject *parent = 0);
- void lauch (QString workdir);
+ void lauch (QString workdir, bool msg = true);
  void setCdMode (bool mode){cdMode=mode;}
  void setDiskpath (QString path){diskpath = path;}
  static QString getName (QString path);
  static QString getNote(QString path);
+ static QIcon getIcon (QString path);
 signals:
 
 public slots:

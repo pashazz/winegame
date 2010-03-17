@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "linux.h"
+#include "discdetector.h"
 #include "QDir"
 int main(int argc, char *argv[])
 {
@@ -30,6 +31,18 @@ int main(int argc, char *argv[])
       QDir dir (QDir::homePath() + QDir::separator() + winepath);
 if (!dir.exists())
     dir.mkdir(dir.path()); //проверяем главную папочку  WineGame
+// детектинг диска
+if (a.arguments().length() > 1) {
+    DiscDetector det;
+    if (det.tryDetect(a.arguments().at(1)))
+    {
+        qDebug() << "DEBUG: Disc detected";
+        det.lauchApp();
+        return 0;
+    }
+    else
+        qDebug() << "DEBUG: Disc undetected";
+}
     MainWindow w;
     w.show();
     return a.exec();
