@@ -12,7 +12,6 @@ HEADERS += mainwindow.h \
     linux.h \
     engine.h \
     enginefunc.h \
-    ../diskdetector.h \
     discdetector.h \
     gamedialog.h
 TRANSLATIONS = l10n/wg_ru.ts
