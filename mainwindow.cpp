@@ -61,7 +61,17 @@ void MainWindow::buildList()
 
 void MainWindow::lauchEngine(QString pkgpath)
 {
-
+    QDir dir (QDir::homePath() + winepath + QDir::separator() + engine::getPrefixName(pkgpath));
+if (dir.exists())
+{
+    QStringList list = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    if (list.contains("drive_c") && list.contains("dosdevices"))
+    {
+   PrefixDialog *dlg = new PrefixDialog(this,pkgpath);
+  dlg->exec();
+  return;
+    }
+}
     engine *eng = new engine (this);
    eng->setDiskpath(diskpath);
    eng->setCdMode(cdMode);

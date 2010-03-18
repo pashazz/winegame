@@ -1,3 +1,4 @@
+#include "prefixdialog.h"
 #include "discdetector.h"
 DiscDetector::DiscDetector(QObject *parent) :
     QObject(parent)
@@ -54,6 +55,16 @@ void DiscDetector::lauchApp()
 GameDialog *dlg = new GameDialog(0, gamefolder);
 if (dlg->exec() == QDialog::Accepted)
 {
+    QDir prdir (QDir::homePath() + winepath + QDir::separator() + engine::getPrefixName(gamefolder));
+    if (prdir.exists())
+    {
+        //TODO: создаем диалог редактирования виртуальной Windows
+PrefixDialog *pdlg = new PrefixDialog (0, gamefolder);
+pdlg->exec();
+        delete dlg;
+        delete pdlg;
+        return;
+    }
     //создаем объект движка
     engine *eng = new engine (this);
     eng->setCdMode(true);

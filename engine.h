@@ -26,7 +26,9 @@ public:
  static QString getName (QString path);
  static QString getNote(QString path);
  static QIcon getIcon (QString path);
-signals:
+ static QString getPrefixName (QString path);
+ static QString getWine (QString path);
+ signals:
 
 public slots:
 
@@ -35,7 +37,7 @@ private:
 static  QString getVariableValue (QString value, const QStringList &vars);
 bool cdMode;
 QString diskpath;
-void getPrefix (QString url);
+
 void doPkgs (QString pkgs, const QProcessEnvironment &env);
 //Функции собственно движка (исп. с QtConcurrent) объявлены в enginefunc.h
 

@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QMessageBox>
 
-void showNotify (QString header, QString body, int secs)
+void showNotify (QString header, QString body, int secs) //функция НУ СОВСЕМ не доделана.
 {
     //Смотрим, DE. Если это KDE, выводим месаги через KDialog, иначе через Libnotify-bin
     QString runline;

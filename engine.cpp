@@ -24,17 +24,28 @@ while (!in.atEnd())
     {
     vars.append(in.readLine());
 }
+
 QString prefixdir = QDir::homePath() + winepath  + QDir::separator() + getVariableValue("PREFIX", vars);
+/*
+//QDir prdir (prefixdir);
+//if (prdir.exists())
+//{
+//    int ret = QMessageBox::question(0, tr("This application is installed on your computer"),  tr("You did requested to install application <b>%1</b>, but it`s already installed. Do you want to remove application`s directory and reinstall it?").arg(engine::getName(workdir)), QMessageBox::Yes, QMessageBox::No);
+//    if (ret == QMessageBox::Yes)
+//    {
+//       prdir.remove(prdir.path());
+//    }
+//    else if (ret == QMessageBox::No)
+//        return;
+//}
+  */
 //ищем контейнер префикса
 if (!getVariableValue("CONTAINER", vars).isEmpty())
 {
     QString container = downloadWine(getVariableValue("CONTAINER", vars));
     unpackWine(TMP + QDir::separator() + container, prefixdir);
 }
-QString note = getVariableValue("NOTE", vars);
-if (note.isEmpty())
-    note = tr("This application has no notes");
-showNotify(tr("Please read this note about your application"), note, 20);
+
 //найдем переменную WINEDISTR для развертывания Wine (если есть)
 if (!getVariableValue("WINEDISTR", vars).isEmpty())
 {
@@ -194,18 +205,20 @@ QString engine::getName(QString path)
 }
 QString engine::getNote(QString path)
 {
-    //read control file
-    QFile file  (path + QDir::separator() + "control");
-    if (file.exists()) {file.open(QIODevice::ReadOnly | QIODevice::Text);}
-    else {return QString();}
+    /// не забываем, что в note можно вставлять HTML-код!
+    QString fileName;
+    if (QFile::exists(path + "/.note." + QLocale::system().name())) //читаем локализованное примечание
+        fileName =path + "/.note." + QLocale::system().name();
+    else if (QFile::exists((path + "/.note")))
+        fileName = path + "/.note";
+    else
+        return QString();
+QFile file (fileName);
+file.open(QIODevice::Text | QIODevice::ReadOnly);
+QString note = file.readAll();
+file.close();
+return note;
 
-    QTextStream stream (&file);
-    QStringList lines;
-    while (!stream.atEnd())
-        lines.append(stream.readLine());
-
-    file.close();
-    return getVariableValue("NOTE", lines);
 }
 void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
 {
@@ -225,4 +238,49 @@ QIcon engine::getIcon(QString path)
 }
     else
         return QIcon();
+}
+QString engine::getPrefixName(QString path)
+{
+//#warning "code dublicate from getNote!"
+    //read control file
+    QFile file  (path + QDir::separator() + "control");
+    if (file.exists()) {file.open(QIODevice::ReadOnly | QIODevice::Text);}
+    else {return QString();}
+
+    QTextStream stream (&file);
+    QStringList lines;
+    while (!stream.atEnd())
+        lines.append(stream.readLine());
+
+    file.close();
+    return getVariableValue("PREFIX", lines);
+}
+
+QString engine::getWine(QString path)
+{
+    QFile file  (path + QDir::separator() + "control");
+    if (file.exists()) {file.open(QIODevice::ReadOnly | QIODevice::Text);}
+    else {return QString();}
+
+    QTextStream stream (&file);
+    QStringList lines;
+    while (!stream.atEnd())
+        lines.append(stream.readLine());
+
+    file.close();
+    if (getVariableValue("WINEDISTR", lines).isEmpty())
+    {
+        //which wine process
+              QProcess *proc = new QProcess (0);
+              proc->start("which wine");
+              proc->waitForFinished();
+              QString wine = proc->readAll();
+               return wine; //я гарантирую, шо Wine установлен
+
+    }
+    else
+    {
+        QString prefix = getPrefixName(path);
+        return QDir::homePath() + winepath + "/wines/" + prefix + "/usr/bin/wine";
+    }
 }

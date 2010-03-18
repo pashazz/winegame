@@ -4,6 +4,7 @@
 #include <QtGui>
 #include "linux.h"
 #include "engine.h"
+#include "prefixdialog.h"
 namespace Ui {
     class MainWindow;
 }

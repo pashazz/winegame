@@ -7,14 +7,19 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     engine.cpp \
     discdetector.cpp \
-    gamedialog.cpp
+    gamedialog.cpp \
+    prefix.cpp \
+    prefixdialog.cpp
 HEADERS += mainwindow.h \
     linux.h \
     engine.h \
     enginefunc.h \
     discdetector.h \
-    gamedialog.h
+    gamedialog.h \
+    prefix.h \
+    prefixdialog.h
 TRANSLATIONS = l10n/wg_ru.ts
 FORMS += mainwindow.ui \
-    gamedialog.ui
+    gamedialog.ui \
+    prefixdialog.ui
 RESOURCES += res.qrc
