@@ -225,7 +225,8 @@ void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
     QMessageBox::warning(qobject_cast<QWidget*>(parent()), tr("Warning"), tr("Now WineGame will download required packages (from Microsoft site). Please establish your Internets"));
     QProcess *p = new QProcess(this);
   p->setProcessEnvironment(env);
-    p->start("/usr/bin/winetricks", QStringList (pkgs));
+  qDebug() << "engine: Installing packages " << pkgs;
+    p->start("/usr/bin/winetricks " +pkgs);
     p->waitForFinished(-1);
  }
 
