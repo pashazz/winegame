@@ -122,7 +122,9 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* Конфигуратор Wine (winecfg)&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* Файловый менеджер Windows&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Нажмите &amp;quot;&lt;span style=&quot; font-weight:600;&quot;&gt;Администрирование&lt;/span&gt;&amp;quot;, если вы хотите удалить эту Windows, или сделать резервную копию.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Нажмите &lt;span style=&quot; font-weight:600;&quot;&gt;кнопки ниже&lt;/span&gt;,чтобы запустить EXE файл в этой виртуальной системе (не рекомендуем устанавливать сюда новые программы!), или просмотреть диск C: с помощью вашего файлового менеджера (в Linux)&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Нажмите &lt;span style=&quot; font-weight:600;&quot;&gt;кнопки ниже&lt;/span&gt;,чтобы запустить EXE файл в этой виртуальной системе (не рекомендуем устанавливать сюда новые программы!)
+
+ или просмотреть диск C: с помощью вашего файлового менеджера (в Linux)&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>

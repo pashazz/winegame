@@ -10,8 +10,7 @@ void rp(QString path, QProcessEnvironment env)
 }
 void Prefix::removePrefix()
 {
-    QFuture <void> fProc = run(rp, "rm -rf " + wineprefix + "/drive_c", env);
-
+    rp("rm -rf " + this->wineprefix, QProcessEnvironment::systemEnvironment());
 }
 
 Prefix::Prefix(QObject *parent, QString path) :

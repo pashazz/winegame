@@ -15,6 +15,7 @@ public:
 
 private:
     Ui::GameDialog *ui;
+    QPixmap getIcoFromDisc();
 };
 
 #endif // GAMEDIALOG_H

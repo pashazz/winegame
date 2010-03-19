@@ -113,11 +113,22 @@ qDebug() << tr("engine: preinst script returned this: %1").arg(QString (proc->re
 }
 //теперь ищем упоминание о запускаемом файле в control (e.g. vars)
 QString exefile =   getVariableValue("SETUP", vars);
+if (exefile.isEmpty())
+    exefile = "fucking exe"; // ))))
 QString exe; //вот это-сформированный путь к EXE
-if (cdMode && QFile::exists(diskpath + QDir::separator() +exefile))
+if (cdMode)
 {
-   //пробуем подставить exefile к diskpath
-   exe = diskpath + QDir::separator() +exefile;
+    if (QFile::exists(diskpath + QDir::separator() + exefile))
+    {
+   exe = diskpath +exefile;
+}
+    else
+    {
+        //получим инфу о запускаемом файле из autorun.inf
+        QSettings stg  (diskpath + "/autorun.inf", QSettings::IniFormat, this);
+        stg.beginGroup("autorun");
+        exe = diskpath + QDir::separator() + stg.value("open").toString();
+    }
 }
 else
 {
@@ -138,7 +149,8 @@ else
    }
 }
 qDebug() << tr("engine: starting Windows program %1 with wine binary %2").arg(exe).arg(winebin);
-proc->start(winebin, QStringList(exe));
+qDebug() << winebin + " \"" + exe  +"\"";
+proc->start(winebin + " \"" + exe  +"\"" );
 proc->waitForFinished(-1);
 
 //ну а теперь финальная часть, запуск postinst
@@ -149,7 +161,7 @@ proc->waitForFinished(-1);
 qDebug() << tr("engine: postinst script returned this: %1").arg(QString (proc->readAll()));
 
 }
-//А здесь должен быть вызов ф-ции по работе с desktop-файлами... эх
+/// http://bugs.winehq.org/show_bug.cgi?id=22069 (wine bug - working with desktop files)
 if (msg) {
 int result = QMessageBox::question(0, tr("Question"), tr("Would you like to install a new game?"), QMessageBox::Yes, QMessageBox::No);
 if (result == QMessageBox::No)
@@ -222,11 +234,12 @@ return note;
 }
 void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
 {
-    QMessageBox::warning(qobject_cast<QWidget*>(parent()), tr("Warning"), tr("Now WineGame will download required packages (from Microsoft site). Please establish your Internets"));
+    QMessageBox::warning(0, tr("Warning"), tr("Now WineGame will download required packages (from Microsoft site). Please establish your Internets"));
     QProcess *p = new QProcess(this);
   p->setProcessEnvironment(env);
-  qDebug() << "engine: Installing packages " << pkgs;
-    p->start("/usr/bin/winetricks " +pkgs);
+  QStringList plist = pkgs.split(" ");
+  qDebug() << "engine: Installing packages " << plist;
+    p->start("/usr/bin/winetricks", plist);
     p->waitForFinished(-1);
  }
 

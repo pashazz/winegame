@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>585</width>
-    <height>375</height>
+    <width>1241</width>
+    <height>447</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,15 +17,15 @@
    <item>
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>567</width>
-        <height>237</height>
+        <width>1223</width>
+        <height>309</height>
        </rect>
       </property>
       <attribute name="label">
@@ -52,21 +52,25 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="cmdC">
-         <property name="text">
-          <string>View C: drive</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="cmdEXE">
-         <property name="text">
-          <string>Run EXE</string>
-         </property>
-         <property name="default">
-          <bool>true</bool>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QPushButton" name="cmdEXE">
+           <property name="text">
+            <string>Run EXE</string>
+           </property>
+           <property name="default">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="cmdC">
+           <property name="text">
+            <string>View C: drive</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -74,8 +78,8 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-43</y>
-        <width>551</width>
+        <y>0</y>
+        <width>1152</width>
         <height>309</height>
        </rect>
       </property>
@@ -88,12 +92,18 @@ p, li { white-space: pre-wrap; }
          <property name="text">
           <string>Configurator (aka winecfg)</string>
          </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="1" column="0">
         <widget class="QPushButton" name="cmdReg">
          <property name="text">
           <string>Registry Editor</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -102,12 +112,18 @@ p, li { white-space: pre-wrap; }
          <property name="text">
           <string>File Manager</string>
          </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="3" column="0">
         <widget class="QPushButton" name="cmdControl">
          <property name="text">
           <string>Control Panel</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -116,12 +132,18 @@ p, li { white-space: pre-wrap; }
          <property name="text">
           <string>Task Manager</string>
          </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="8" column="0">
         <widget class="QPushButton" name="cmdUninst">
          <property name="text">
           <string>Install/Remove programs</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -130,12 +152,18 @@ p, li { white-space: pre-wrap; }
          <property name="text">
           <string>WordPad</string>
          </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="9" column="0">
         <widget class="QPushButton" name="cmdTerm">
          <property name="text">
           <string>Command Line Terminal</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -144,11 +172,22 @@ p, li { white-space: pre-wrap; }
          <property name="text">
           <string>Notepad</string>
          </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1152</width>
+        <height>309</height>
+       </rect>
+      </property>
       <attribute name="label">
        <string>Administration</string>
       </attribute>
@@ -158,12 +197,18 @@ p, li { white-space: pre-wrap; }
          <property name="text">
           <string>Reboot virtual Windows</string>
          </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="1" column="0">
         <widget class="QPushButton" name="cmdRemove">
          <property name="text">
           <string>Remove this system and close dialog</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
