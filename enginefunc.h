@@ -3,7 +3,6 @@
 #include <QtCore>
 #include <QDebug>
 #include <QMessageBox>
-
 void showNotify (QString header, QString body, int secs) //функция НУ СОВСЕМ не доделана.
 {
     //Смотрим, DE. Если это KDE, выводим месаги через KDialog, иначе через Libnotify-bin
@@ -23,29 +22,7 @@ void showNotify (QString header, QString body, int secs) //функция НУ �
     p->waitForFinished(-1);
    }
 // нахуй нотификации. Забью пока.
- QString downloadWine(QString url)
-{
-    //сначала отделим имя бинаря
- QUrl myurl (url);
-QFileInfo inf (myurl.path());
-QString wineFileName = inf.fileName();
-//проверяем, есть ли у нас данный файл
-if (QFile::exists(TMP + QDir::separator() + wineFileName))
-    return wineFileName;
-//наш процесс
-QMessageBox::information(0,QObject::tr("WineGame"), QObject::tr("Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!"));
 
-    QProcess *proc = new QProcess (0);
-    //показываем нотификацию
-    showNotify(QObject::tr("Downloading required components"), QObject::tr("It`s near 40 MB. Please establish your Internet connection"), 40);
-    //не меняем переменные окружения (ну кроме PWD :D)
-    proc->setWorkingDirectory(TMP);
- proc->start(GET, QStringList(url));
- proc->waitForFinished(-1);
- delete proc;
- qDebug() << QObject::tr("engine: wine downloading finished, file %1 in directory %2").arg(wineFileName).arg(TMP);
- return wineFileName;
-}
  void unpackWine (QString distr, QString destination)
 {
      QDir dir (destination);
@@ -53,7 +30,7 @@ QMessageBox::information(0,QObject::tr("WineGame"), QObject::tr("Downloading of 
          dir.mkdir(dir.path());
      else
      {
-         int result = QMessageBox::question(0, QObject::tr("Question"), QObject::tr("I see, that Wine did installed previously for this application (Directory %1 exists).<br>Would you like to install wine now?"), QMessageBox::Yes, QMessageBox::No);
+         int result = QMessageBox::question(0, QObject::tr("Question"), QObject::tr("I see, that Wine did installed previously for this application (Directory %1 exists).<br>Would you like to install wine now?").arg(destination), QMessageBox::Yes, QMessageBox::No);
          if (result == QMessageBox::No)
              return;
 

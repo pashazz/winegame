@@ -14,6 +14,8 @@
 #include <QUrl>
 #include <QProgressDialog>
 #include <QIcon>
+#include <QtNetwork>
+
 #include "linux.h"
 class engine : public QObject
 {
@@ -30,17 +32,17 @@ public:
  static QString getWine (QString path);
  signals:
 
-public slots:
-
+private slots:
+void showProgress ();
 private:
 // QString getExe ();
 static  QString getVariableValue (QString value, const QStringList &vars);
 bool cdMode;
 QString diskpath;
-
+QProgressDialog *progress;
 void doPkgs (QString pkgs, const QProcessEnvironment &env);
 //Функции собственно движка (исп. с QtConcurrent) объявлены в enginefunc.h
-
+ QString downloadWine(QString url);
 };
 
 #endif // ENGINE_H
