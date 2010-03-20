@@ -235,7 +235,7 @@ return note;
 }
 void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
 {
-    QMessageBox::warning(0, tr("Warning"), tr("Now WineGame will download required packages (from Microsoft site). Please establish your Internets"));
+    showNotify(tr("Downloading packages..."), tr("Now we will install Microsoft components"));
     QProcess *p = new QProcess(this);
   p->setProcessEnvironment(env);
   QStringList plist = pkgs.split(" ");
@@ -300,39 +300,49 @@ QString engine::getWine(QString path)
     }
 }
 
-//QString engine::downloadWine(QString url)
-//{
-//    QFileInfo inf (url);
-//    QString wineFileName = inf.fileName();
-//    //проверяем, есть ли у нас данный файл
-//    if (QFile::exists(TMP + QDir::separator() + wineFileName))
-//        return wineFileName;
-//     *progress = new QProgressDialog(0);
-//QNetworkAccessManager *manager = new QNetworkAccessManager (this);
-//QNetworkRequest req; //request для Url
-//req.setUrl(QUrl(url));
-//req.setRawHeader("User-Agent", "Winegame-Browser 0.1");
-//QNetworkReply *reply = manager->get(req);
-//connect (reply, SIGNAL(downloadProgress(qint64,qint64)), progress, SLOT(setRange(int,int)));
-//connect (manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFinished(QNetworkReply*)));
-//progress->setLabelText(tr("Downloading %1").arg(url));
-//QPushButton *but = new QPushButton  (progress);
-//but->setFlat(true);
-//but->setDisabled(false);
-//but->setText("");
-//progress->setCancelButton(but);
-//progress->show();
-//
-//}
-//void engine::downloadFinished(QNetworkReply *reply)
-//{
-//    QByteArray bytes = reply->readAll();
-//
-//}
-
-
-//QString engine::downloadWine(QString url)
-//{
+QString engine::downloadWine(QString url) //TODO: проверка на ошибки.
+{
+    showNotify(tr("Don`t worry!"), tr("Now WineGame will download some files, that will need for get your applicaton running"));
+    QUrl myurl = QUrl(url);
+    QFileInfo inf (myurl.path());
+    QString wineFileName = inf.fileName();
+    //проверяем, есть ли у нас данный файл
+    if (QFile::exists(TMP + QDir::separator() + wineFileName))
+        return wineFileName;
+  QProgressDialog *progress = new QProgressDialog(0);
+     QEventLoop loop;
+QNetworkAccessManager *manager = new QNetworkAccessManager (this);
+QNetworkRequest req; //request для Url
+this->progress = progress;
+req.setUrl(QUrl(url));
+req.setRawHeader("User-Agent", "Winegame-Browser 0.1");
+QNetworkReply *reply = manager->get(req);
+connect (reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(setRange(qint64,qint64)));
+connect (reply, SIGNAL(finished()), &loop, SLOT(quit()));
+progress->setLabelText(tr("Downloading %1").arg(url));
+QPushButton *but = new QPushButton  (progress);
+but->setFlat(true);
+but->setDisabled(false);
+but->setText(tr("Cancel"));
+connect (but, SIGNAL(clicked()), this, SLOT (exitApp()));
+progress->setCancelButton(but);
+progress->show();
+loop.exec();
+progress->close();
+QByteArray buffer = reply->readAll();
+QFile file (TMP + QDir::separator() + wineFileName);
+if (file.open(QIODevice::WriteOnly))
+{
+        file.write(buffer);
+        file.close();
+                    }
+else
+    qDebug() << "engine: error open file (WINEDISTR):" << file.errorString();
+progress->deleteLater();
+return wineFileName;
+}
+/// это наш старый метод, оставим на всякий случай.
+//QString engine::downloadWine(QString url){
 //   //сначала отделим имя бинаря
 //QUrl myurl (url);
 //QFileInfo inf (myurl.path());
@@ -341,42 +351,25 @@ QString engine::getWine(QString path)
 //if (QFile::exists(TMP + QDir::separator() + wineFileName))
 //   return wineFileName;
 ////наш процесс
-//QMessageBox::information(0,tr("WineGame"), tr("Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!"));
-//ThreadHttpDownload down (this, url, wineFileName);
-//down->run();
+////QMessageBox::information(0,tr("WineGame"), tr("Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!"));
+//
+//   QProcess *proc = new QProcess (this);
+//   //показываем нотификацию
+//   showNotify(tr("Downloading required components"), tr("It`s near 40 MB. Please establish your Internet connection"));
+//   //не меняем переменные окружения (ну кроме PWD :D)
+//   proc->setWorkingDirectory(TMP);
+//   connect (proc, SIGNAL(readyRead()), this, SLOT(showProgress()));
+//proc->start(GET, QStringList(url));
+//
+//proc->waitForFinished(-1);
+//qDebug() << proc->readAll();
+//delete proc;
+//qDebug() << QObject::tr("engine: wine downloading finished, file %1 in directory %2").arg(wineFileName).arg(TMP);
 //return wineFileName;
 //}
-QString engine::downloadWine(QString url){
-   //сначала отделим имя бинаря
-QUrl myurl (url);
-QFileInfo inf (myurl.path());
-QString wineFileName = inf.fileName();
-//проверяем, есть ли у нас данный файл
-if (QFile::exists(TMP + QDir::separator() + wineFileName))
-   return wineFileName;
-//наш процесс
-//QMessageBox::information(0,tr("WineGame"), tr("Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!"));
 
-   QProcess *proc = new QProcess (this);
-   //показываем нотификацию
-   showNotify(tr("Downloading required components"), tr("It`s near 40 MB. Please establish your Internet connection"));
-   //не меняем переменные окружения (ну кроме PWD :D)
-   proc->setWorkingDirectory(TMP);
-   connect (proc, SIGNAL(readyRead()), this, SLOT(showProgress()));
-proc->start(GET, QStringList(url));
 
-proc->waitForFinished(-1);
-qDebug() << proc->readAll();
-delete proc;
-qDebug() << QObject::tr("engine: wine downloading finished, file %1 in directory %2").arg(wineFileName).arg(TMP);
-return wineFileName;
-}
 
-void engine::showProgress()
-{
-    QProcess *proc = qobject_cast<QProcess*>(sender());
-    qDebug() << "wget output:" << QString(proc->readAll());
-}
 void engine::showNotify (QString header, QString body) //функция НУ СОВСЕМ не доделана.
 {
 /// знаю что тупизм,но никто не хочет помогать
@@ -388,8 +381,7 @@ void engine::showNotify (QString header, QString body) //функция НУ С�
                             arguments << "--passivepopup" <<body;
                             arguments << "--title"<<header;
                             QProcess::startDetached("/usr/bin/kdialog",arguments);
-                            qDebug() << "engine: show PopUp (kdialog): " << arguments;
-                        }
+                                      }
 
 
         //Через notify-send:
@@ -398,7 +390,20 @@ void engine::showNotify (QString header, QString body) //функция НУ С�
                              QStringList arguments;
                             arguments << header << body;
                             QProcess::startDetached("/usr/bin/notify-send",arguments);
-                            qDebug() << "engine: show PopUp (GNOME notify): " << arguments;
                         }
 
    }
+
+void engine::setRange(qint64 aval, qint64 total)
+{
+    int kbAval = aval/1024;
+    int kbTotal = total/1024;
+    progress->setMaximum(kbTotal);
+    progress->setValue(kbAval);
+}
+
+void engine::exitApp()
+{
+    QMessageBox::critical(0, tr("Critical error"), tr("Wine distribution not downloaded, so exit application."));
+    qApp->exit(-4);
+}

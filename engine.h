@@ -33,9 +33,9 @@ public:
  signals:
 
 private slots:
-void showProgress ();
+ void setRange (qint64, qint64); //заглушка для QProgressDialog
+ void exitApp ();
 private:
-// QString getExe ();
 static  QString getVariableValue (QString value, const QStringList &vars);
 bool cdMode;
 QString diskpath;

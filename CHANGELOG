@@ -1,2 +1,4 @@
 release 0.0.0
 r1:engine fixes, translation updates (Russian)
+r2:notifications (KDialog/notify-send) implemented
+r3:new download method: QNetworkAcessManager instead of wget

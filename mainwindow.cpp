@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QLabel * cdlab = new QLabel (diskpath);
    statusBar()->addWidget(cdlab);
 buildList();
+engine::showNotify(tr("Hello"), tr("Please connect to Internet!"));
 }
 
 MainWindow::~MainWindow()
