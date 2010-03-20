@@ -3,25 +3,7 @@
 #include <QtCore>
 #include <QDebug>
 #include <QMessageBox>
-void showNotify (QString header, QString body, int secs) //функция НУ СОВСЕМ не доделана.
-{
-    //Смотрим, DE. Если это KDE, выводим месаги через KDialog, иначе через Libnotify-bin
-    QString runline;
-    QStringList env = QProcess::systemEnvironment();
-    if (env.contains("KDE_FULL_SESSION"))
-    {
-        runline = QObject::tr("kdialog --passivepopup '%1' %2 --title '%3'").arg(body).arg(secs).arg(header);
-    }
-    else
-    {
-        runline = QObject::tr("notify-send '%1' '%2' -t %3").arg(header).arg(body).arg(secs);
-    }
-    qDebug() << "engine: show PopUp: " << runline;
-    QProcess *p = new QProcess (0);
-    p->start(runline);
-    p->waitForFinished(-1);
-   }
-// нахуй нотификации. Забью пока.
+
 
  void unpackWine (QString distr, QString destination)
 {

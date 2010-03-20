@@ -15,7 +15,6 @@
 #include <QProgressDialog>
 #include <QIcon>
 #include <QtNetwork>
-
 #include "linux.h"
 class engine : public QObject
 {
@@ -30,6 +29,7 @@ public:
  static QIcon getIcon (QString path);
  static QString getPrefixName (QString path);
  static QString getWine (QString path);
+ static void showNotify (QString, QString);
  signals:
 
 private slots:

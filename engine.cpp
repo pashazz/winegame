@@ -10,7 +10,6 @@ engine::engine(QObject *parent) : //сейчас мы не делаем ниче
 }
 void engine::lauch(QString workdir, bool msg)
 {
-
     QString winebin;
     QFile file (workdir + QDir::separator() + "control");
     //хех, прочитаем файл
@@ -152,7 +151,6 @@ else
    }
 }
 qDebug() << tr("engine: starting Windows program %1 with wine binary %2").arg(exe).arg(winebin);
-qDebug() << winebin + " \"" + exe  +"\"";
 proc->start(winebin + " \"" + exe  +"\"" );
 proc->waitForFinished(-1);
 
@@ -325,7 +323,6 @@ QString engine::getWine(QString path)
 //progress->setCancelButton(but);
 //progress->show();
 //
-//
 //}
 //void engine::downloadFinished(QNetworkReply *reply)
 //{
@@ -333,8 +330,23 @@ QString engine::getWine(QString path)
 //
 //}
 
-QString engine::downloadWine(QString url)
-{
+
+//QString engine::downloadWine(QString url)
+//{
+//   //сначала отделим имя бинаря
+//QUrl myurl (url);
+//QFileInfo inf (myurl.path());
+//QString wineFileName = inf.fileName();
+////проверяем, есть ли у нас данный файл
+//if (QFile::exists(TMP + QDir::separator() + wineFileName))
+//   return wineFileName;
+////наш процесс
+//QMessageBox::information(0,tr("WineGame"), tr("Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!"));
+//ThreadHttpDownload down (this, url, wineFileName);
+//down->run();
+//return wineFileName;
+//}
+QString engine::downloadWine(QString url){
    //сначала отделим имя бинаря
 QUrl myurl (url);
 QFileInfo inf (myurl.path());
@@ -343,11 +355,11 @@ QString wineFileName = inf.fileName();
 if (QFile::exists(TMP + QDir::separator() + wineFileName))
    return wineFileName;
 //наш процесс
-QMessageBox::information(0,tr("WineGame"), tr("Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!"));
+//QMessageBox::information(0,tr("WineGame"), tr("Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!"));
 
    QProcess *proc = new QProcess (this);
    //показываем нотификацию
-  // showNotify(tr("Downloading required components"), tr("It`s near 40 MB. Please establish your Internet connection"), 40);
+   showNotify(tr("Downloading required components"), tr("It`s near 40 MB. Please establish your Internet connection"));
    //не меняем переменные окружения (ну кроме PWD :D)
    proc->setWorkingDirectory(TMP);
    connect (proc, SIGNAL(readyRead()), this, SLOT(showProgress()));
@@ -365,3 +377,28 @@ void engine::showProgress()
     QProcess *proc = qobject_cast<QProcess*>(sender());
     qDebug() << "wget output:" << QString(proc->readAll());
 }
+void engine::showNotify (QString header, QString body) //функция НУ СОВСЕМ не доделана.
+{
+/// знаю что тупизм,но никто не хочет помогать
+    if (QProcessEnvironment::systemEnvironment().contains("KDE_FULL_SESSION")) //пока кеды юзают KDialog
+        //вся земля юзает notify-send
+        //чезез kdialog:
+    {
+                             QStringList arguments;
+                            arguments << "--passivepopup" <<body;
+                            arguments << "--title"<<header;
+                            QProcess::startDetached("/usr/bin/kdialog",arguments);
+                            qDebug() << "engine: show PopUp (kdialog): " << arguments;
+                        }
+
+
+        //Через notify-send:
+    else
+    {
+                             QStringList arguments;
+                            arguments << header << body;
+                            QProcess::startDetached("/usr/bin/notify-send",arguments);
+                            qDebug() << "engine: show PopUp (GNOME notify): " << arguments;
+                        }
+
+   }
