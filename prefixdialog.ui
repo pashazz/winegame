@@ -17,7 +17,7 @@
    <item>
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
@@ -25,7 +25,7 @@
         <x>0</x>
         <y>0</y>
         <width>1223</width>
-        <height>309</height>
+        <height>315</height>
        </rect>
       </property>
       <attribute name="label">
@@ -79,8 +79,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1152</width>
-        <height>309</height>
+        <width>1223</width>
+        <height>315</height>
        </rect>
       </property>
       <attribute name="label">
@@ -184,8 +184,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1152</width>
-        <height>309</height>
+        <width>1223</width>
+        <height>315</height>
        </rect>
       </property>
       <attribute name="label">

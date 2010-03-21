@@ -59,7 +59,7 @@ void PrefixDialog::on_cmdWP_clicked()
 
 void PrefixDialog::on_cmdTerm_clicked()
 {
-    pr->runProgram("wineconsole cmd");
+    pr->runProgram("\"wineconsole cmd\"");
 }
 
 void PrefixDialog::on_cmdNotepad_clicked()

@@ -42,7 +42,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../gamedialog.cpp" line="12"/>
+        <location filename="../gamedialog.cpp" line="15"/>
         <source>A Microsoft Windows(r) application is found on this disc. &lt;br&gt;&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;&lt;br&gt; Would you like to install it? </source>
         <translation>На этом диске найдено приложение Microsoft Windows.&lt;br&gt;&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;&lt;br&gt;Хотите ли вы установить это приложение?</translation>
     </message>
@@ -55,12 +55,22 @@
         <translation>Установить приложения Windows</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="89"/>
+        <location filename="../mainwindow.cpp" line="31"/>
+        <source>Hello</source>
+        <translation>Привет!</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="31"/>
+        <source>Please connect to Internet!</source>
+        <translation>Пожалуйста, подключитесь к Интернету!</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="99"/>
         <source>Warning</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="89"/>
+        <location filename="../mainwindow.cpp" line="99"/>
         <source>Select item to run</source>
         <translation>Выберите программу для установки</translation>
     </message>
@@ -68,17 +78,17 @@
 <context>
     <name>Prefix</name>
     <message>
-        <location filename="../prefix.cpp" line="24"/>
+        <location filename="../prefix.cpp" line="23"/>
         <source>engine: setting wine binary to %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../prefix.cpp" line="34"/>
+        <location filename="../prefix.cpp" line="33"/>
         <source>%1  &quot;%2&quot;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../prefix.cpp" line="46"/>
+        <location filename="../prefix.cpp" line="45"/>
         <source>engine: [prefix]: starting winetricks</source>
         <translation></translation>
     </message>
@@ -128,77 +138,77 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="57"/>
+        <location filename="../prefixdialog.ui" line="69"/>
         <source>View C: drive</source>
         <translation>Просмотреть диск C:</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="64"/>
+        <location filename="../prefixdialog.ui" line="59"/>
         <source>Run EXE</source>
         <translation>Запустить EXE файл</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="83"/>
+        <location filename="../prefixdialog.ui" line="87"/>
         <source>System programs</source>
         <translation>Системные программы</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="89"/>
+        <location filename="../prefixdialog.ui" line="93"/>
         <source>Configurator (aka winecfg)</source>
         <translation>Конфигуратор Wine (winecfg)</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="96"/>
+        <location filename="../prefixdialog.ui" line="103"/>
         <source>Registry Editor</source>
         <translation>Редактор реестра</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="103"/>
+        <location filename="../prefixdialog.ui" line="113"/>
         <source>File Manager</source>
         <translation>Файловый менеджер</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="110"/>
+        <location filename="../prefixdialog.ui" line="123"/>
         <source>Control Panel</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="117"/>
+        <location filename="../prefixdialog.ui" line="133"/>
         <source>Task Manager</source>
         <translation>Диспетчер задач</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="124"/>
+        <location filename="../prefixdialog.ui" line="143"/>
         <source>Install/Remove programs</source>
         <translation>Установка/удаление программ</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="131"/>
+        <location filename="../prefixdialog.ui" line="153"/>
         <source>WordPad</source>
         <translation>WordPad</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="138"/>
+        <location filename="../prefixdialog.ui" line="163"/>
         <source>Command Line Terminal</source>
         <translation>Командная строка Windows (терминал)</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="145"/>
+        <location filename="../prefixdialog.ui" line="173"/>
         <source>Notepad</source>
         <translation>Блокнот</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="153"/>
+        <location filename="../prefixdialog.ui" line="192"/>
         <source>Administration</source>
         <translation>Администрирование</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="159"/>
+        <location filename="../prefixdialog.ui" line="198"/>
         <source>Reboot virtual Windows</source>
         <translation>Перезагрузить виртуальную Windows</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.ui" line="166"/>
+        <location filename="../prefixdialog.ui" line="208"/>
         <source>Remove this system and close dialog</source>
         <translation>Удалить эту систему и закрыть диалог</translation>
     </message>
@@ -216,57 +226,42 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../enginefunc.h" line="14"/>
-        <source>kdialog --passivepopup &apos;%1&apos; %2 --title &apos;%3&apos;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../enginefunc.h" line="18"/>
-        <source>notify-send &apos;%1&apos; &apos;%2&apos; -t %3</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../enginefunc.h" line="36"/>
         <source>WineGame</source>
-        <translation>WineGame</translation>
+        <translation type="obsolete">WineGame</translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="36"/>
         <source>Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!</source>
-        <translation>Сейчас начнется загрузка  необходимых компонентов. Это около 20-40 Мб. Пожалуйста, установите интернет-соединения!</translation>
+        <translation type="obsolete">Сейчас начнется загрузка  необходимых компонентов. Это около 20-40 Мб. Пожалуйста, установите интернет-соединения!</translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="40"/>
         <source>Downloading required components</source>
-        <translation>Загрузка необходимых компонентов</translation>
+        <translation type="obsolete">Загрузка необходимых компонентов</translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="40"/>
         <source>It`s near 40 MB. Please establish your Internet connection</source>
-        <translation>Это около 40 Мб. Пожалуйста, установите Интернет-соединение</translation>
+        <translation type="obsolete">Это около 40 Мб. Пожалуйста, установите Интернет-соединение</translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="46"/>
         <source>engine: wine downloading finished, file %1 in directory %2</source>
-        <translation>engine: загрузка wine завершена, файл %1 в папке %2</translation>
+        <translation type="obsolete">engine: загрузка wine завершена, файл %1 в папке %2</translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="56"/>
+        <location filename="../enginefunc.h" line="15"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="56"/>
+        <location filename="../enginefunc.h" line="15"/>
         <source>I see, that Wine did installed previously for this application (Directory %1 exists).&lt;br&gt;Would you like to install wine now?</source>
         <translation>Видимо, Wine (программа для запуска Windows-приложений) была установлена ранее для этой программы (Папка %1 cуществует)&lt;br&gt;Хотите установить Wine (снова) сейчас?</translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="63"/>
-        <source>tar xvpf %1/%2 -C %3</source>
+        <location filename="../enginefunc.h" line="22"/>
+        <source>tar xvpf %1 -C %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="67"/>
+        <location filename="../enginefunc.h" line="26"/>
         <source>engine: Wine distribution %1 unpacked to %2</source>
         <translation>engine: Дистрибутив Wine %1 распакован в %2</translation>
     </message>
@@ -279,6 +274,22 @@ p, li { white-space: pre-wrap; }
         <location filename="../main.cpp" line="16"/>
         <source>This program is not suitable to run on Windows or Mac OSX. &lt;br&gt; If you want to run WineGame on Win or Mac. pls remove this warning in main.cpp</source>
         <translation>Это не для винды или макоси.  &lt;br&gt; If you want to run WineGame on Win or Mac. pls remove this warning in main.cpp</translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="24"/>
+        <location filename="../main.cpp" line="32"/>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="24"/>
+        <source>Winetricks not found. Put it in /usr/bin/winetricks</source>
+        <translation>Winetricks не найдены. Положите их в /usr/bin/winetricks</translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="32"/>
+        <source>Incorrect commandline argunents</source>
+        <translation>Некорректные аргументы командной строки</translation>
     </message>
 </context>
 <context>
@@ -322,50 +333,108 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="129"/>
+        <location filename="../engine.cpp" line="140"/>
         <source>Windows  executables (*.exe)</source>
         <translation>Исполняемые файлы Windows (*.exe)</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="136"/>
+        <location filename="../engine.cpp" line="147"/>
         <source>No EXE file found</source>
         <translation>Не могу найти EXE файл</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="136"/>
+        <location filename="../engine.cpp" line="147"/>
         <source>Operation cancelled: No EXE file selected</source>
         <translation>Прерываю операцию: не выбран EXE файл</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="140"/>
+        <location filename="../engine.cpp" line="149"/>
+        <source>rm -rf %1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="153"/>
         <source>engine: starting Windows program %1 with wine binary %2</source>
         <translation>engine: запускаю Windows-программу %1 с бинарником wine %2</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="149"/>
+        <location filename="../engine.cpp" line="162"/>
         <source>engine: postinst script returned this: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="154"/>
+        <location filename="../engine.cpp" line="167"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="154"/>
+        <location filename="../engine.cpp" line="167"/>
         <source>Would you like to install a new game?</source>
         <translation>Хотите установить новую игру (еще)?</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="225"/>
+        <location filename="../engine.cpp" line="238"/>
+        <source>Downloading packages...</source>
+        <translation>Загрузка необходимых пакетов...</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="238"/>
+        <source>Now we will install Microsoft components</source>
+        <translation>Сейчас мы будем устанавливать компоненты Microsoft</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="305"/>
+        <source>Don`t worry!</source>
+        <translation>Не беспокойтесь!</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="305"/>
+        <source>Now WineGame will download some files, that will need for get your applicaton running</source>
+        <translation>Сейчас WineGame будет загружать файлы, которые необходимы для запуска вашего приложения</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="323"/>
+        <source>Downloading Wine...</source>
+        <translation>Загрузка Wine...</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="324"/>
+        <source>Downloading %1</source>
+        <translation>Загружаю %1</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="328"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="409"/>
+        <source>Critical error</source>
+        <translation>Критическая ошибка</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="409"/>
+        <source>Wine distribution not downloaded, so exit application.</source>
+        <translation>Дистрибутив Wine не загружен - выходим из приложения.</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="421"/>
+        <source>Network error</source>
+        <translation>Сетевая ошибка</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="421"/>
+        <source>Network error: %1. Exiting application</source>
+        <translation>Сетевая ошибка: %1. Выходим из приложения</translation>
+    </message>
+    <message>
         <source>Warning</source>
-        <translation>
+        <translation type="obsolete">
 Внимание</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="225"/>
         <source>Now WineGame will download required packages (from Microsoft site). Please establish your Internets</source>
-        <translation>Сейчас будут загружены необходимые компоненты (с сайта Microsoft). Пожалуйста, установите соединение с интернетом</translation>
+        <translation type="obsolete">Сейчас будут загружены необходимые компоненты (с сайта Microsoft). Пожалуйста, установите соединение с интернетом</translation>
     </message>
 </context>
 </TS>
