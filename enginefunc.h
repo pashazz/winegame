@@ -19,7 +19,7 @@
      }
  QProcess *proc = new QProcess (0); //не забываем удалять
  proc->setWorkingDirectory(destination);
- QString unpackLine =  QObject::tr ("tar xvpf %1/%2 -C %3").arg(TMP).arg(distr).arg(destination);
+ QString unpackLine =  QObject::tr ("tar xvpf %1 -C %2").arg(distr).arg(destination);
  proc->start(unpackLine);
   proc->waitForFinished(-1);
   qDebug() << "DEBUG: Unpack commandline is " << unpackLine;

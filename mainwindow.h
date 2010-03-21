@@ -22,7 +22,7 @@ private:
     Ui::MainWindow *ui;
 QString diskpath;
 bool cdMode;
-
+void saveGeom();
     void buildList();
     void lauchEngine(QString pkgpath);
 private slots:

@@ -5,6 +5,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    QFile f (QDir::homePath() + "/.config/winegame.geom");
+    if (f.open(QIODevice::ReadOnly))
+    {
+    restoreGeometry(f.readAll());
+    f.close();
+}
     if (qApp->arguments().empty())
         cdMode = false; //Not to check CD
     else
@@ -44,6 +50,7 @@ void MainWindow::changeEvent(QEvent *e)
 
 void MainWindow::on_buttonBox_rejected()
 {
+    saveGeom();
     qApp->exit(2);
 }
 void MainWindow::buildList()
@@ -84,7 +91,9 @@ void MainWindow::on_buttonBox_accepted()
 {
     if (!ui->lstGames->selectedItems().isEmpty()) {
         lauchEngine(ui->lstGames->selectedItems().first()->data(Qt::UserRole).toString());
+   saveGeom();
     }
+
     else
     {
         QMessageBox::warning(this, tr("Warning"), tr("Select item to run"));
@@ -96,4 +105,12 @@ void MainWindow::on_buttonBox_accepted()
 void MainWindow::on_lstGames_itemClicked(QListWidgetItem* item)
 {
     ui->lblNote->setText(engine::getNote(item->data(Qt::UserRole).toString()));
+}
+
+void MainWindow::saveGeom()
+{
+    QFile f (QDir::homePath() + "/.config/winegame.geom");
+    f.open(QIODevice::WriteOnly | QIODevice::Truncate);
+   f.write(saveGeometry());
+   f.close();
 }

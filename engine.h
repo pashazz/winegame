@@ -33,6 +33,7 @@ public:
  signals:
 
 private slots:
+ void error (QNetworkReply::NetworkError);
  void setRange (qint64, qint64); //заглушка для QProgressDialog
  void exitApp ();
 private:

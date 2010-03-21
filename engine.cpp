@@ -305,9 +305,9 @@ QString engine::downloadWine(QString url) //TODO: проверка на ошиб
     showNotify(tr("Don`t worry!"), tr("Now WineGame will download some files, that will need for get your applicaton running"));
     QUrl myurl = QUrl(url);
     QFileInfo inf (myurl.path());
-    QString wineFileName = inf.fileName();
+    QString wineFileName =TMP + QDir::separator() +  inf.fileName();
     //проверяем, есть ли у нас данный файл
-    if (QFile::exists(TMP + QDir::separator() + wineFileName))
+    if (QFile::exists(wineFileName))
         return wineFileName;
   QProgressDialog *progress = new QProgressDialog(0);
      QEventLoop loop;
@@ -319,6 +319,8 @@ req.setRawHeader("User-Agent", "Winegame-Browser 0.1");
 QNetworkReply *reply = manager->get(req);
 connect (reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(setRange(qint64,qint64)));
 connect (reply, SIGNAL(finished()), &loop, SLOT(quit()));
+progress->setModal(true);
+progress->setWindowTitle(tr("Downloading Wine..."));
 progress->setLabelText(tr("Downloading %1").arg(url));
 QPushButton *but = new QPushButton  (progress);
 but->setFlat(true);
@@ -330,7 +332,7 @@ progress->show();
 loop.exec();
 progress->close();
 QByteArray buffer = reply->readAll();
-QFile file (TMP + QDir::separator() + wineFileName);
+QFile file (wineFileName);
 if (file.open(QIODevice::WriteOnly))
 {
         file.write(buffer);
@@ -406,4 +408,18 @@ void engine::exitApp()
 {
     QMessageBox::critical(0, tr("Critical error"), tr("Wine distribution not downloaded, so exit application."));
     qApp->exit(-4);
+}
+
+void engine::error(QNetworkReply::NetworkError error)
+{
+    if  (error != QNetworkReply::NoError)
+    {
+       return;
+   }
+    else
+    {
+        QMessageBox::warning(0, tr("Network error"), tr("Network error: %1. Exiting application"));
+        qApp->exit(-6);
+    }
+
 }
