@@ -1,0 +1,4 @@
+PREFIX=fifa10
+PKGS=directx9 glsl-enable vcrun2005 ddr=opengl
+WINEDISTR=http://winegame.googlecode.com/files/wine-1.1.20-bin.tar.bz2
+SETUP=EASetup.exe

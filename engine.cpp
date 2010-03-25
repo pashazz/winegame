@@ -116,6 +116,7 @@ myEnv.insert("FILESDIR", workdir + "/files");
 myEnv.insert("WINEPREFIX", prefixdir);
 myEnv.insert("WINE", winebin);
 myEnv.insert("CDROOT", this->diskpath);
+myEnv.insert("WINEDEBUG", "-all");
 /// Устанавливаем компоненты Microsoft здесь. Вы можете скачать их в ~/.winetrickscache, чтобы программа не загружала их сама
 if (!getVariableValue("PKGS", vars).isEmpty())
     doPkgs(getVariableValue("PKGS", vars), myEnv);

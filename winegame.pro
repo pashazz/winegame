@@ -24,3 +24,12 @@ FORMS += mainwindow.ui \
     gamedialog.ui \
     prefixdialog.ui
 RESOURCES += res.qrc
+tools.path=/usr/bin
+tools.files=tools/*
+
+pkgs.path=/usr/share/winegame
+pkgs.files=packages/*
+
+prog.path=/usr/bin
+prog.files=winegame
+INSTALLS += prog

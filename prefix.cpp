@@ -43,7 +43,7 @@ Prefix::Prefix(QObject *parent, QString path) :
     env = QProcessEnvironment::systemEnvironment();
     env.insert("WINE", wine);
     env.insert("WINEPREFIX", wineprefix);
-
+    env.insert("WINEDEBUG", "-all");
 
 }
 void Prefix::runProgram(QString exepath)
