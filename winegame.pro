@@ -32,4 +32,4 @@ pkgs.files=packages/*
 
 prog.path=/usr/bin
 prog.files=winegame
-INSTALLS += prog
+INSTALLS += prog pkgs tools
