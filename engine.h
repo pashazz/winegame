@@ -60,8 +60,16 @@ bool cdMode;
 QString diskpath;
 QProgressDialog *progress;
 void doPkgs (QString pkgs, const QProcessEnvironment &env);
+//нужные переменные
+QString prefix;
+QString wineBinary;
+QString name;
+QString note;
+QString iconPath;
+QString program;
 //Функции собственно движка (исп. с QtConcurrent) объявлены в enginefunc.h
  QString downloadWine(QString url);
+ void doDesktop(QString);
 };
 
 #endif // ENGINE_H

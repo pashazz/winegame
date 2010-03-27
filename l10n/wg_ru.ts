@@ -4,17 +4,17 @@
 <context>
     <name>DiscDetector</name>
     <message>
-        <location filename="../discdetector.cpp" line="12"/>
+        <location filename="../discdetector.cpp" line="29"/>
         <source>DDT: [scan] scanning dir %1</source>
         <translation>DDT: [cкан] сканирую папку %1</translation>
     </message>
     <message>
-        <location filename="../discdetector.cpp" line="17"/>
+        <location filename="../discdetector.cpp" line="34"/>
         <source>DDT: scanning file %1</source>
         <translation>DDT: сканирую файл %1</translation>
     </message>
     <message>
-        <location filename="../discdetector.cpp" line="25"/>
+        <location filename="../discdetector.cpp" line="42"/>
         <source>DDT: [warning] unable to open file %1: error %2</source>
         <translation></translation>
     </message>
@@ -42,7 +42,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../gamedialog.cpp" line="15"/>
+        <location filename="../gamedialog.cpp" line="33"/>
         <source>A Microsoft Windows(r) application is found on this disc. &lt;br&gt;&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;&lt;br&gt; Would you like to install it? </source>
         <translation>На этом диске найдено приложение Microsoft Windows.&lt;br&gt;&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;&lt;br&gt;Хотите ли вы установить это приложение?</translation>
     </message>
@@ -55,22 +55,22 @@
         <translation>Установить приложения Windows</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="31"/>
+        <location filename="../mainwindow.cpp" line="49"/>
         <source>Hello</source>
         <translation>Привет!</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="31"/>
+        <location filename="../mainwindow.cpp" line="49"/>
         <source>Please connect to Internet!</source>
         <translation>Пожалуйста, подключитесь к Интернету!</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="99"/>
+        <location filename="../mainwindow.cpp" line="117"/>
         <source>Warning</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="99"/>
+        <location filename="../mainwindow.cpp" line="117"/>
         <source>Select item to run</source>
         <translation>Выберите программу для установки</translation>
     </message>
@@ -78,17 +78,17 @@
 <context>
     <name>Prefix</name>
     <message>
-        <location filename="../prefix.cpp" line="23"/>
+        <location filename="../prefix.cpp" line="41"/>
         <source>engine: setting wine binary to %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../prefix.cpp" line="33"/>
+        <location filename="../prefix.cpp" line="51"/>
         <source>%1  &quot;%2&quot;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../prefix.cpp" line="45"/>
+        <location filename="../prefix.cpp" line="63"/>
         <source>engine: [prefix]: starting winetricks</source>
         <translation></translation>
     </message>
@@ -213,12 +213,12 @@ p, li { white-space: pre-wrap; }
         <translation>Удалить эту систему и закрыть диалог</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.cpp" line="48"/>
+        <location filename="../prefixdialog.cpp" line="66"/>
         <source>Select Windows program to run</source>
         <translation>Выберите Windows-программу для запуска</translation>
     </message>
     <message>
-        <location filename="../prefixdialog.cpp" line="48"/>
+        <location filename="../prefixdialog.cpp" line="66"/>
         <source>Windows executables (*.exe)</source>
         <translation>Исполняемые файлы Windows (*.exe)</translation>
     </message>
@@ -246,61 +246,66 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">engine: загрузка wine завершена, файл %1 в папке %2</translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="15"/>
+        <location filename="../enginefunc.h" line="33"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="15"/>
+        <location filename="../enginefunc.h" line="33"/>
         <source>I see, that Wine did installed previously for this application (Directory %1 exists).&lt;br&gt;Would you like to install wine now?</source>
         <translation>Видимо, Wine (программа для запуска Windows-приложений) была установлена ранее для этой программы (Папка %1 cуществует)&lt;br&gt;Хотите установить Wine (снова) сейчас?</translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="22"/>
+        <location filename="../enginefunc.h" line="40"/>
         <source>tar xvpf %1 -C %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../enginefunc.h" line="26"/>
+        <location filename="../enginefunc.h" line="44"/>
         <source>engine: Wine distribution %1 unpacked to %2</source>
         <translation>engine: Дистрибутив Wine %1 распакован в %2</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="16"/>
+        <location filename="../main.cpp" line="35"/>
         <source>This is not for Windows or Mac OSX</source>
         <translation>Это не для винды или макоси</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="16"/>
+        <location filename="../main.cpp" line="35"/>
         <source>This program is not suitable to run on Windows or Mac OSX. &lt;br&gt; If you want to run WineGame on Win or Mac. pls remove this warning in main.cpp</source>
         <translation>Это не для винды или макоси.  &lt;br&gt; If you want to run WineGame on Win or Mac. pls remove this warning in main.cpp</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="24"/>
-        <location filename="../main.cpp" line="32"/>
+        <location filename="../main.cpp" line="43"/>
+        <location filename="../main.cpp" line="51"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="24"/>
+        <location filename="../main.cpp" line="43"/>
         <source>Winetricks not found. Put it in /usr/bin/winetricks</source>
         <translation>Winetricks не найдены. Положите их в /usr/bin/winetricks</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="32"/>
+        <location filename="../main.cpp" line="51"/>
         <source>Incorrect commandline argunents</source>
         <translation>Некорректные аргументы командной строки</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="486"/>
+        <source>env WINEPREFIX=&apos;%1&apos; %2  &apos;%3&apos;</source>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>engine</name>
     <message>
-        <location filename="../engine.cpp" line="19"/>
+        <location filename="../engine.cpp" line="38"/>
         <source>File open error</source>
         <translation>Ошибка открытия файла</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="19"/>
+        <location filename="../engine.cpp" line="38"/>
         <source>Unable to open file %1. &lt;br&gt;Error: %2</source>
         <translation>Не могу открыть файл %1.&lt;br&gt;Ошибка:%2</translation>
     </message>
@@ -313,119 +318,147 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Пожалуйста, прочтите это сообщение о вашем приложении</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="89"/>
+        <location filename="../engine.cpp" line="108"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="89"/>
+        <location filename="../engine.cpp" line="108"/>
         <source>Wine installation not found.</source>
         <translation>Wine не найден.</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="96"/>
+        <location filename="../engine.cpp" line="115"/>
         <source>engine: setting Prefix: %1</source>
         <translation>engine: устанавливаю префикс: %1</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="112"/>
+        <location filename="../engine.cpp" line="132"/>
         <source>engine: preinst script returned this: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="140"/>
+        <location filename="../engine.cpp" line="160"/>
         <source>Windows  executables (*.exe)</source>
         <translation>Исполняемые файлы Windows (*.exe)</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="147"/>
+        <location filename="../engine.cpp" line="167"/>
         <source>No EXE file found</source>
         <translation>Не могу найти EXE файл</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="147"/>
+        <location filename="../engine.cpp" line="167"/>
         <source>Operation cancelled: No EXE file selected</source>
         <translation>Прерываю операцию: не выбран EXE файл</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="149"/>
+        <location filename="../engine.cpp" line="169"/>
         <source>rm -rf %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="153"/>
+        <location filename="../engine.cpp" line="173"/>
         <source>engine: starting Windows program %1 with wine binary %2</source>
         <translation>engine: запускаю Windows-программу %1 с бинарником wine %2</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="162"/>
+        <location filename="../engine.cpp" line="186"/>
         <source>engine: postinst script returned this: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="167"/>
+        <location filename="../engine.cpp" line="213"/>
         <source>Question</source>
         <translation>Вопрос</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="167"/>
+        <location filename="../engine.cpp" line="213"/>
         <source>Would you like to install a new game?</source>
         <translation>Хотите установить новую игру (еще)?</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="238"/>
+        <location filename="../engine.cpp" line="286"/>
         <source>Downloading packages...</source>
         <translation>Загрузка необходимых пакетов...</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="238"/>
+        <location filename="../engine.cpp" line="286"/>
         <source>Now we will install Microsoft components</source>
         <translation>Сейчас мы будем устанавливать компоненты Microsoft</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="305"/>
+        <location filename="../engine.cpp" line="353"/>
         <source>Don`t worry!</source>
         <translation>Не беспокойтесь!</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="305"/>
+        <location filename="../engine.cpp" line="353"/>
         <source>Now WineGame will download some files, that will need for get your applicaton running</source>
         <translation>Сейчас WineGame будет загружать файлы, которые необходимы для запуска вашего приложения</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="323"/>
+        <location filename="../engine.cpp" line="371"/>
         <source>Downloading Wine...</source>
         <translation>Загрузка Wine...</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="324"/>
+        <location filename="../engine.cpp" line="372"/>
         <source>Downloading %1</source>
         <translation>Загружаю %1</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="328"/>
+        <location filename="../engine.cpp" line="376"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="409"/>
+        <location filename="../engine.cpp" line="457"/>
         <source>Critical error</source>
         <translation>Критическая ошибка</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="409"/>
+        <location filename="../engine.cpp" line="457"/>
         <source>Wine distribution not downloaded, so exit application.</source>
         <translation>Дистрибутив Wine не загружен - выходим из приложения.</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="421"/>
+        <location filename="../engine.cpp" line="469"/>
         <source>Network error</source>
         <translation>Сетевая ошибка</translation>
     </message>
     <message>
-        <location filename="../engine.cpp" line="421"/>
+        <location filename="../engine.cpp" line="469"/>
         <source>Network error: %1. Exiting application</source>
         <translation>Сетевая ошибка: %1. Выходим из приложения</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="479"/>
+        <source>Desktop</source>
+        <translation>Рабочий стол</translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="487"/>
+        <source>Exec=%1
+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="488"/>
+        <source>Name=%1
+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="489"/>
+        <source>Comment=%1
+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../engine.cpp" line="497"/>
+        <source>Icon=%1</source>
+        <translation></translation>
     </message>
     <message>
         <source>Warning</source>

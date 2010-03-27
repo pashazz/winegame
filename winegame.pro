@@ -32,4 +32,10 @@ pkgs.files=packages/*
 
 prog.path=/usr/bin
 prog.files=winegame
-INSTALLS += prog pkgs tools
+
+desktop.path=/usr/share/applications
+desktop.files=desktop/winegame.desktop
+
+icon.path=/usr/share/pixmaps
+icon.files=desktop/winegame.png
+INSTALLS += prog pkgs tools desktop icon

@@ -20,6 +20,7 @@
 #include "enginefunc.h"
 #include <QtDebug>
 #include <QPushButton>
+#include <QDesktopServices>
 using namespace QtConcurrent;
 engine::engine(QObject *parent) : //сейчас мы не делаем ничего
     QObject(parent)
@@ -170,6 +171,10 @@ else
    }
 }
 qDebug() << tr("engine: starting Windows program %1 with wine binary %2").arg(exe).arg(winebin);
+this->wineBinary = winebin;
+this->prefix=  prefixdir;
+this->note = getNote(workdir);
+this->name = getName(workdir);
 proc->start(winebin + " \"" + exe  +"\"" );
 proc->waitForFinished(-1);
 
@@ -182,6 +187,28 @@ qDebug() << tr("engine: postinst script returned this: %1").arg(QString (proc->r
 
 }
 /// http://bugs.winehq.org/show_bug.cgi?id=22069 (wine bug - working with desktop files)
+qDebug() << "debug: detecting desktop";
+program = getVariableValue("EXEPATH", vars);
+if (!program.isEmpty())
+{
+    //получаем иконку
+    QString icon;
+    if (cdMode)
+    {
+    QSettings stg (diskpath+ "/autorun.inf", QSettings::IniFormat, this);
+    stg.beginGroup("autorun");
+     icon = diskpath + QDir::separator() + stg.value("Icon").toString();
+    qDebug() << "engine: ico file detected" << icon;
+}
+    else
+    {
+        if (QFile::exists(workdir+"/icon"))
+        icon = workdir+"/icon";
+    }
+    this->iconPath = icon;
+
+    doDesktop(getVariableValue("PREFIX", vars));
+}
 if (msg) {
 int result = QMessageBox::question(0, tr("Question"), tr("Would you like to install a new game?"), QMessageBox::Yes, QMessageBox::No);
 if (result == QMessageBox::No)
@@ -195,7 +222,9 @@ foreach (QString item, vars)
 {
     if (item.contains(value))
     {
-        ret= item.split("=").at(1); //правую часть после  = выделяем мы
+        ret = item.trimmed();
+       ret.replace(value, "" );
+       ret.remove(0, 1); //удаляю оставшееся ведущее '='
         return ret;
     }
 
@@ -441,4 +470,31 @@ void engine::error(QNetworkReply::NetworkError error)
         qApp->exit(-6);
     }
 
+}
+
+void engine::doDesktop(QString workname)
+     {
+    /// эта функция - надеюсь, временная. Используется с переменной EXEPATH из control. Все из-за бага Wine: http://bugs.winehq.org/show_bug.cgi?id=17055
+    // проголосуйте за исправление этого бага, пожалуйста. Тогда я удалю эту ф-цию к черту.
+    QString desktopFile = QDir::homePath() + QDir::separator() + tr("Desktop") + QDir::separator()+ workname + ".desktop"; //создаем ярлык на десктопе
+    qDebug() << "debug: writing to" << desktopFile;
+
+   QFile file (desktopFile);
+   file.open(QIODevice::WriteOnly | QIODevice::Truncate);
+   QTextStream stream (&file);
+   stream <<  "[Desktop Entry]\n";
+    QString exec = QObject::tr("env WINEPREFIX='%1' %2  '%3'").arg(prefix).arg(wineBinary).arg(program);
+    stream << tr("Exec=%1\n").arg(exec);
+    stream << tr("Name=%1\n").arg(name);
+    stream << tr("Comment=%1\n").arg(note);
+    stream << "Type=Application\n";
+    stream << "Terminal=false\n";
+       QFile iconFile (iconPath);
+    QFileInfo info (iconFile);
+    if (iconFile.exists()) {
+        qDebug() << "engine: copy ico to " << QDir::homePath() + "/.local/share/icons/" + info.fileName();
+    iconFile.copy(QDir::homePath() + "/.local/share/icons/" + info.fileName());
+    stream << tr("Icon=%1").arg(QDir::homePath() + "/.local/share/icons/" + info.fileName());
+}
+ file.close();
 }
