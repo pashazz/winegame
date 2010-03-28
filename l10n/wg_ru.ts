@@ -48,6 +48,29 @@
     </message>
 </context>
 <context>
+    <name>IsoMaster</name>
+    <message>
+        <location filename="../isomaster.cpp" line="30"/>
+        <source>fuseiso &quot;%1&quot; &quot;%2&quot;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../isomaster.cpp" line="31"/>
+        <source>fusermount -u &quot;%1&quot;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../isomaster.cpp" line="48"/>
+        <source>Warning</source>
+        <translation>Внимание</translation>
+    </message>
+    <message>
+        <location filename="../isomaster.cpp" line="48"/>
+        <source>I can not get Windows application from this image</source>
+        <translation>Не могу определить Windows-приложение на этом образе диска</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../mainwindow.ui" line="14"/>
@@ -266,30 +289,38 @@ p, li { white-space: pre-wrap; }
         <translation>engine: Дистрибутив Wine %1 распакован в %2</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="35"/>
+        <location filename="../main.cpp" line="36"/>
         <source>This is not for Windows or Mac OSX</source>
         <translation>Это не для винды или макоси</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="35"/>
+        <location filename="../main.cpp" line="36"/>
         <source>This program is not suitable to run on Windows or Mac OSX. &lt;br&gt; If you want to run WineGame on Win or Mac. pls remove this warning in main.cpp</source>
         <translation>Это не для винды или макоси.  &lt;br&gt; If you want to run WineGame on Win or Mac. pls remove this warning in main.cpp</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="43"/>
-        <location filename="../main.cpp" line="51"/>
+        <location filename="../main.cpp" line="44"/>
+        <location filename="../main.cpp" line="54"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="43"/>
+        <location filename="../main.cpp" line="44"/>
         <source>Winetricks not found. Put it in /usr/bin/winetricks</source>
         <translation>Winetricks не найдены. Положите их в /usr/bin/winetricks</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="51"/>
-        <source>Incorrect commandline argunents</source>
+        <location filename="../main.cpp" line="54"/>
+        <source>Incorrect commandline arguments</source>
         <translation>Некорректные аргументы командной строки</translation>
+    </message>
+    <message>
+        <source>Incorrect commandline argumens</source>
+        <translation type="obsolete">Некорректные аргументы командной строки</translation>
+    </message>
+    <message>
+        <source>Incorrect commandline argunents</source>
+        <translation type="obsolete">Некорректные аргументы командной строки</translation>
     </message>
     <message>
         <location filename="../engine.cpp" line="486"/>

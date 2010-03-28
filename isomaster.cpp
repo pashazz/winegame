@@ -29,14 +29,10 @@ IsoMaster::IsoMaster(QObject *parent, QString imageFile) : //просто кон
         dir.mkdir(dir.path());
     mount = tr("fuseiso \"%1\" \"%2\"").arg(imageFile).arg(mountpoint);
     umount = tr("fusermount -u \"%1\"").arg(mountpoint);
-    qDebug() << "iso: mount command is " << mount;
-    qDebug() << "iso: mount command is " << umount;
-
 }
 void IsoMaster::lauchApp()
 {
     QProcess p (this);
-    qDebug() << "iso: mounting iso" << mount;
     p.start(mount);
     p.waitForFinished(-1);
     DiscDetector det (this);
@@ -46,6 +42,10 @@ void IsoMaster::lauchApp()
       p.start(umount);
    p.waitForFinished(-1);
         return;
+    }
+    else
+    {
+        QMessageBox::critical(0, tr("Warning"), tr("I can not get Windows application from this image"));
     }
     p.start(umount);
  p.waitForFinished(-1);

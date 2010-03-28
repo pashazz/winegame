@@ -51,7 +51,7 @@ if (a.arguments().length() > 1) {
     QFileInfo info (a.arguments().at(1));
     if (!info.exists())
     {
-        QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Incorrect commandline argumens"));
+        QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
         return -3;
 }
     if (info.isDir()) //запускаем детектор диска
