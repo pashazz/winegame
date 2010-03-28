@@ -13,16 +13,29 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
-#ifndef LINUX_H
-#define LINUX_H
-#include <QString>
+/// для работы этого класса необходим FuseISO
+#ifndef ISOMASTER_H
+#define ISOMASTER_H
 
-//важные константы
-const QString gamepath = "/usr/share/winegame";
-const QString winepath = "/Windows";
-const QString TMP = "/tmp";
-const QString LOCK = "/tmp/winegame.lock";
-#endif
+#include <QtCore>
+
+class IsoMaster : public QObject
+{
+Q_OBJECT
+public:
+    explicit IsoMaster(QObject *parent, QString imageFile);
+    void lauchApp ();
+signals:
+
+public slots:
+
+private:
+    QString mount, umount;
+    QString mountpoint;
+QString image;
+};
+
+#endif // ISOMASTER_H

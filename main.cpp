@@ -20,6 +20,7 @@
 #include "mainwindow.h"
 #include "linux.h"
 #include "discdetector.h"
+#include "isomaster.h"
 #include "QDir"
 int main(int argc, char *argv[])
 {
@@ -45,18 +46,32 @@ int main(int argc, char *argv[])
 if (!dir.exists())
     dir.mkdir(dir.path()); //проверяем главную папочку  WineGame
 // детектинг диска
+
 if (a.arguments().length() > 1) {
-    if (!QFile::exists(a.arguments().at(1)))
+    QFileInfo info (a.arguments().at(1));
+    if (!info.exists())
     {
-        QMessageBox::critical(0, QObject::tr("Error"),  QObject::tr("Incorrect commandline argunents"));
-        return 3;
+        QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Incorrect commandline argumens"));
+        return -3;
+}
+    if (info.isDir()) //запускаем детектор диска
+    {
+        DiscDetector det;
+        if (det.tryDetect(info.absoluteFilePath()))
+        {
+            det.lauchApp();
+            return 0;
+        }
     }
-    DiscDetector det;
-    if (det.tryDetect(a.arguments().at(1)))
+    else if (info.isFile())
     {
-        det.lauchApp();
+        //запуск IsoMaster
+        IsoMaster m (0, info.absoluteFilePath());
+        qDebug() << "iso: {master] - sending disk image file" << info.absoluteFilePath();
+        m.lauchApp();
         return 0;
     }
+
 }
     MainWindow w;
     w.show();
