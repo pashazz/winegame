@@ -70,6 +70,7 @@ QString program;
 //Функции собственно движка (исп. с QtConcurrent) объявлены в enginefunc.h
  QString downloadWine(QString url);
  void doDesktop(QString);
+ void setMemory (QString);
 };
 
 #endif // ENGINE_H

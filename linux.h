@@ -24,5 +24,5 @@
 const QString gamepath = "/usr/share/winegame";
 const QString winepath = "/Windows";
 const QString TMP = "/tmp";
-const QString LOCK = "/tmp/winegame.lock";
+const QString config = "/.config/winegame.conf";
 #endif
