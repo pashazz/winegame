@@ -35,6 +35,8 @@ public slots:
 private:
     QString mount, umount;
     QString mountpoint;
+    QString sudo;
+
 QString image;
 };
 

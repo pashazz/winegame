@@ -22,6 +22,7 @@
 #include "discdetector.h"
 #include "isomaster.h"
 #include "QDir"
+#define tr QObject::tr
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -32,10 +33,7 @@ int main(int argc, char *argv[])
     QTranslator app;
     app.load(":/ts/l10n/wg_" + QLocale::system().name());
     a.installTranslator(&app);
-#ifndef Q_WS_X11
-    QMessageBox::critical(0, QObject::tr("This is not for Windows or Mac OSX"), QObject::tr("This program is not suitable to run on Windows or Mac OSX. <br> If you want to run WineGame on Win or Mac. pls remove this warning in main.cpp");
-    return -256;
-#endif
+
     //set Linux console encoding to UTF-8
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
      QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
@@ -45,8 +43,17 @@ int main(int argc, char *argv[])
       QDir dir (QDir::homePath() + QDir::separator() + winepath);
 if (!dir.exists())
     dir.mkdir(dir.path()); //проверяем главную папочку  WineGame
-// детектинг диска
-
+//проверяем наличие конфига
+if (!QFile::exists(QDir::homePath() + config))
+{
+    int mem = 0;
+     mem= QInputDialog::getInt(0, tr("WineGame"), tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
+        if (mem == 0)
+            mem = 128;
+        QSettings stg (QDir::homePath() + config, QSettings::IniFormat, 0);
+        stg.setValue("VideoMemory", mem);
+        stg.sync();
+}
 if (a.arguments().length() > 1) {
     QFileInfo info (a.arguments().at(1));
     if (!info.exists())
@@ -54,8 +61,14 @@ if (a.arguments().length() > 1) {
         QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
         return -3;
 }
+
     if (info.isDir()) //запускаем детектор диска
     {
+        if (!QFile::exists(info.absoluteFilePath() + "/autorun.inf"))
+        {
+            QMessageBox::critical(0, tr("I am confused"), tr ("This disc is not Windows Software disc, exiting"));
+            return -2;
+        }
         DiscDetector det;
         if (det.tryDetect(info.absoluteFilePath()))
         {
@@ -66,8 +79,9 @@ if (a.arguments().length() > 1) {
     else if (info.isFile())
     {
         //запуск IsoMaster
+
         IsoMaster m (0, info.absoluteFilePath());
-        qDebug() << "iso: {master] - sending disk image file" << info.absoluteFilePath();
+        qDebug() << "iso: [master] - sending disk image file" << info.absoluteFilePath();
         m.lauchApp();
         return 0;
     }

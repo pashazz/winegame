@@ -21,6 +21,7 @@
 
 #include <QDialog>
 #include "prefix.h"
+
 namespace Ui {
     class PrefixDialog;
 }

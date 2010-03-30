@@ -50,3 +50,4 @@ void IsoMaster::lauchApp()
     p.start(umount);
  p.waitForFinished(-1);
 }
+

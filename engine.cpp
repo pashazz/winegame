@@ -45,19 +45,6 @@ while (!in.atEnd())
 }
 
 QString prefixdir = QDir::homePath() + winepath  + QDir::separator() + getVariableValue("PREFIX", vars);
-/*
-//QDir prdir (prefixdir);
-//if (prdir.exists())
-//{
-//    int ret = QMessageBox::question(0, tr("This application is installed on your computer"),  tr("You did requested to install application <b>%1</b>, but it`s already installed. Do you want to remove application`s directory and reinstall it?").arg(engine::getName(workdir)), QMessageBox::Yes, QMessageBox::No);
-//    if (ret == QMessageBox::Yes)
-//    {
-//       prdir.remove(prdir.path());
-//    }
-//    else if (ret == QMessageBox::No)
-//        return;
-//}
-  */
 //ищем контейнер префикса
 if (!getVariableValue("CONTAINER", vars).isEmpty())
 {
@@ -71,25 +58,20 @@ if (!getVariableValue("WINEDISTR", vars).isEmpty())
     QString distr = getVariableValue("WINEDISTR", vars);
 
 //здесь запускаем процесс закачки и распаковки данного дистрибутива Wine
-
-  //  QFuture<QString> fWine = run (downloadWine, distr);
-//QString distrname = fWine.result();
-    QString distrname =     downloadWine(distr);
-
 QString destination = QDir::homePath() + winepath + "/wines/" + getVariableValue("PREFIX", vars);
 QDir dir (QDir::homePath() + winepath + "/wines");
 if (!dir.exists())
     dir.mkdir(dir.path());
-//а может быть Wine уже распакован, м?
+//а может быть Wine уже распакован, м
 //теперь устанавливаем переменную winebin
 winebin = destination + "/usr/bin/wine"; //дададада!
 qDebug() << "engine: setting wine binary to " << winebin;
 if (!QFile::exists(winebin))
 {
+    QString distrname =     downloadWine(distr);
     unpackWine(distrname, destination);
 }
 //выходим из условия
-
 }
 else
 {
@@ -118,6 +100,7 @@ myEnv.insert("WINEPREFIX", prefixdir);
 myEnv.insert("WINE", winebin);
 myEnv.insert("CDROOT", this->diskpath);
 myEnv.insert("WINEDEBUG", "-all");
+
 /// Устанавливаем компоненты Microsoft здесь. Вы можете скачать их в ~/.winetrickscache, чтобы программа не загружала их сама
 if (!getVariableValue("PKGS", vars).isEmpty())
     doPkgs(getVariableValue("PKGS", vars), myEnv);
@@ -167,14 +150,12 @@ else
        QMessageBox::warning(0, tr("No EXE file found"), tr("Operation cancelled: No EXE file selected"));
        QProcess p (this);
        p.start(tr("rm -rf %1").arg(prefixdir));
+       p.waitForFinished(-1);
        return;
    }
 }
 qDebug() << tr("engine: starting Windows program %1 with wine binary %2").arg(exe).arg(winebin);
-this->wineBinary = winebin;
-this->prefix=  prefixdir;
-this->note = getNote(workdir);
-this->name = getName(workdir);
+
 proc->start(winebin + " \"" + exe  +"\"" );
 proc->waitForFinished(-1);
 
@@ -187,7 +168,19 @@ qDebug() << tr("engine: postinst script returned this: %1").arg(QString (proc->r
 
 }
 /// http://bugs.winehq.org/show_bug.cgi?id=22069 (wine bug - working with desktop files)
-qDebug() << "debug: detecting desktop";
+if (getVariableValue("MEMORY", vars) == "yes")
+{
+    //получаем видеопамять.
+    QSettings stg (QDir::homePath() + config, QSettings::IniFormat, this);
+   //для совместимости, берем значение в int (а вдруг там нам не int подсунули, или <= 0
+    QString mem = stg.value("VideoMemory", -1).toString();
+    if (mem.toInt() > 0)
+    {
+        qDebug() << "engine: [memory] setting video memory to " << mem;
+        setMemory(mem);
+    }
+}
+
 program = getVariableValue("EXEPATH", vars);
 if (!program.isEmpty())
 {
@@ -206,19 +199,7 @@ if (!program.isEmpty())
         icon = workdir+"/icon";
     }
     this->iconPath = icon;
-
     doDesktop(getVariableValue("PREFIX", vars));
-    if (getVariableValue("MEMORY", vars) == "yes")
-    {
-        //получаем видеопамять.
-        QSettings stg (config, QSettings::IniFormat, this);
-       //для совместимости, берем значение в int (а вдруг там нам не int подсунули, или <= 0
-        int mem = stg.value("MemorySize", -1).toInt();
-        if (mem > 0)
-        {
-            setMemory(QString (mem));
-        }
-    }
 }
 if (msg) {
 int result = QMessageBox::question(0, tr("Question"), tr("Would you like to install a new game?"), QMessageBox::Yes, QMessageBox::No);
@@ -315,7 +296,6 @@ QIcon engine::getIcon(QString path)
 }
 QString engine::getPrefixName(QString path)
 {
-//#warning "code dublicate from getNote!"
     //read control file
     QFile file  (path + QDir::separator() + "control");
     if (file.exists()) {file.open(QIODevice::ReadOnly | QIODevice::Text);}
@@ -361,13 +341,13 @@ QString engine::getWine(QString path)
 
 QString engine::downloadWine(QString url) //TODO: проверка на ошибки.
 {
-    showNotify(tr("Don`t worry!"), tr("Now WineGame will download some files, that will need for get your applicaton running"));
     QUrl myurl = QUrl(url);
     QFileInfo inf (myurl.path());
     QString wineFileName =TMP + QDir::separator() +  inf.fileName();
     //проверяем, есть ли у нас данный файл
     if (QFile::exists(wineFileName))
         return wineFileName;
+     showNotify(tr("Don`t worry!"), tr("Now WineGame will download some files, that will need for get your applicaton running"));
   QProgressDialog *progress = new QProgressDialog(0);
      QEventLoop loop;
 QNetworkAccessManager *manager = new QNetworkAccessManager (this);
@@ -402,34 +382,6 @@ else
 progress->deleteLater();
 return wineFileName;
 }
-/// это наш старый метод, оставим на всякий случай.
-//QString engine::downloadWine(QString url){
-//   //сначала отделим имя бинаря
-//QUrl myurl (url);
-//QFileInfo inf (myurl.path());
-//QString wineFileName = inf.fileName();
-////проверяем, есть ли у нас данный файл
-//if (QFile::exists(TMP + QDir::separator() + wineFileName))
-//   return wineFileName;
-////наш процесс
-////QMessageBox::information(0,tr("WineGame"), tr("Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!"));
-//
-//   QProcess *proc = new QProcess (this);
-//   //показываем нотификацию
-//   showNotify(tr("Downloading required components"), tr("It`s near 40 MB. Please establish your Internet connection"));
-//   //не меняем переменные окружения (ну кроме PWD :D)
-//   proc->setWorkingDirectory(TMP);
-//   connect (proc, SIGNAL(readyRead()), this, SLOT(showProgress()));
-//proc->start(GET, QStringList(url));
-//
-//proc->waitForFinished(-1);
-//qDebug() << proc->readAll();
-//delete proc;
-//qDebug() << QObject::tr("engine: wine downloading finished, file %1 in directory %2").arg(wineFileName).arg(TMP);
-//return wineFileName;
-//}
-
-
 
 void engine::showNotify (QString header, QString body) //функция НУ СОВСЕМ не доделана.
 {
@@ -457,8 +409,8 @@ void engine::showNotify (QString header, QString body) //функция НУ С�
 
 void engine::setRange(qint64 aval, qint64 total)
 {
-    int kbAval = aval/1024;
-    int kbTotal = total/1024;
+    int kbAval = aval;
+    int kbTotal = total;
     progress->setMaximum(kbTotal);
     progress->setValue(kbAval);
 }
@@ -517,13 +469,15 @@ void engine::setMemory(QString mem)
     args << reg;
     QFile f (reg);
     QTextStream stream (&f);
-    f.open(QIODevice::WriteOnly | QIODevice::Text);
+    f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate);
     stream << "\n";
     stream << "REGEDIT4\n";
     stream << "[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]";
     stream << "\n";
-    stream << tr("VideoMemorySize=%1\n").arg(mem);
+    stream << "VideoMemorySize=";
+    stream << mem;
     stream << "\n";
     f.close();
     QProcess::startDetached(wineBinary, args);
+
 }
