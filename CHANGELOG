@@ -4,3 +4,4 @@ r2:notifications (KDialog/notify-send) implemented
 r3:new download method: QNetworkAcessManager instead of wget
 r4:engine fixes, saving window geometry improved
 r5:adding .desktop files to Desktop folder (see EXEPATH), opening CD/DVD ISO images improved. 
+r6:engine fixes, VIDEO_MEMORY_SIZE added
