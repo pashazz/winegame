@@ -44,6 +44,7 @@ void saveGeom();
     void buildList();
     void lauchEngine(QString pkgpath);
 private slots:
+    void on_lstGames_itemDoubleClicked(QListWidgetItem* item);
     void on_lstGames_itemClicked(QListWidgetItem* item);
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();

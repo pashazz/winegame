@@ -48,6 +48,9 @@ public:
  static QString getPrefixName (QString path);
  static QString getWine (QString path);
  static void showNotify (QString, QString);
+ static  QString prefixPath (QString dir);
+ static void makefix (QString prefix); //исправляет запуск WineBrowser
+ static QString getStandardExe (QString); //значение EXEPATH в control, которое выполняется при дабл-клике
  signals:
 
 private slots:

@@ -21,7 +21,7 @@
     <item>
      <widget class="QLabel" name="lblNote">
       <property name="text">
-       <string/>
+       <string>Совет: щелкните (дважды) по нужному приложению, и оно запустится (если вы уже установили его)</string>
       </property>
      </widget>
     </item>

@@ -71,25 +71,46 @@ bool DiscDetector::tryDetect(QString path)
 
 void DiscDetector::lauchApp()
 {
+
 GameDialog *dlg = new GameDialog(0, gamefolder);
 if (dlg->exec() == QDialog::Accepted)
 {
     QDir prdir (QDir::homePath() + winepath + QDir::separator() + engine::getPrefixName(gamefolder));
     if (prdir.exists())
     {
+        //Может быть, нам стоит запустить AutoRun?
+        if (QFile::exists(cdroot + "/autorun.inf"))
+        {
+            QSettings stg (cdroot + "/autorun.inf", QSettings::IniFormat, this);
+            stg.beginGroup("autorun");
+            QString myExe = stg.value("open").toString();
+             QString myWine = engine::getWine(gamefolder);
+            qDebug() << "DDT: Starting Autorun: " << myWine << myExe;
+            QProcess p;
+            QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+            env.insert("WINEPREFIX", engine::prefixPath(gamefolder));
+            env.insert("WINEDEBUG", "-all");
+            p.setProcessEnvironment(env);
+            p.setWorkingDirectory(cdroot);
+            p.start(myWine, QStringList (myExe));
+            p.waitForFinished(-1);
+
+          }
+        else {
         //TODO: создаем диалог редактирования виртуальной Windows
 PrefixDialog *pdlg = new PrefixDialog (0, gamefolder);
 pdlg->exec();
-        delete dlg;
         delete pdlg;
-        return;
+
     }
+    }
+    else{
     //создаем объект движка
     engine *eng = new engine (this);
     eng->setCdMode(true);
     eng->setDiskpath(cdroot);
     eng->lauch(gamefolder, false); //мы не будем показывать сообщение (установить еще) в конце.
-
 }
-delete dlg;
+}
+dlg->deleteLater();
 }

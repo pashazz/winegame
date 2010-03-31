@@ -112,7 +112,6 @@ if (QFile::exists(workdir + "/preinst"))
 {
     proc->start ("\"" +workdir + "/preinst\"");
 proc->waitForFinished(-1);
-qDebug() << tr("engine: preinst script returned this: %1").arg(QString (proc->readAll()));
 }
 //теперь ищем упоминание о запускаемом файле в control (e.g. vars)
 QString exefile =   getVariableValue("SETUP", vars);
@@ -164,7 +163,7 @@ if (QFile::exists(workdir + "/postinst"))
 {
 proc->start("\"" + workdir + "/postinst\"");
 proc->waitForFinished(-1);
-qDebug() << tr("engine: postinst script returned this: %1").arg(QString (proc->readAll()));
+makefix(prefixdir);
 
 }
 /// http://bugs.winehq.org/show_bug.cgi?id=22069 (wine bug - working with desktop files)
@@ -308,6 +307,14 @@ QString engine::getPrefixName(QString path)
 
     file.close();
     return getVariableValue("PREFIX", lines);
+}
+QString engine::prefixPath(QString dir)
+{
+    if (engine::getPrefixName(dir).isEmpty())
+        return QString();
+
+    QString prefix = QDir::homePath() + winepath + QDir::separator() + engine::getPrefixName(dir);
+        return prefix;
 }
 
 QString engine::getWine(QString path)
@@ -474,10 +481,37 @@ void engine::setMemory(QString mem)
     stream << "REGEDIT4\n";
     stream << "[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]";
     stream << "\n";
-    stream << "VideoMemorySize=";
-    stream << mem;
+    stream << "\"VideoMemorySize\"=";
+    stream << tr("\"%1\"").arg(mem);
     stream << "\n";
     f.close();
     QProcess::startDetached(wineBinary, args);
 
+}
+QString engine::getStandardExe(QString controlFile)
+{
+    QStringList myList;
+    QFile f (controlFile);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+        qDebug() << "engine: [DDT] unable to read control";
+   QTextStream str (&f);
+   while (!str.atEnd())
+       myList.append(str.readLine());
+   f.close();
+   QString string = engine::getVariableValue("EXEPATH", myList);
+   return string;
+}
+
+void engine::makefix(QString prefix)
+{
+    QFile file (prefix + "/system.reg");
+    QTextStream stream (&file);
+   //сначала откроем реестр для чтения
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString registry = stream.readAll();
+    file.close();
+    registry.replace ("winebrowser.exe -nohome", "winebrowser.exe -nohome %1");
+    file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate);
+    stream << registry;
+    file.close();
 }

@@ -132,3 +132,25 @@ void MainWindow::saveGeom()
    f.write(saveGeometry());
    f.close();
 }
+
+void MainWindow::on_lstGames_itemDoubleClicked(QListWidgetItem* item)
+{
+    //Запуск приложения по EXEPATH
+    QString workdir = item->data(Qt::UserRole).toString();
+    QString exe = engine::getStandardExe(workdir + "/control");
+    if (!exe.isEmpty())
+    {
+
+    QString wineprefix = engine::prefixPath(workdir);
+    QString wine = engine::getWine(workdir);
+    //QtConcurrent
+    qDebug() << "MainWindow: starting EXE:" << wine << exe;
+    QProcess p (this);
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    env.insert("WINEPREFIX", wineprefix);
+    env.insert("WINEDEBUG", "-all");
+    p.setProcessEnvironment(env);
+    p.start(wine, QStringList(exe));
+    p.waitForFinished(-1);
+}
+}
