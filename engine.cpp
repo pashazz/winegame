@@ -208,6 +208,17 @@ if (!program.isEmpty())
     this->iconPath = icon;
 
     doDesktop(getVariableValue("PREFIX", vars));
+    if (getVariableValue("MEMORY", vars) == "yes")
+    {
+        //получаем видеопамять.
+        QSettings stg (config, QSettings::IniFormat, this);
+       //для совместимости, берем значение в int (а вдруг там нам не int подсунули, или <= 0
+        int mem = stg.value("MemorySize", -1).toInt();
+        if (mem > 0)
+        {
+            setMemory(QString (mem));
+        }
+    }
 }
 if (msg) {
 int result = QMessageBox::question(0, tr("Question"), tr("Would you like to install a new game?"), QMessageBox::Yes, QMessageBox::No);
@@ -497,4 +508,22 @@ void engine::doDesktop(QString workname)
     stream << tr("Icon=%1").arg(QDir::homePath() + "/.local/share/icons/" + info.fileName());
 }
  file.close();
+}
+void engine::setMemory(QString mem)
+{
+    const QString reg = "/tmp/win.reg";
+    QStringList args;
+    args << "regedit";
+    args << reg;
+    QFile f (reg);
+    QTextStream stream (&f);
+    f.open(QIODevice::WriteOnly | QIODevice::Text);
+    stream << "\n";
+    stream << "REGEDIT4\n";
+    stream << "[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]";
+    stream << "\n";
+    stream << tr("VideoMemorySize=%1\n").arg(mem);
+    stream << "\n";
+    f.close();
+    QProcess::startDetached(wineBinary, args);
 }

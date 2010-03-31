@@ -31,8 +31,10 @@ bool DiscDetector::tryDetect(QString path)
     foreach (QString dir, dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs))
     {
         //читаем файл .cdrom
-        qDebug() <<  tr("DDT: scanning file %1").arg(gamepath + QDir::separator() + dir + "/.cdrom");
-        QFile file (gamepath + QDir::separator() + dir + "/.cdrom");
+        QString filename = gamepath + QDir::separator() + dir + "/.cdrom." + QLocale::system().name();
+        if (!QFile::exists(filename))
+            filename = gamepath + QDir::separator() + dir + "/.cdrom"; //ну ведь в разных странах разные релиы игр, правда? Вот и мы можем сделать разные cdrom
+        QFile file (filename);
         QTextStream stream (&file);
 
         if (!file.exists())
