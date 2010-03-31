@@ -75,6 +75,11 @@ if (a.arguments().length() > 1) {
             det.lauchApp();
             return 0;
         }
+        else
+        {
+            QMessageBox::warning(0, QObject::tr("Error"), QObject::tr("Failed to detect game disc, exiting"));
+        return -2;
+    }
     }
     else if (info.isFile())
     {
