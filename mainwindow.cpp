@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    qDebug() << acceptDrops();
     QFile f (QDir::homePath() + "/.config/winegame.geom");
     if (f.open(QIODevice::ReadOnly))
     {
@@ -153,4 +154,10 @@ void MainWindow::on_lstGames_itemDoubleClicked(QListWidgetItem* item)
     p.start(wine, QStringList(exe));
     p.waitForFinished(-1);
 }
+}
+
+void MainWindow::dropEvent(QDropEvent *e)
+{
+    qDebug() << e->mimeData();
+e->accept();
 }

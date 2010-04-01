@@ -10,13 +10,20 @@
     <height>400</height>
    </rect>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>Install application</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QListWidget" name="lstGames"/>
+     <widget class="QListWidget" name="lstGames">
+      <property name="acceptDrops">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="lblNote">

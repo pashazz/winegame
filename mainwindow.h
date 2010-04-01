@@ -35,7 +35,6 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
-
 private:
     Ui::MainWindow *ui;
 QString diskpath;
