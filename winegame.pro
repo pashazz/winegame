@@ -20,7 +20,7 @@ HEADERS += mainwindow.h \
     gamedialog.h \
     prefix.h \
     prefixdialog.h \
-    isomaster.h
+    isomaster.h \
 TRANSLATIONS = l10n/wg_ru.ts
 FORMS += mainwindow.ui \
     gamedialog.ui \

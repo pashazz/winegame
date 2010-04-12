@@ -169,11 +169,13 @@ usage() {
     echo " corefonts     MS Arial, Courier, Times fonts"
     echo " cygwin        Unix apps for Windows (needed by some build scripts)"
     echo " d3dx9         MS d3dx9_??.dll (from DirectX 9 user redistributable)"
+    echo " d3dx9_36      MS d3dx9_36.dll"
     echo " d3dx10        MS d3dx10_??.dll (from DirectX user redistributable)"
     echo " d3dxof        MS d3dxof.dll (from DirectX user redistributable)"
     echo " dcom98        MS DCOM (ole32, oleaut32); requires Windows 98 license, but does not check for one"
     echo " dinput8       MS dinput8.dll (from DirectX 9 user redistributable)"
     echo " dirac0.8      the obsolete Dirac 0.8 directshow filter"
+    echo " directmusic   MS DirectMusic (from DirectX 9 user redistributable)"
     echo " directplay    MS DirectPlay (from DirectX 9 user redistributable)"
     echo " directx9      MS DirectX 9 user redistributable (not recommended! use d3dx9 instead)"
     echo " directx9-beta MS DirectX 9 user redistributable - beta verb (not recommended! use d3dx9 instead)"
@@ -278,6 +280,7 @@ usage() {
     echo " allcodecs     All listed codecs (xvid, ffdshow)"
     echo " ddr=gdi       Set DirectDrawRenderer to GDI (default)"
     echo " ddr=opengl    Set DirectDrawRenderer to OpenGL"
+    echo " dsoundbug9612 Use DirectSound MaxShadowSize=0 workaround for bug #9612"
     echo " fakeie6       Set registry to claim IE6sp1 is installed"
     echo " glsl-disable  Disable GLSL use by Wine Direct3D"
     echo " glsl-enable   Enable GLSL use by Wine Direct3D (default)"
@@ -300,7 +303,7 @@ usage() {
     echo " sound=alsa       Set sound driver to ALSA"
     echo " sound=audioio    Set sound driver to AudioIO"
     echo " sound=coreaudio  Set sound driver to CoreAudio"
-    echo " sound=esound     Set sound driver to Esound"
+    echo " sound=esd        Set sound driver to Esound"
     echo " sound=jack       Set sound driver to Jack"
     echo " sound=nas        Set sound driver to Nas"
     echo " sound=oss        Set sound driver to OSS"
@@ -321,6 +324,7 @@ usage() {
     echo " psm=off       Set PixelShaderMode to disabled"
     echo " vsm-hard      Set VertexShaderMode to hardware"
 }
+
 
 #----------------------------------------------------------------
 # Trivial GUI just to handle case where user tries running without commandline
@@ -370,15 +374,15 @@ showmenu()
     case $MENU in
     zenity)
         echo "zenity --title 'Select a package to install' --text 'Install?' --list --checklist --column '' --column Package --column Description --height 440 --width 600 \\" > "$WINETRICKS_TMP"/zenity.sh
-        usage | grep '^ [a-z]' | sed 's/^ \([^ ]*\) *\(.*\)/FALSE "\1" '"'\2'/" | sed 's/$/ \\/' >> $WINETRICKS_TMP/zenity.sh
+        usage | grep '^ [0-9a-z]' | sed 's/^ \([^ ]*\) *\(.*\)/FALSE "\1" '"'\2'/" | sed 's/$/ \\/' >> $WINETRICKS_TMP/zenity.sh
         todo="`sh "$WINETRICKS_TMP"/zenity.sh | tr '|' ' '`"
         ;;
     kdialog)
-        packages=`usage | awk '/^ [a-z]/ {print $1}'`
+        packages=`usage | awk '/^ [0-9a-z]/ {print $1}'`
         todo="`kdialog_showmenu "winetricks" "Select a package to install" "Install?" "Package" $packages`"
         ;;
     xmessage) 
-        packages=`usage | awk '/^ [a-z]/ {print $1}'`
+        packages=`usage | awk '/^ [0-9a-z]/ {print $1}'`
         todo="`xmessage_showmenu "winetricks" "Select a package to install" "Install?" "Package" $packages`"
         ;;
     esac
@@ -443,6 +447,20 @@ cabextract() {
     die oops, bug, please report
 }
 
+try_unzip() {
+    # Not always installed, but shouldn't be fatal unless it's being used
+    UNZIP="`which unzip 2>/dev/null`" 
+    if test ! -x "$UNZIP"
+    then
+        die "Cannot find unzip.  Please install it (e.g. 'sudo apt-get install unzip' or 'sudo yum install unzip')."
+    fi
+    
+    try $UNZIP "$@"
+}
+
+unzip() {
+    die oops, bug, please report
+}
 
 # verify an sha1sum
 verify_sha1sum() {
@@ -477,17 +495,20 @@ download() {
         # redhat.com decompresses liberation-fonts.tar.gz!
         if [ -x "`which wget 2>/dev/null`" ]
         then
-           # Use -nd to insulate ourselves from people who set -x in WGETRC
-           # [*] --retry-connrefused works around the broken sf.net mirroring
-           # system when downloading corefonts
-           # [*] --read-timeout is useful on the adobe server that doesn't
-           # close the connection unless you tell it to (control-C or closing
-           # the socket)
-           try wget -O "$file" -nd -c --read-timeout=300 --retry-connrefused --header "Accept-Encoding: gzip,deflate" "$2"
+            # Use -nd to insulate ourselves from people who set -x in WGETRC
+            # [*] --retry-connrefused works around the broken sf.net mirroring
+            # system when downloading corefonts
+            # [*] --read-timeout is useful on the adobe server that doesn't
+            # close the connection unless you tell it to (control-C or closing
+            # the socket)
+            try wget -O "$file" -nd -c --read-timeout=300 --retry-connrefused --header "Accept-Encoding: gzip,deflate" "$2"
+        elif [ -x "`which curl 2>/dev/null`" ]
+        then
+            # curl doesn't get filename from the location given by the server!
+            # fortunately, we know it
+            try curl -L -o "$file" -C - --header "Accept-Encoding: gzip,deflate" "$2"
         else
-           # curl doesn't get filename from the location given by the server!
-           # fortunately, we know it
-           try curl -L -o "$file" -C - --header "Accept-Encoding: gzip,deflate" "$2"
+            die "wget/curl not found, cannot download any files. Please install either wget or curl."
         fi
         # Need to decompress .exe's that are compressed, else cygwin fails
         # Only affects cygwin, so don't barf if 'file' not installed
@@ -498,7 +519,7 @@ download() {
             *gzip*) mv $file $file.gz; gunzip < $file.gz > $file;;
             esac
         esac
-           
+
         cd "$olddir"
     fi
     if [ "$3"x != ""x ]
@@ -556,6 +577,43 @@ REGEDIT4
 _EOF_
     try_regedit "$WINETRICKS_TMP_WIN"\\set-orm.reg
 }
+
+set_rtlm() {
+    echo "Setting RenderTargetLockMode to $1"
+    cat > "$WINETRICKS_TMP"/set-rtlm.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"RenderTargetLockMode"="$1"
+
+_EOF_
+    try_regedit "$WINETRICKS_TMP"/set-rtlm.reg
+}
+set_vsm() {
+
+   echo "Setting  Vertex Shaders to $1"
+    cat > "$WINETRICKS_TMP"/set-vsm.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"VertexShaderMode"="$1"
+
+_EOF_
+    try_regedit "$WINETRICKS_TMP"/set-vsm.reg
+
+}
+
+set_multisampling() {
+    echo "Setting Multisampling to $1"
+    cat > "$WINETRICKS_TMP"/set-multi.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"Multisampling"="$1"
+
+_EOF_
+    try_regedit "$WINETRICKS_TMP"/set-multi.reg
+}
 set_mwo () {
  echo "Setting MouseWarpOverride to $1"
     cat > "$WINETRICKS_TMP"/set-mwo.reg <<_EOF_
@@ -591,43 +649,6 @@ REGEDIT4
 
 _EOF_
     try_regedit "$WINETRICKS_TMP"/set-psm.reg
-}
-
-set_vsm() {
-
-   echo "Setting  Vertex Shaders to $1"
-    cat > "$WINETRICKS_TMP"/set-vsm.reg <<_EOF_
-REGEDIT4
-
-[HKEY_CURRENT_USER\Software\Wine\Direct3D]
-"VertexShaderMode"="$1"
-
-_EOF_
-    try_regedit "$WINETRICKS_TMP"/set-vsm.reg
-
-}
-set_rtlm() {
-    echo "Setting RenderTargetLockMode to $1"
-    cat > "$WINETRICKS_TMP"/set-rtlm.reg <<_EOF_
-REGEDIT4
-
-[HKEY_CURRENT_USER\Software\Wine\Direct3D]
-"RenderTargetLockMode"="$1"
-
-_EOF_
-    try_regedit "$WINETRICKS_TMP"/set-rtlm.reg
-}
-
-set_multisampling() {
-    echo "Setting Multisampling to $1"
-    cat > "$WINETRICKS_TMP"/set-multi.reg <<_EOF_
-REGEDIT4
-
-[HKEY_CURRENT_USER\Software\Wine\Direct3D]
-"Multisampling"="$1"
-
-_EOF_
-    try_regedit "$WINETRICKS_TMP"/set-multi.reg
 }
 
 set_sound_driver() {
@@ -821,7 +842,9 @@ load_atmlib() {
 
 load_autohotkey() {
     download . http://www.autohotkey.net/programs/AutoHotkey104805_Install.exe 13e5a9ca6d5b7705f1cd02560c3af4d38b1904fc
-    try $WINE "$WINETRICKS_CACHE"/AutoHotkey104805_Install.exe $WINETRICKS_S
+    cd "$WINETRICKS_CACHE"
+    try $WINE AutoHotkey104805_Install.exe $WINETRICKS_S
+    cd -
 }
 
 #----------------------------------------------------------------
@@ -831,7 +854,7 @@ load_cc580() {
     download . http://download.microsoft.com/download/platformsdk/redist/5.80.2614.3600/w9xnt4/en-us/cc32inst.exe 94c3c494258cc54bd65d2f0153815737644bffde
 
     try $WINE "$WINETRICKS_CACHE"/cc32inst.exe "/T:$winetricks_tmp_win" /c $WINETRICKS_QUIET
-    try unzip -o $WINETRICKS_UNIXQUIET -d "$WINDIR"/temp "$WINETRICKS_TMP"/comctl32.exe
+    try_unzip -o $WINETRICKS_UNIXQUIET -d "$WINDIR"/temp "$WINETRICKS_TMP"/comctl32.exe
     try $WINE "$WINDIR"/temp/x86/50ComUpd.Exe "/T:$winetricks_tmp_win" /c $WINETRICKS_QUIET
     try cp "$WINETRICKS_TMP"/comcnt.dll "$WINDIR"/system32/comctl32.dll
 
@@ -867,7 +890,7 @@ load_comctl32ocx() {
 
 load_colorprofile() {
     download . http://download.microsoft.com/download/whistler/hwdev1/1.0/wxp/en-us/ColorProfile.exe 6b72836b32b343c82d0760dff5cb51c2f47170eb
-    try unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/ColorProfile.exe
+    try_unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/ColorProfile.exe
     mkdir -p "$WINDIR"/system32/spool/drivers/color
     try cp -f "$WINETRICKS_TMP/sRGB Color Space Profile.icm" "$WINDIR"/system32/spool/drivers/color
 }
@@ -1018,6 +1041,23 @@ load_d3dx9() {
 
 #----------------------------------------------------------------
 
+load_d3dx9_xx() {
+    dllname=d3dx9_$1
+
+    helper_directx_dl
+
+    # Even kinder, less invasive directx - only extract and override d3dx9_xx.dll
+    try_cabextract -d "$WINETRICKS_TMP" -L -F "*$dllname*x86*" "$WINETRICKS_CACHE"/$DIRECTX_NAME
+    for x in `ls "$WINETRICKS_TMP"/*.cab`
+    do
+      try_cabextract -d "$WINDIR"/system32 -L -F '*.dll' "$x"
+    done
+
+    override_dlls native $dllname 
+}
+
+#----------------------------------------------------------------
+
 load_d3dx10() {
     helper_directx_dl
 
@@ -1062,6 +1102,39 @@ load_dinput8() {
 load_dirac08() {
     download . http://codecpack.nl/dirac_dsfilter_080.exe aacfcddf6b2636de5f0a50422ba9155e395318af
     try $WINE "$WINETRICKS_CACHE"/dirac_dsfilter_080.exe $WINETRICKS_SILENT
+}
+
+#----------------------------------------------------------------
+
+load_directmusic() {
+# Untested. Based off http://bugs.winehq.org/show_bug.cgi?id=4805
+    helper_directx_dl
+
+    try_cabextract -d "$WINETRICKS_TMP" -L -F dxnt.cab "$WINETRICKS_CACHE"/$DIRECTX_NAME
+    try_cabextract -d "$WINDIR"/system32 -L -F 'dmband.dll' "$WINETRICKS_TMP/dxnt.cab"
+    try_cabextract -d "$WINDIR"/system32 -L -F 'dmcompos.dll' "$WINETRICKS_TMP/dxnt.cab"
+    try_cabextract -d "$WINDIR"/system32 -L -F 'dmime.dll' "$WINETRICKS_TMP/dxnt.cab"
+    try_cabextract -d "$WINDIR"/system32 -L -F 'dmloader.dll' "$WINETRICKS_TMP/dxnt.cab"
+    try_cabextract -d "$WINDIR"/system32 -L -F 'dmscript.dll' "$WINETRICKS_TMP/dxnt.cab"
+    try_cabextract -d "$WINDIR"/system32 -L -F 'dmstyle.dll' "$WINETRICKS_TMP/dxnt.cab"
+    try_cabextract -d "$WINDIR"/system32 -L -F 'dmsynth.dll' "$WINETRICKS_TMP/dxnt.cab"
+    try_cabextract -d "$WINDIR"/system32 -L -F 'dmusic.dll' "$WINETRICKS_TMP/dxnt.cab"
+    try_cabextract -d "$WINDIR"/system32 -L -F 'dmusic32.dll' "$WINETRICKS_TMP/dxnt.cab"
+    try_cabextract -d "$WINDIR"/system32 -L -F 'dswave.dll' "$WINETRICKS_TMP/dxnt.cab"
+    try_cabextract -d "$WINDIR"/system32 -L -F 'streamci.dll' "$WINETRICKS_TMP/dxnt.cab"
+
+    try $WINE regsvr32 dmband
+    try $WINE regsvr32 dmcompos
+    try $WINE regsvr32 dmime 
+    try $WINE regsvr32 dmloader
+    try $WINE regsvr32 dmscript
+    try $WINE regsvr32 dmstyle
+    try $WINE regsvr32 dmsynth
+    try $WINE regsvr32 dmusic
+    try $WINE regsvr32 dswave
+
+    override_dlls native dmband dmcompos dmime dmloader dmscript dmstyle dmsynth dmusic dmusic32 dswave streamci
+
 }
 
 #----------------------------------------------------------------
@@ -1368,6 +1441,20 @@ load_droid() {
 
 #----------------------------------------------------------------
 
+load_dsoundbug9612() {
+    echo "Enabling DirectSound workaround for bug #9612"
+    cat > "$WINETRICKS_TMP"/dsoundmaxshadow.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\DirectSound]
+"MaxShadowSize"="0"
+
+_EOF_
+    try $WINE regedit "$WINETRICKS_TMP"/dsoundmaxshadow.reg
+}
+
+#----------------------------------------------------------------
+
 # Fake IE per workaround in http://bugs.winehq.org/show_bug.cgi?id=3453
 # Just the first registry key works for most apps.
 # The App Paths part is required by a few apps, like Quickbooks Pro;
@@ -1409,12 +1496,12 @@ _EOF_
 #----------------------------------------------------------------
 
 load_firefox() {
-    download . "http://releases.mozilla.org//pub/mozilla.org/firefox/releases/3.5.6/win32/en-US/Firefox%20Setup%203.5.6.exe" d27779d9dca25d032ceaafd3da9df1651121f8bd "Firefox Setup 3.5.6.exe"
+    download . "http://releases.mozilla.org//pub/mozilla.org/firefox/releases/3.6.3/win32/en-US/Firefox%20Setup%203.6.3.exe" d9b028293fe56ff32f2c596fe9f2841100e701b6 "Firefox Setup 3.6.3.exe"
     if [ "$WINETRICKS_QUIET"x = ""x ]
     then
-       try $WINE "$WINETRICKS_CACHE"/"Firefox Setup 3.5.6.exe"
+       try $WINE "$WINETRICKS_CACHE"/"Firefox Setup 3.6.3.exe"
     else
-       try $WINE "$WINETRICKS_CACHE"/"Firefox Setup 3.5.6.exe" -ms
+       try $WINE "$WINETRICKS_CACHE"/"Firefox Setup 3.6.3.exe" -ms
     fi
 }
 
@@ -1570,17 +1657,10 @@ REGEDIT4
 _EOF_
     try_regedit "$WINETRICKS_TMP_WIN"\\fs_rgb.reg
 }
+
 #----------------------------------------------------------------
 
 load_gecko() {
-    # If this is just a dependency check, don't re-install
-    WINEDIR=`dirname $WINE`
-    if test $PACKAGE != ie6 && ( test -d "$WINDIR/gecko" || test -d "$WINDIR/system32/gecko" || test -d $WINEDIR/../gecko)
-    then
-        echo "prerequisite gecko already installed, skipping"
-        return
-    fi
-
     # Load the HTML rendering Engine (Gecko)
     # FIXME: shouldn't this code be in some script installed
     # as part of Wine instead of in winetricks?
@@ -1611,11 +1691,32 @@ load_gecko() {
         ;;
     esac
 
-    if test ! -f "$WINETRICKS_CACHE"/wine_gecko-$GECKO_VERSION$GECKO_ARCH.cab
+    # If this is just a dependency check, don't re-install
+    if test $PACKAGE != ie6 && test -f "$GECKO_DIR/gecko/$GECKO_VERSION/wine_gecko/nspr4.dll"
     then
-       # FIXME: busted if using curl!
-       download . "http://downloads.sourceforge.net/wine/wine_gecko-$GECKO_VERSION$GECKO_ARCH.cab" \
+        echo "prerequisite gecko already installed, skipping"
+        return
+    fi
+
+    WINEDIR="`dirname $WINE`"
+    GECKOCAB="wine_gecko-$GECKO_VERSION$GECKO_ARCH.cab"
+
+    for candidate in "$WINEDIR/../share/wine/gecko/$GECKOCAB" "$WINEDIR/../gecko/$GECKOCAB"
+    do
+        gotsum=`$SHA1SUM 2>/dev/null < "$candidate" | sed 's/ .*//'`
+        if [ "$gotsum"x = "$GECKO_SHA1SUM"x ]
+        then
+            GECKOPATH="$candidate"
+            break
+        fi
+    done
+
+    if test -z "$GECKOPATH"
+    then
+        # FIXME: busted if using curl!
+        download . "http://downloads.sourceforge.net/wine/wine_gecko-$GECKO_VERSION$GECKO_ARCH.cab" \
                 $GECKO_SHA1SUM wine_gecko-$GECKO_VERSION$GECKO_ARCH.cab
+        GECKOPATH="$WINETRICKS_CACHE"/wine_gecko-$GECKO_VERSION$GECKO_ARCH.cab
     fi
 
     cat > "$WINETRICKS_TMP"/geckopath.reg <<_EOF_
@@ -1639,7 +1740,7 @@ _EOF_
     # extract the files
     mkdir -p "$GECKO_DIR/gecko/$GECKO_VERSION"
     cd "$GECKO_DIR/gecko/$GECKO_VERSION"
-    try_cabextract $WINETRICKS_UNIXQUIET "$WINETRICKS_CACHE"/wine_gecko-$GECKO_VERSION$GECKO_ARCH.cab
+    try_cabextract $WINETRICKS_UNIXQUIET "$GECKOPATH"
     cd "$olddir"
 
     # set install-path
@@ -1756,7 +1857,7 @@ REGEDIT4
 _EOF_
     try_regedit "$WINETRICKS_TMP_WIN"\\enableglsl.reg
 }
-set
+
 #----------------------------------------------------------------
 
 load_hosts() {
@@ -1787,6 +1888,12 @@ _EOF_
 #----------------------------------------------------------------
 
 load_ie6() {
+    if test "$WINE" = ""
+    then
+        echo "No need to install ie6 on real windows"
+        return 0
+    fi
+
     # If this is just a dependency check, don't re-install
     if test $PACKAGE != ie6 && test -f "$WINDIR"/system32/plugin.ocx
     then
@@ -2026,7 +2133,7 @@ load_mdac28() {
 load_mfc40() {
     # See http://support.microsoft.com/kb/122244
     download . http://download.microsoft.com/download/ole/ole2v/3.5/w351/en-us/ole2v.exe c6cac71f32405ccb09c6f375e0738e6e13f073e4
-    try unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/ole2v.exe
+    try_unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/ole2v.exe
     try cp -f "$WINETRICKS_TMP"/MFC40.DLL "$WINDIR"/system32/
 
     rm -rf "$WINETRICKS_TMP"/*
@@ -2182,7 +2289,7 @@ load_mpc() {
     download . $SOURCEFORGE/mpc-hc/MPC%20HomeCinema%20-%20Win32/MPC-HC%20v1.3.1249.0_32%20bits/MPC-Homecinema.1.3.1249.0.%28x86%29.zip 6c46846b5298f35ccc81925aa5304546b9a7e513
     mkdir -p "$programfilesdir_unix/Media Player Classic"
     cd "$programfilesdir_unix/Media Player Classic"
-    try unzip "$WINETRICKS_CACHE/MPC-Homecinema.1.3.1249.0.%28x86%29.zip"
+    try_unzip "$WINETRICKS_CACHE/MPC-Homecinema.1.3.1249.0.%28x86%29.zip"
 
 
     append_path "$programfilesdir_win"'\\Media Player Classic'
@@ -2252,7 +2359,7 @@ load_msmask() {
 load_mspaint() {
     # http://helpforlinux.blogspot.com/2008/12/run-ms-paint-in-linux.html
     download . http://download.microsoft.com/download/winntwks40/paint/1/nt4/en-us/paintnt.exe a22c4e367ef9d2cd23f0a8ae8d9ebff5bc1e8a0b
-    try unzip "$WINETRICKS_CACHE"/paintnt.exe -d "$WINDIR"
+    try_unzip "$WINETRICKS_CACHE"/paintnt.exe -d "$WINDIR"
     warn "Paint is now installed to $WINDIR/MSPAINT.EXE"
 }
 
@@ -2340,7 +2447,7 @@ load_ogg() {
 load_ole2() {
     # http://support.microsoft.com/kb/123087/EN-US/
     download . http://download.microsoft.com/download/win31/update/2.03/win/en-us/ww1116.exe b803991c40f387464b61f606536b7c98a88245d2
-    try unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/ww1116.exe
+    try_unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/ww1116.exe
     set_winver win31
     cd "$WINETRICKS_TMP"
     try $WINE setup.exe
@@ -2363,9 +2470,9 @@ load_openwatcom() {
         # Pick smallest installation that supports 16 bit C and C++
         cd "$WINETRICKS_TMP"
         cp "$WINETRICKS_CACHE"/open-watcom-c-win32-1.8.exe .
-        unzip open-watcom-c-win32-1.8.exe setup.inf
+        try_unzip open-watcom-c-win32-1.8.exe setup.inf
         sed -i 's/tools16=.*/tools16=true/' setup.inf
-        zip -f open-watcom-c-win32-1.8.exe
+        try zip -f open-watcom-c-win32-1.8.exe
         try $WINE open-watcom-c-win32-1.8.exe -s
         cd "$olddir"
     else
@@ -2383,7 +2490,7 @@ load_pdh() {
     # http://support.microsoft.com/kb/284996
     download . http://download.microsoft.com/download/platformsdk/Redist/5.0.2195.2668/NT4/EN-US/pdhinst.exe f42448660def8cd7f42b34aa7bc7264745f4425e
     try_cabextract --directory="$WINETRICKS_TMP" "$WINETRICKS_CACHE"/pdhinst.exe
-    try unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_TMP"/pdh.exe
+    try_unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_TMP"/pdh.exe
     try cp -f "$WINETRICKS_TMP"/x86/Pdh.Dll "$WINDIR"/system32/pdh.dll
 }
 
@@ -2492,7 +2599,7 @@ load_python_comtypes() {
     
     download . $SOURCEFORGE/project/comtypes/comtypes/0.6.1/comtypes-0.6.1-1.zip 814318cdae0ab2471a9cd500847bf12f4df9a57c
     cd "$WINETRICKS_CACHE"
-    try unzip comtypes-0.6.1-1.zip
+    try_unzip comtypes-0.6.1-1.zip
     cd comtypes-0.6.1
     try $WINE "C:\Python26\python.exe" setup.py install
     cd "$olddir"
@@ -2663,7 +2770,7 @@ load_vb2run() {
     # Not referenced on MS web anymore. But the old Microsoft Software Library FTP still has it.
     # See ftp://ftp.microsoft.com/Softlib/index.txt
     download . ftp://ftp.microsoft.com/Softlib/MSLFILES/VBRUN200.EXE ac0568b73ee375408778e9b505df995f79ab907e
-    try unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/VBRUN200.EXE
+    try_unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/VBRUN200.EXE
     try cp -f "$WINETRICKS_TMP/VBRUN200.DLL" "$WINDIR"/system32/
 
 }
@@ -2673,7 +2780,7 @@ load_vb2run() {
 load_vb3run() {
     # See http://support.microsoft.com/kb/196285
     download . http://download.microsoft.com/download/vb30/utility/1/w9xnt4/en-us/vb3run.exe 518fcfefde9bf680695cadd06512efadc5ac2aa7
-    try unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/vb3run.exe
+    try_unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/vb3run.exe
     try cp -f "$WINETRICKS_TMP/Vbrun300.dll" "$WINDIR"/system32/
 
 }
@@ -2683,7 +2790,7 @@ load_vb3run() {
 load_vb4run() {
     # See http://support.microsoft.com/kb/196286
     download . http://download.microsoft.com/download/vb40ent/sample27/1/w9xnt4/en-us/vb4run.exe 83e968063272e97bfffd628a73bf0ff5f8e1023b
-    try unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/vb4run.exe
+    try_unzip -o $WINETRICKS_UNIXQUIET -d "$WINETRICKS_TMP" "$WINETRICKS_CACHE"/vb4run.exe
     try cp -f "$WINETRICKS_TMP/Vb40032.dll" "$WINDIR"/system32/
     try cp -f "$WINETRICKS_TMP/Vb40016.dll" "$WINDIR"/system32/
 
@@ -2867,6 +2974,7 @@ load_vcrun2008() {
         return
     fi
     download vcrun2008-ms09-035 http://download.microsoft.com/download/9/7/7/977B481A-7BA6-4E30-AC40-ED51EB2028F2/vcredist_x86.exe bd18409cfe75b88c2a9432d36d96f4bf125a3237
+    override_dlls native,builtin msvcr90
     try $WINE "$WINETRICKS_CACHE"/vcrun2008-ms09-035/vcredist_x86.exe $WINETRICKS_QUIET
 
 }
@@ -3171,7 +3279,7 @@ load_one_hotfix()
     done
     if test ! -f $hotfix
     then
-       unzip -o $downloadfile
+       try_unzip -o $downloadfile
     fi
     try $WINE $hotfix
     cd "$olddir"
@@ -3394,7 +3502,7 @@ load_wenquanyi() {
 
 #----------------------------------------------------------------
 
-load_wsh56() {
+load_wsh57() {
     # If this is just a dependency check, don't re-install
     if test $PACKAGE != wsh56 && test -f "$WINDIR"/system32/wscript.exe
     then
@@ -3402,12 +3510,21 @@ load_wsh56() {
         return
     fi
 
-    load_vcrun6
+    # See also http://www.microsoft.com/downloads/details.aspx?FamilyID=47809025-D896-482E-A0D6-524E7E844D81&displaylang=en
+    download . http://download.microsoft.com/download/4/4/d/44de8a9e-630d-4c10-9f17-b9b34d3f6417/scripten.exe b15c6a834b7029e2dfed22127cf905b06857e6f5
 
-    # See also http://www.microsoft.com/downloads/details.aspx?displaylang=en&FamilyID=C717D943-7E4B-4622-86EB-95A22B832CAA
-    download . http://download.microsoft.com/download/2/8/a/28a5a346-1be1-4049-b554-3bc5f3174353/WindowsXP-Windows2000-Script56-KB917344-x86-enu.exe f4692766caa3ee9b38d4166845486c6199a33457
+    try_cabextract -d "$WINDIR"/system32 "$WINETRICKS_CACHE"/scripten.exe 
+    
+    # Wine doesn't provide the other dll's (yet?)
+    override_dlls native,builtin jscript.dll
+}
 
-    try $WINE "$WINETRICKS_CACHE"/WindowsXP-Windows2000-Script56-KB917344-x86-enu.exe $WINETRICKS_QUIET
+#----------------------------------------------------------------
+
+load_wsh56() {
+
+    load_wsh57
+
 }
 
 #----------------------------------------------------------------
@@ -3558,11 +3675,6 @@ else
    die "No sha1sum utility available."
 fi
 
-if [ ! -x "`which unzip 2>/dev/null`" ]
-then
-    die "Cannot find unzip.  Please install it (e.g. 'sudo apt-get install unzip' or 'sudo yum install unzip')."
-fi
-
 while test "$1" != ""
 do
     PACKAGE=$1
@@ -3590,14 +3702,16 @@ do
     corefonts) load_corefonts;;
     cygwin) load_cygwin;;
     d3dx9) load_d3dx9;;
+    d3dx9_36) load_d3dx9_xx 36;;
     d3dx10) load_d3dx10;;
     d3dxof) load_d3dxof;;
     dcom98) load_dcom98;;
     dinput8) load_dinput8;;
     dirac|dirac0.8) load_dirac08;;
+    directmusic) load_directmusic;;
     directplay|dxplay|dplay) load_directplay;;
     directx9) DIRECTX_WINDOWS=win2k ; load_directx9;;
-    directx9-beta) DIRECTX_WINDOWS=winxp ; load_directx9;;
+    directx9-beta) DIRECTX_WINDOWS=winxp ; load_directx9 ; load_directmusic ; load_directplay ;;
     divx) load_divx;;
     dotnet1|dotnet11) load_dotnet11; load_fontfix;;
     dotnet11sdk) load_dotnet11sdk;;
@@ -3693,7 +3807,7 @@ do
     wme9) load_wme9;;
     wmp9) load_wmp9;;
     wmp10) load_wmp10;;
-    wsh56) load_wsh56;;
+    wsh56|wsh57) load_wsh57;;
     wsh56js) load_wsh56js;;
     wsh56vb) load_wsh56vb;;
     xact|xactengine|x3daudio) load_xact;;
@@ -3703,6 +3817,7 @@ do
     allfonts) load_corefonts; load_tahoma; load_liberation; load_droid; load_wenquanyi;;
     ddr=gdi) set_ddr gdi;;
     ddr=opengl) set_ddr opengl;;
+    dsoundbug9612) load_dsoundbug9612;;
     fakeie6) set_fakeie6;;
     heapcheck) set_heapcheck;;
     multisampling=enabled|multisampling=on) set_multisampling enabled;;
@@ -3723,7 +3838,7 @@ do
     sound=alsa|alsa) set_sound_driver alsa;;
     sound=audioio|audioio) set_sound_driver audioio;;
     sound=coreaudio|coreaudio) set_sound_driver coreaudio;;
-    sound=esound|esound) set_sound_driver esound;;
+    sound=esound|sound=esd|esd|esound) set_sound_driver esd;;
     sound=jack|jack) set_sound_driver jack;;
     sound=nas|nas) set_sound_driver nas;;
     sound=oss|oss) set_sound_driver oss;;

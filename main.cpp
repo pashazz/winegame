@@ -77,6 +77,7 @@ if (a.arguments().length() > 1) {
         }
         else
         {
+            qDebug() << "engine: failed detect.";
             QMessageBox::warning(0, QObject::tr("Error"), QObject::tr("Failed to detect game disc, exiting"));
         return -2;
     }

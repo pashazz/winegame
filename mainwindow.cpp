@@ -75,8 +75,14 @@ void MainWindow::on_buttonBox_rejected()
 void MainWindow::buildList()
 {
     QDir wdir (gamepath);
+    QStringList taboo;
+    //поддержка пресетов
+    taboo << "presets";
+    //тут работаем с пресетами.
     foreach (QString entry, wdir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
     {
+        if (taboo.contains(entry))
+            continue;
         QListWidgetItem *it = new QListWidgetItem (ui->lstGames);
         it->setData(Qt::UserRole, gamepath + QDir::separator() + entry);
         it->setText(engine::getName( gamepath + QDir::separator() + entry));
@@ -156,8 +162,3 @@ void MainWindow::on_lstGames_itemDoubleClicked(QListWidgetItem* item)
 }
 }
 
-void MainWindow::dropEvent(QDropEvent *e)
-{
-    qDebug() << e->mimeData();
-e->accept();
-}

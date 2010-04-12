@@ -66,7 +66,9 @@ bool DiscDetector::tryDetect(QString path)
             return true;
         }
     }
+//if (!dir.exists(cdroot)) /// пока я не знаю, что делать с этим
     return false;
+
 }
 
 void DiscDetector::lauchApp()
