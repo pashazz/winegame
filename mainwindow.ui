@@ -19,16 +19,21 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QListWidget" name="lstGames">
+     <widget class="QTreeWidget" name="lstGames">
       <property name="acceptDrops">
        <bool>true</bool>
       </property>
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
      </widget>
     </item>
     <item>
      <widget class="QLabel" name="lblNote">
       <property name="text">
-       <string>Совет: щелкните (дважды) по нужному приложению, и оно запустится (если вы уже установили его)</string>
+       <string>Double-click an item to run executable...</string>
       </property>
      </widget>
     </item>

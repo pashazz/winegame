@@ -20,7 +20,7 @@
 #include "enginefunc.h"
 #include <QtDebug>
 #include <QPushButton>
-#include <QDesktopServices>
+#include <QInputDialog>
 using namespace QtConcurrent;
 engine::engine(QObject *parent) : //сейчас мы не делаем ничего
     QObject(parent)
@@ -30,38 +30,24 @@ engine::engine(QObject *parent) : //сейчас мы не делаем ниче
 void engine::lauch(QString workdir, bool msg)
 {
     QString winebin;
-    QFile file (workdir + QDir::separator() + "control");
-    //хех, прочитаем файл
-    QStringList vars;
-    if (!file.open(QIODevice::Text | QIODevice::ReadOnly))
-    {
-        QMessageBox::warning(0, tr("File open error"), tr ("Unable to open file %1. <br>Error: %2").arg(file.fileName()).arg(file.errorString()));
-        return;
-    }
-    QTextStream in (&file);
-while (!in.atEnd())
-    {
-    vars.append(in.readLine());
-}
-
-QString prefixdir = QDir::homePath() + winepath  + QDir::separator() + getVariableValue("PREFIX", vars);
+    QSettings s (workdir + CTRL,  QSettings::IniFormat, this);
+ prefix = QDir::homePath() + winepath  + QDir::separator() + s.value("application/prefix").toString();
 //ищем контейнер префикса
-if (!getVariableValue("CONTAINER", vars).isEmpty())
+if (!s.value("application/container").toString().isEmpty())
 {
-    QString container = downloadWine(getVariableValue("CONTAINER", vars));
-    unpackWine(TMP + QDir::separator() + container, prefixdir);
+    QString container = downloadWine(s.value("application/container").toString());
+    unpackWine(TMP + QDir::separator() + container, prefix);
 }
 
 //найдем переменную WINEDISTR для развертывания Wine (если есть)
-if (!getVariableValue("WINEDISTR", vars).isEmpty())
+if (!s.value("wine/distr").toString().isEmpty())
 {
-    QString distr = getVariableValue("WINEDISTR", vars);
-
+    QString distr = s.value("wine/distr").toString();
 //здесь запускаем процесс закачки и распаковки данного дистрибутива Wine
-QString destination = QDir::homePath() + winepath + "/wines/" + getVariableValue("PREFIX", vars);
-QDir dir (QDir::homePath() + winepath + "/wines");
-if (!dir.exists())
-    dir.mkdir(dir.path());
+    QString destination = QDir::homePath() + winepath + "/wines/" + getPrefixName(workdir);
+    QDir dir (QDir::homePath() + winepath + "/wines");
+    if (!dir.exists())
+        dir.mkdir(dir.path());
 //а может быть Wine уже распакован, м
 //теперь устанавливаем переменную winebin
 winebin = destination + "/usr/bin/wine"; //дададада!
@@ -91,19 +77,23 @@ if (winebin.isEmpty())
     qDebug() << "engine: exiting";
     return;
 }
+wineBinary = winebin; //для doDesktop;
+name = getName(workdir);
+note = getNote(workdir);
+program = getStandardExe(workdir);
 //что делать теперь? Хм
 //запускаем preinst с набором variables
 QProcessEnvironment myEnv = QProcessEnvironment::systemEnvironment();
-qDebug() << tr("engine: setting Prefix: %1").arg(prefixdir);
+qDebug() << tr("engine: setting Prefix: %1").arg(prefix);
 myEnv.insert("FILESDIR", workdir + "/files");
-myEnv.insert("WINEPREFIX", prefixdir);
+myEnv.insert("WINEPREFIX", prefix);
 myEnv.insert("WINE", winebin);
 myEnv.insert("CDROOT", this->diskpath);
 myEnv.insert("WINEDEBUG", "-all");
 
 /// Устанавливаем компоненты Microsoft здесь. Вы можете скачать их в ~/.winetrickscache, чтобы программа не загружала их сама
-if (!getVariableValue("PKGS", vars).isEmpty())
-    doPkgs(getVariableValue("PKGS", vars), myEnv);
+if (!s.value("wine/components").toString().isEmpty())
+    doPkgs(s.value("wine/components").toString(),myEnv);
 //запускаем скрипт Preinst
 QProcess *proc = new QProcess (this);
 proc->setProcessEnvironment(myEnv);
@@ -113,8 +103,8 @@ if (QFile::exists(workdir + "/preinst"))
     proc->start ("\"" +workdir + "/preinst\"");
 proc->waitForFinished(-1);
 }
-//теперь ищем упоминание о запускаемом файле в control (e.g. vars)
-QString exefile =   getVariableValue("SETUP", vars);
+//теперь ищем упоминание о запускаемом файле в control
+QString exefile = s.value("application/setup").toString();
 if (exefile.isEmpty())
     exefile = "fucking exe"; // ))))
 QString exe; //вот это-сформированный путь к EXE
@@ -148,7 +138,7 @@ else
    {
        QMessageBox::warning(0, tr("No EXE file found"), tr("Operation cancelled: No EXE file selected"));
        QProcess p (this);
-       p.start(tr("rm -rf %1").arg(prefixdir));
+       p.start(tr("rm -rf %1").arg(prefix));
        p.waitForFinished(-1);
        return;
    }
@@ -163,11 +153,11 @@ if (QFile::exists(workdir + "/postinst"))
 {
 proc->start("\"" + workdir + "/postinst\"");
 proc->waitForFinished(-1);
-makefix(prefixdir);
+makefix(prefix);
 
 }
 /// http://bugs.winehq.org/show_bug.cgi?id=22069 (wine bug - working with desktop files)
-if (getVariableValue("MEMORY", vars) == "yes")
+if (s.value("wine/memory", false).toBool())
 {
     //получаем видеопамять.
     QSettings stg (QDir::homePath() + config, QSettings::IniFormat, this);
@@ -180,7 +170,7 @@ if (getVariableValue("MEMORY", vars) == "yes")
     }
 }
 
-program = getVariableValue("EXEPATH", vars);
+program = s.value("application/exepath").toString();
 if (!program.isEmpty())
 {
     //получаем иконку
@@ -198,7 +188,7 @@ if (!program.isEmpty())
         icon = workdir+"/icon";
     }
     this->iconPath = icon;
-    doDesktop(getVariableValue("PREFIX", vars));
+    doDesktop(s.value("application/prefix").toString());
 }
 if (msg) {
 int result = QMessageBox::question(0, tr("Question"), tr("Would you like to install a new game?"), QMessageBox::Yes, QMessageBox::No);
@@ -206,21 +196,32 @@ if (result == QMessageBox::No)
     qApp->quit();
 }
               }
-QString engine::getVariableValue(QString value, const QStringList &vars)
-{
-QString ret;
-foreach (QString item, vars)
-{
-    if (item.contains(value))
-    {
-        ret = item.trimmed();
-       ret.replace(value, "" );
-       ret.remove(0, 1); //удаляю оставшееся ведущее '='
-        return ret;
-    }
 
+void engine::lauchPreset(QString preset, bool msg)
+{
+    QString workdir = gamepath + "/presets/" + preset;
+ //Get PREFIX variable
+    QString myPrefix =QInputDialog::getText(0, tr("Give a name for your application"), tr ("Give a short latin name for your application. <br> It will be installed in /home/<user>/Windows/<application name>/drive_c"));
+    if (myPrefix.isEmpty())
+    {
+        QMessageBox::warning(0, tr("No name specified"), tr ("Abort. Reason: No application name specified"));
+        return;
+    }
+    QString winebin;
+    QFile file (workdir + QDir::separator() + "control");
+    //хех, прочитаем файл
+    QStringList vars;
+    if (!file.open(QIODevice::Text | QIODevice::ReadOnly))
+    {
+        QMessageBox::warning(0, tr("File open error"), tr ("Unable to open file %1. <br>Error: %2").arg(file.fileName()).arg(file.errorString()));
+        return;
+    }
+    QTextStream in (&file);
+while (!in.atEnd())
+    {
+    vars.append(in.readLine());
 }
-return QString();
+//coming soon - НУЖНО ПРОДОЛЖЕНИЕ
 }
 
 QString engine::getName(QString path)
@@ -275,12 +276,12 @@ return note;
 void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
 {
     showNotify(tr("Downloading packages..."), tr("Now we will install Microsoft components"));
-    QProcess *p = new QProcess(this);
-  p->setProcessEnvironment(env);
+    QProcess p (this);
+  p.setProcessEnvironment(env);
   QStringList plist = pkgs.split(" ");
   qDebug() << "engine: Installing packages " << plist;
-    p->start("/usr/bin/winetricks", plist);
-    p->waitForFinished(-1);
+    p.start("/usr/bin/winetricks", plist);
+    p.waitForFinished(-1);
  }
 
 QIcon engine::getIcon(QString path)
@@ -295,18 +296,9 @@ QIcon engine::getIcon(QString path)
 }
 QString engine::getPrefixName(QString path)
 {
-    //read control file
-    QFile file  (path + QDir::separator() + "control");
-    if (file.exists()) {file.open(QIODevice::ReadOnly | QIODevice::Text);}
-    else {return QString();}
-
-    QTextStream stream (&file);
-    QStringList lines;
-    while (!stream.atEnd())
-        lines.append(stream.readLine());
-
-    file.close();
-    return getVariableValue("PREFIX", lines);
+    QSettings stg(path + CTRL, QSettings::IniFormat, 0 );
+stg.beginGroup("application");
+return stg.value("prefix").toString();
 }
 QString engine::prefixPath(QString dir)
 {
@@ -319,17 +311,10 @@ QString engine::prefixPath(QString dir)
 
 QString engine::getWine(QString path)
 {
-    QFile file  (path + QDir::separator() + "control");
-    if (file.exists()) {file.open(QIODevice::ReadOnly | QIODevice::Text);}
-    else {return QString();}
-
-    QTextStream stream (&file);
-    QStringList lines;
-    while (!stream.atEnd())
-        lines.append(stream.readLine());
-
-    file.close();
-    if (getVariableValue("WINEDISTR", lines).isEmpty())
+    QSettings stg(path + CTRL, QSettings::IniFormat, 0 );
+ stg.beginGroup("wine");
+ QString distr = stg.value("distr").toString();
+ if (distr.isEmpty())
     {
         //which wine process
               QProcess *proc = new QProcess (0);
@@ -485,21 +470,18 @@ void engine::setMemory(QString mem)
     stream << tr("\"%1\"").arg(mem);
     stream << "\n";
     f.close();
-    QProcess::startDetached(wineBinary, args);
-
+QProcess p (this);
+QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+env.insert("WINEPREFIX", prefix);
+p.setProcessEnvironment(env);
+p.start(wineBinary, args);
+p.waitForFinished(-1);
 }
 QString engine::getStandardExe(QString controlFile)
 {
-    QStringList myList;
-    QFile f (controlFile);
-    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
-        qDebug() << "engine: [DDT] unable to read control";
-   QTextStream str (&f);
-   while (!str.atEnd())
-       myList.append(str.readLine());
-   f.close();
-   QString string = engine::getVariableValue("EXEPATH", myList);
-   return string;
+    QSettings stg(controlFile, QSettings::IniFormat, 0 );
+    stg.beginGroup("application");
+    return stg.value("exepath").toString();
 }
 
 void engine::makefix(QString prefix)

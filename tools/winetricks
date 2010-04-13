@@ -48,9 +48,8 @@ case "$OS" in
 esac
 
 # Internal variables; these locations are not too important
-WINETRICKS_CACHE="$HOME/winetrickscache"
-# Default to hiding the directory, by popular demand
-test -d "$WINETRICKS_CACHE" || WINETRICKS_CACHE=$HOME/.winetrickscache
+WINETRICKS_CACHE="${WINETRICKS_CACHE:-$HOME/.winetrickscache}"
+# Note: this won't work if WISOTOOL_CACHE isn't accesible via a drive letter mapping in wine.
 WINETRICKS_CACHE_WIN="`$XXXPATH -w $WINETRICKS_CACHE | tr '\012' ' ' | sed 's/ $//'`"
 WINETRICKS_TMP="$DRIVE_C"/winetrickstmp
 WINETRICKS_TMP_WIN='c:\winetrickstmp'
@@ -299,7 +298,7 @@ usage() {
     echo " rtlm=readtex   Set RenderTargetLockMode to readtex"
     echo " rtlm=texdraw   Set RenderTargetLockMode to texdraw"
     echo " rtlm=textex    Set RenderTargetLockMode to textex"
-    echo " sandbox       Sandbox the wineprefix - remove links to ~"
+    echo " sandbox        Sandbox the wineprefix - remove links to ~"
     echo " sound=alsa       Set sound driver to ALSA"
     echo " sound=audioio    Set sound driver to AudioIO"
     echo " sound=coreaudio  Set sound driver to CoreAudio"
@@ -316,7 +315,7 @@ usage() {
     echo " win7          Set windows version to Windows 7"
     echo " winver=       Set windows version to default (winxp)"
     echo " volnum        Rename drive_c to harddiskvolume0 (needed by some installers)"
-    echo " mwo=force	  Set MouseWarpOverride to force (needded by some games"
+    echo " mwo=force	 Set MouseWarpOverride to force (needded by some games"
     echo " mwo=enabled   Set MouseWarpOverride to enabled (default)"
     echo " mwo=disabled  Set MouseWarpOverride to disabled"
     echo " npm-repack    Set NonPower2Mode to repack"
@@ -566,6 +565,7 @@ REGEDIT4
 _EOF_
     try_regedit "$WINETRICKS_TMP"/set-ddr.reg
 }
+
 set_orm() {
     echo "Setting OffscreenRenderingMode to $1"
     cat > "$WINETRICKS_TMP"/set-orm.reg <<_EOF_
@@ -589,9 +589,9 @@ REGEDIT4
 _EOF_
     try_regedit "$WINETRICKS_TMP"/set-rtlm.reg
 }
-set_vsm() {
 
-   echo "Setting  Vertex Shaders to $1"
+set_vsm() {
+    echo "Setting  Vertex Shaders to $1"
     cat > "$WINETRICKS_TMP"/set-vsm.reg <<_EOF_
 REGEDIT4
 
@@ -614,8 +614,9 @@ REGEDIT4
 _EOF_
     try_regedit "$WINETRICKS_TMP"/set-multi.reg
 }
+
 set_mwo () {
- echo "Setting MouseWarpOverride to $1"
+    echo "Setting MouseWarpOverride to $1"
     cat > "$WINETRICKS_TMP"/set-mwo.reg <<_EOF_
 REGEDIT4
 
@@ -625,6 +626,7 @@ REGEDIT4
 _EOF_
     try_regedit "$WINETRICKS_TMP"/set-mwo.reg
 }
+
 npm_repack (){
  echo "Setting Nonpower2Mode to repack"
     cat > "$WINETRICKS_TMP"/set-npw.reg <<_EOF_
@@ -639,7 +641,6 @@ _EOF_
 }
 
 set_psm() {
-
     echo "Setting PixelShaderMode to $1"
     cat > "$WINETRICKS_TMP"/set-psm.reg <<_EOF_
 REGEDIT4

@@ -32,6 +32,7 @@
 #include <QUrl>
 #include <QProgressDialog>
 #include <QIcon>
+#include <QSettings>
 #include <QtNetwork>
 #include "linux.h"
 class engine : public QObject
@@ -40,6 +41,7 @@ Q_OBJECT
 public:
     explicit engine(QObject *parent = 0);
  void lauch (QString workdir, bool msg = true);
+ void lauchPreset (QString preset, bool msg = true); //запускает движок с определенным preset
  void setCdMode (bool mode){cdMode=mode;}
  void setDiskpath (QString path){diskpath = path;}
  static QString getName (QString path);

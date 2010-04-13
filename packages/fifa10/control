@@ -1,4 +1,7 @@
-PREFIX=fifa10
-PKGS=directx9 glsl-enable vcrun2005 ddr=opengl
-WINEDISTR=http://winegame.googlecode.com/files/wine-1.1.20-bin.tar.bz2
-SETUP=EASetup.exe
+[wine]
+distr="http://winegame.googlecode.com/files/wine-1.1.20-bin.tar.bz2"
+components="directx9 glsl-enable vcrun2005 ddr=opengl"
+memory=true
+[application]
+setup="EASetup.exe"
+prefix="fifa10"

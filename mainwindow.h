@@ -41,10 +41,11 @@ QString diskpath;
 bool cdMode;
 void saveGeom();
     void buildList();
+    void buildPreset ();
     void lauchEngine(QString pkgpath);
 private slots:
-    void on_lstGames_itemDoubleClicked(QListWidgetItem* item);
-    void on_lstGames_itemClicked(QListWidgetItem* item);
+    void on_lstGames_itemClicked(QTreeWidgetItem* item, int column);
+    void on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column);
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 };

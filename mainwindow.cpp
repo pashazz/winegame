@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    qDebug() << acceptDrops();
     QFile f (QDir::homePath() + "/.config/winegame.geom");
     if (f.open(QIODevice::ReadOnly))
     {
@@ -72,6 +71,7 @@ void MainWindow::on_buttonBox_rejected()
     saveGeom();
     qApp->exit(2);
 }
+
 void MainWindow::buildList()
 {
     QDir wdir (gamepath);
@@ -79,18 +79,34 @@ void MainWindow::buildList()
     //поддержка пресетов
     taboo << "presets";
     //тут работаем с пресетами.
+    buildPreset();
+    //а тут мы создаем родительский node
+    QTreeWidgetItem *par = new QTreeWidgetItem (ui->lstGames);
+    par->setText(0, tr("Applications"));
     foreach (QString entry, wdir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
     {
         if (taboo.contains(entry))
             continue;
-        QListWidgetItem *it = new QListWidgetItem (ui->lstGames);
-        it->setData(Qt::UserRole, gamepath + QDir::separator() + entry);
-        it->setText(engine::getName( gamepath + QDir::separator() + entry));
+        QTreeWidgetItem *it = new QTreeWidgetItem (par);
+        it->setData(0, Qt::UserRole, gamepath + QDir::separator() + entry);
+        it->setText(0,  engine::getName( gamepath + QDir::separator() + entry));
         //загружаем icon как значок игры (если есть)
-        it->setIcon(engine::getIcon(gamepath + QDir::separator() + entry));
+        it->setIcon(0,engine::getIcon(gamepath + QDir::separator() + entry));
         }
     }
 
+void MainWindow::buildPreset() {
+    QTreeWidgetItem *par = new QTreeWidgetItem (ui->lstGames);
+    par->setText(0, tr("Pre-Sets (Templates)"));
+   QDir dir (gamepath + "/presets");
+   foreach (QString entry, dir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
+   {
+         QTreeWidgetItem *it = new QTreeWidgetItem (par);
+         it->setText(0,  engine::getName( gamepath + QDir::separator() + entry));
+       it->setData(0, Qt::UserRole, gamepath  + "/presets/"  + entry);
+       it->setData(0, 64,  true); // ролью 64 мы определяем, что это пресет.
+       }
+   }
 
 void MainWindow::lauchEngine(QString pkgpath)
 {
@@ -114,8 +130,10 @@ if (dir.exists())
 
 void MainWindow::on_buttonBox_accepted()
 {
-    if (!ui->lstGames->selectedItems().isEmpty()) {
-        lauchEngine(ui->lstGames->selectedItems().first()->data(Qt::UserRole).toString());
+   if (!ui->lstGames->selectedItems().isEmpty()) {
+       if (ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString().isEmpty())
+           return;
+        lauchEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
    saveGeom();
     }
 
@@ -127,10 +145,6 @@ void MainWindow::on_buttonBox_accepted()
 
 
 
-void MainWindow::on_lstGames_itemClicked(QListWidgetItem* item)
-{
-    ui->lblNote->setText(engine::getNote(item->data(Qt::UserRole).toString()));
-}
 
 void MainWindow::saveGeom()
 {
@@ -140,10 +154,18 @@ void MainWindow::saveGeom()
    f.close();
 }
 
-void MainWindow::on_lstGames_itemDoubleClicked(QListWidgetItem* item)
+
+
+
+void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
+    if (item->data(0, 64).toBool())
+        return;
+
     //Запуск приложения по EXEPATH
-    QString workdir = item->data(Qt::UserRole).toString();
+    if (item->data(column, Qt::UserRole).toString().isEmpty())
+        return;
+    QString workdir = item->data(column, Qt::UserRole).toString();
     QString exe = engine::getStandardExe(workdir + "/control");
     if (!exe.isEmpty())
     {
@@ -162,3 +184,15 @@ void MainWindow::on_lstGames_itemDoubleClicked(QListWidgetItem* item)
 }
 }
 
+
+
+void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
+{
+    if (item->data(column, Qt::UserRole).toString().isEmpty())
+    {
+        ui->lblNote->setText("");
+        return;
+    }
+    ui->lblNote->setText( engine::getNote(item->data(column,Qt::UserRole).toString()));
+
+}
