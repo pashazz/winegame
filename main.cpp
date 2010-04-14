@@ -22,7 +22,6 @@
 #include "discdetector.h"
 #include "isomaster.h"
 #include "QDir"
-#define tr QObject::tr
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -47,7 +46,7 @@ if (!dir.exists())
 if (!QFile::exists(QDir::homePath() + config))
 {
     int mem = 0;
-     mem= QInputDialog::getInt(0, tr("WineGame"), tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
+     mem= QInputDialog::getInt(0, QObject::tr("WineGame"), QObject::tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
         if (mem == 0)
             mem = 128;
         QSettings stg (QDir::homePath() + config, QSettings::IniFormat, 0);
@@ -58,7 +57,7 @@ if (a.arguments().length() > 1) {
     QFileInfo info (a.arguments().at(1));
     if (!info.exists())
     {
-        QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
+        QMessageBox::critical(0,QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
         return -3;
 }
 
@@ -66,7 +65,7 @@ if (a.arguments().length() > 1) {
     {
         if (!QFile::exists(info.absoluteFilePath() + "/autorun.inf"))
         {
-            QMessageBox::critical(0, tr("I am confused"), tr ("This disc is not Windows Software disc, exiting"));
+            QMessageBox::critical(0, QObject::tr("I am confused"), QObject::tr ("This disc is not Windows Software disc, exiting"));
             return -2;
         }
         DiscDetector det;

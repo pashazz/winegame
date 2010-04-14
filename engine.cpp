@@ -201,28 +201,113 @@ void engine::lauchPreset(QString preset, bool msg)
 {
     QString workdir = gamepath + "/presets/" + preset;
  //Get PREFIX variable
-    QString myPrefix =QInputDialog::getText(0, tr("Give a name for your application"), tr ("Give a short latin name for your application. <br> It will be installed in /home/<user>/Windows/<application name>/drive_c"));
+    dialog:
+    QString myPrefix =QInputDialog::getText(0, tr("Give a name for your application"), tr ("Give a short latin name for your application. <br> It will be installed in %1/Windows/APPLICATION NAME/drive_c").arg(QDir::homePath()));
     if (myPrefix.isEmpty())
     {
-        QMessageBox::warning(0, tr("No name specified"), tr ("Abort. Reason: No application name specified"));
+        QMessageBox::critical(0, tr("No name specified"), tr ("Abort. Reason: No application name specified"));
         return;
     }
-    QString winebin;
-    QFile file (workdir + QDir::separator() + "control");
-    //хех, прочитаем файл
-    QStringList vars;
-    if (!file.open(QIODevice::Text | QIODevice::ReadOnly))
+    //проверим, есть ли такой префикс уже.
+    QDir dir;
+    dir.setPath(QDir::homePath() + winepath + QDir::separator() + myPrefix);
+    if (dir.exists()){
+
+        QMessageBox::warning(0, tr("Application with this name is already installed."), tr(" To force installation process, remove directory %1.").arg(QDir::homePath() + winepath +QDir::separator() + myPrefix));
+        //я знаю, это плохо
+        goto dialog;
+    }
+    else if (dir.exists(gamepath + QDir::separator() + myPrefix))
     {
-        QMessageBox::warning(0, tr("File open error"), tr ("Unable to open file %1. <br>Error: %2").arg(file.fileName()).arg(file.errorString()));
+        QMessageBox::warning(0, tr("Warning"), tr("I know about this game. <br>You can install it by clicking  it`s entry in 'Applications' list"));
         return;
     }
-    QTextStream in (&file);
-while (!in.atEnd())
+    QSettings s(workdir + CTRL, QSettings::IniFormat, this);
+//which wine
     {
-    vars.append(in.readLine());
-}
-//coming soon - НУЖНО ПРОДОЛЖЕНИЕ
-}
+    QProcess *proc = new QProcess (this);
+    proc->start ("which wine");
+    proc->waitForFinished();
+     wineBinary = proc->readAll();
+     qDebug() << "engine: setting wine binary to " << wineBinary; // да я знаю, что можно было обойтись одной строкой
+ }
+ //ставим компоненты
+     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+     //Для вычисления префикса нам не подходят стандартные методы Engine. Поэтому, воспользуемся своим
+     prefix = QDir::homePath() + winepath + QDir::separator() + myPrefix;
+     qDebug() << "engine: setting Prefix" <<prefix;
+     env.insert("WINEDEBUG", "-all");
+     env.insert("WINEPREFIX", prefix);
+     /*!
+       Напоминаю, обязательное условие пресета - присутствие components в секции wine! ОБЯЗАТЕЛЬНОЕ!
+       */
+     doPkgs(s.value("wine/components").toString(), env);
+   //теперь проверяем memory
+     if (s.value("wine/memory").toBool())
+     {
+         QSettings stg (QDir::homePath() + config, QSettings::IniFormat, this);
+        //для совместимости, берем значение в int (а вдруг там нам не int подсунули, или <= 0
+         QString mem = stg.value("VideoMemory", -1).toString();
+         if (mem.toInt() > 0)
+         {
+             qDebug() << "engine: [memory] setting video memory to " << mem;
+             setMemory(mem);
+         }
+     }
+     //запускаем EXE
+     //теперь ищем упоминание о запускаемом файле в control
+     QString exefile = s.value("application/setup").toString();
+     if (exefile.isEmpty())
+         exefile = "fucking exe"; // ))))
+     QString exe; //вот это-сформированный путь к EXE
+     if (cdMode)
+     {
+         if (QFile::exists(diskpath + QDir::separator() + exefile))
+         {
+        exe = diskpath +exefile;
+     }
+         else
+         {
+             //получим инфу о запускаемом файле из autorun.inf
+             QSettings stg  (diskpath + "/autorun.inf", QSettings::IniFormat, this);
+             stg.beginGroup("autorun");
+             exe = diskpath + QDir::separator() + stg.value("open").toString();
+         }
+     }
+     else
+     {
+         //спросим-ка у пользователя путь к EXE файлику (QFileDialog)
+        QFileDialog *dlg = new QFileDialog (0);
+        if (cdMode)
+         dlg->setDirectory(diskpath);
+        dlg->setFileMode(QFileDialog::ExistingFile);
+        dlg->setNameFilter(tr("Windows  executables (*.exe)"));
+        if (dlg->exec() == QDialog::Accepted)
+        {
+            exe = dlg->selectedFiles().at(0);
+        }
+        else
+        {
+            QMessageBox::warning(0, tr("No EXE file found"), tr("Operation cancelled: No EXE file selected"));
+            QProcess p (this);
+            p.start(tr("rm -rf %1").arg(prefix));
+            p.waitForFinished(-1);
+            return;
+        }
+     }
+     qDebug() << tr("engine: starting Windows program %1 with wine binary %2").arg(exe).arg(wineBinary);
+     QProcess *proc = new QProcess (this);
+     proc->setProcessEnvironment(env);;
+     proc->start(wineBinary+ " \"" + exe  +"\"" );
+     proc->waitForFinished(-1);
+
+     if (msg) {
+     int result = QMessageBox::question(0, tr("Question"), tr("Would you like to install a new game?"), QMessageBox::Yes, QMessageBox::No);
+     if (result == QMessageBox::No)
+         qApp->quit();
+     }
+     }
+
 
 QString engine::getName(QString path)
 {
@@ -278,8 +363,7 @@ void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
     showNotify(tr("Downloading packages..."), tr("Now we will install Microsoft components"));
     QProcess p (this);
   p.setProcessEnvironment(env);
-  QStringList plist = pkgs.split(" ");
-  qDebug() << "engine: Installing packages " << plist;
+  QStringList plist = pkgs.split(" ", QString::SkipEmptyParts);
     p.start("/usr/bin/winetricks", plist);
     p.waitForFinished(-1);
  }
@@ -431,14 +515,14 @@ void engine::doDesktop(QString workname)
      {
     /// эта функция - надеюсь, временная. Используется с переменной EXEPATH из control. Все из-за бага Wine: http://bugs.winehq.org/show_bug.cgi?id=17055
     // проголосуйте за исправление этого бага, пожалуйста. Тогда я удалю эту ф-цию к черту.
-    QString desktopFile = QDir::homePath() + QDir::separator() + tr("Desktop") + QDir::separator()+ workname + ".desktop"; //создаем ярлык на десктопе
+    QString desktopFile =QDesktopServices::storageLocation(QDesktopServices::DesktopLocation) + QDir::separator()+ workname + ".desktop"; //создаем ярлык на десктопе
     qDebug() << "debug: writing to" << desktopFile;
 
    QFile file (desktopFile);
    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
    QTextStream stream (&file);
    stream <<  "[Desktop Entry]\n";
-    QString exec = QObject::tr("env WINEPREFIX='%1' %2  '%3'").arg(prefix).arg(wineBinary).arg(program);
+    QString exec = QObject::tr("env WINEPREFIX='%1' '%2'  '%3'").arg(prefix).arg(wineBinary).arg(program);
     stream << tr("Exec=%1\n").arg(exec);
     stream << tr("Name=%1\n").arg(name);
     stream << tr("Comment=%1\n").arg(note);

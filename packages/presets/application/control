@@ -1,1 +1,2 @@
-PKGS=fontsmooth-rgb allfonts vcrun2005sp1
+[wine]
+components="fontsmooth-rgb allfonts vcrun2005sp1"

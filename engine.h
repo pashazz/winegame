@@ -34,6 +34,7 @@
 #include <QIcon>
 #include <QSettings>
 #include <QtNetwork>
+#include <QDesktopServices>
 #include "linux.h"
 class engine : public QObject
 {

@@ -1,7 +1,8 @@
 [wine]
 distr="http://winegame.googlecode.com/files/wine-1.1.20-bin.tar.bz2"
-components="directx9 glsl-enable vcrun2005 ddr=opengl"
+components="d3dx9 vcrun2005 ddr=opengl"
 memory=true
 [application]
 setup="EASetup.exe"
 prefix="fifa10"
+exepath="c:/program files/ea sports/fifa 10/fifa10.exe"

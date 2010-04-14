@@ -42,6 +42,7 @@ bool cdMode;
 void saveGeom();
     void buildList();
     void buildPreset ();
+    void lauchPresetEngine (QString name);
     void lauchEngine(QString pkgpath);
 private slots:
     void on_lstGames_itemClicked(QTreeWidgetItem* item, int column);

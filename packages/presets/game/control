@@ -1,3 +1,3 @@
-PKGS=d3dx9 directplay directmusic vsm-hard psm=on ddr=opengl npm-repack
-MEMORY=yes
-
+[wine]
+memory=true
+components="d3dx9 ddr=opengl psm=on npm-repack vsm-hard" 

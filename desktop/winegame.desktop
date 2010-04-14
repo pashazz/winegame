@@ -1,0 +1,12 @@
+[Desktop Entry]
+Categories=Qt;System;Emulator;
+Comment=An application to install windows programs and games
+Comment[ru]=Приложение для установки Windows-программ и игр
+GenericName=An application to install windows programs and games
+GenericName[ru]=Приложение для установки Windows-программ и игр
+Terminal=false
+Type=Application
+MimeType=x-content/win32-software;x-content/software;application/x-cd-image;application/x-iso9660-image
+Name=WineGame
+Icon=winegame
+Exec=winegame %U

@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+//just a test
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 MainWindow::MainWindow(QWidget *parent) :
@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     QFile f (QDir::homePath() + "/.config/winegame.geom");
     if (f.open(QIODevice::ReadOnly))
     {
@@ -102,8 +103,8 @@ void MainWindow::buildPreset() {
    foreach (QString entry, dir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
    {
          QTreeWidgetItem *it = new QTreeWidgetItem (par);
-         it->setText(0,  engine::getName( gamepath + QDir::separator() + entry));
-       it->setData(0, Qt::UserRole, gamepath  + "/presets/"  + entry);
+         it->setText(0,  engine::getName( gamepath + "/presets/" + QDir::separator() + entry));
+         it->setData(0,Qt::UserRole,  entry);
        it->setData(0, 64,  true); // ролью 64 мы определяем, что это пресет.
        }
    }
@@ -130,11 +131,16 @@ if (dir.exists())
 
 void MainWindow::on_buttonBox_accepted()
 {
+    if (ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString().isEmpty())
+        return;
    if (!ui->lstGames->selectedItems().isEmpty()) {
-       if (ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString().isEmpty())
+       if (ui->lstGames->selectedItems().first()->data(0, 64).toBool())
+       {
+           //это пресет
+           lauchPresetEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
            return;
+       }
         lauchEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
-   saveGeom();
     }
 
     else
@@ -184,8 +190,6 @@ void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column
 }
 }
 
-
-
 void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
 {
     if (item->data(column, Qt::UserRole).toString().isEmpty())
@@ -195,4 +199,12 @@ void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
     }
     ui->lblNote->setText( engine::getNote(item->data(column,Qt::UserRole).toString()));
 
+}
+
+void MainWindow::lauchPresetEngine(QString name)
+{
+    engine *eng = new engine (this);
+   eng->setDiskpath(diskpath);
+   eng->setCdMode(cdMode);
+   eng->lauchPreset(name);
 }
