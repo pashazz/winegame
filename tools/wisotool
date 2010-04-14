@@ -1,0 +1,1343 @@
+#!/bin/sh
+# Quick and dirty script to install apps from .iso files
+# Adapted from winetricks as of r995
+# Copyright 2007, 2008, 2009, 2010 Google (Dan Kegel, dank@kegel.com)
+# Copyright 2008, 2009, 2010 Austin English (austinenglish@gmail.com)
+# Please report problems at http://code.google.com/p/winezeug/issues
+# Note to contributors: please avoid gnu extensions in this shell script,
+# as it has to run on MacOSX and Solaris, too.  A good book on the topic is
+# "Portable Shell Programming" by Bruce Blinn
+
+#---- Constants -------------------------------------------------
+
+# Name of this version of wisotool (YYYYMMDD)
+VERSION=20100323
+
+early_wine()
+{
+    WINEDLLOVERRIDES=mshtml= $WINE "$@"
+}
+
+# Default values for important settings if not already in environment.
+# These settings should not need editing here.
+case "$OS" in
+ "Windows_NT")
+    # Cheezy fix for getting rid of double slashes when running cygwin in wine
+    case $HOME in
+      /) HOME="" ;;
+    esac
+    WINE=""
+    WINEPREFIX=${WINEPREFIX:-$HOME/.wine}
+    DRIVE_C="C:/"
+    XXXPATH=cygpath
+    ;;
+ *)
+    WINE=${WINE:-wine}
+    WINEPREFIX=${WINEPREFIX:-$HOME/.wine}
+    DRIVE_C="$WINEPREFIX/dosdevices/c:"
+    XXXPATH="early_wine winepath"
+    ;;
+esac
+
+# Internal variables; these locations are not too important
+WISOTOOL_CACHE="${WISOTOOL_CACHE:-$HOME/.wisotoolcache}"
+# Note: this won't work if WISOTOOL_CACHE isn't accesible via a drive letter mapping in wine.
+WISOTOOL_CACHE_WIN="`$XXXPATH -w $WISOTOOL_CACHE | tr '\012' ' ' | sed 's/ $//'`"
+WISOTOOL_TMP="$DRIVE_C"/wisotooltmp
+WISOTOOL_TMP_WIN='c:\wisotooltmp'
+mkdir -p $WISOTOOL_TMP
+
+USERNAME=${USERNAME:-$LOGNAME}
+
+# Overridden for windows
+ISO_MOUNT_ROOT=/mnt/wisotool
+
+WINDIR="$DRIVE_C/windows"
+
+# Which sourceforge mirror to use.  Rotate based on time, since
+# their mirror picker sometimes persistantly sends you to a broken
+# mirror.
+case `date +%S` in
+*[01]) SOURCEFORGE=http://internap.dl.sourceforge.net/sourceforge ;;
+*[23]) SOURCEFORGE=http://easynews.dl.sourceforge.net/sourceforge ;;
+*)     SOURCEFORGE=http://downloads.sourceforge.net;;
+esac
+
+#---- Functions -------------------------------------------------
+
+# Detect which sudo to use
+detect_sudo() {
+    SUDO=sudo
+    test "$GUI" = 1 || return
+    if test x"$DISPLAY" != x""
+    then
+        if test -x "`which gksudo 2>/dev/null`"
+        then
+            SUDO=gksudo
+        elif test -x "`which kdesudo 2>/dev/null`"
+        then
+            SUDO=kdesudo
+        fi
+    fi
+}
+
+# Detect which menu program to use
+detect_menu() {
+    # TODO: add 'dialog'
+    MENU=xmessage
+    if test -x "`which zenity 2>/dev/null`"
+    then
+        MENU=zenity
+    elif test -x "`which kdialog 2>/dev/null`"
+    then
+        MENU=kdialog
+    fi
+}
+
+warn() {
+    echo "------------------------------------------------------"
+    echo "$@"
+    echo "------------------------------------------------------"
+
+    test "$GUI" = 1 || return
+
+    # For some reason, nulls were showing up in $@?!, causing truncated output in zenity
+    msg="`echo $@ | tr '\000' ' '`"
+    case $MENU in
+    *zenity) zenity --error --title=Winetricks --text="$msg" --no-wrap;;
+    *kdialog) kdialog --title Winetricks --error "$msg" ;;
+    *xmessage) xmessage -title Winetricks -center "  Error: $msg  " ;;
+    esac
+}
+
+die() {
+    warn "$@"
+
+    exit 1
+}
+
+# Abort if user doesn't own the given directory (or its parent, if it doesn't exist yet)
+die_if_user_not_dirowner() {
+    if test -d "$1"
+    then
+        checkdir="$1"
+    else
+        # fixme: quoting problem?
+        checkdir=`dirname "$1"`
+    fi
+    nuser=`id -u`
+    nowner=`ls -l -n -d -L "$checkdir" | awk '{print $3}'`
+    if test x$nuser != x$nowner
+    then
+        die "You (`id -un`) don't own $checkdir. Don't run wisotool as another user!"
+    fi
+}
+
+#----------------------------------------------------------------
+
+usage() {
+    set +x
+    # WARNING: do not use single quote in any package description; that breaks the gui menu.
+    echo "Usage: $0 [options] package [package] ..."
+    echo "This script can catalog your .iso files, and later install"
+    echo "Windows apps from them."
+    echo ""
+    echo "Options:"
+    echo " -q         quiet.  You must have already agreed to the EULAs."
+    echo " -v         verbose"
+    echo " -V         display Version"
+    echo "Packages:"
+    echo " assassinscreed Assassins Creed (Ubisoft, 2008)"
+    echo " diablo2       Diablo II (Blizzard, 2000)"
+    echo " dragonage     Dragon Age: Origins (Bioware, 2009)"
+    echo " morrowind     The Elder Scrolls III: Morrowind (Bethesda, 2002)"
+    echo " plantsvszombies Plants vs. Zombies (PopCap Games, 2009)"
+    echo " sims3         The Sims 3 (EA, 2009)"
+    echo " starcraft     Starcraft Battle Chest (Blizzard, 1998)"
+    echo " starcraft2    Starcraft II beta (Blizzard, 2010)"
+    echo " stfu          Starwars: The Force Unleashed (Aspyr, 2009)"
+    echo " wog           World of Goo demo (2D Boy, 2008)"
+    echo "Pseudopackages:"
+    echo " load          Load a new iso"
+    echo " load=KEY      Load a new iso (with given key)"
+}
+
+#----------------------------------------------------------------
+# Trivial GUI just to handle case where user tries running without commandline
+
+kdialog_showmenu() {
+    title="$1"
+    shift
+    text="$1"
+    shift
+    col1name="$1"
+    shift
+    col2name="$1"
+    shift
+    while test $# -gt 0
+    do
+        args="$args $1 $1 off"
+        shift
+    done
+    kdialog --title "$title" --separate-output --checklist "$text" $args
+}
+
+xmessage_showmenu() {
+    title="$1"
+    shift
+    text="$1"
+    shift
+    col1name="$1"
+    shift
+    col2name="$1"
+    shift
+    if test $# -gt 0
+    then
+        args="$1"
+        shift
+    fi
+    while test $# -gt 0
+    do
+        args="$args,$1"
+        shift
+    done
+    (echo "$title"; echo ""; echo "$text") | \
+    xmessage -print -file - -buttons "Cancel,$args" | sed 's/Cancel//'
+}
+
+showmenu()
+{
+    case $MENU in
+    zenity)
+        echo "zenity --title 'Select a package to install' --text 'Install?' --list --checklist --column '' --column Package --column Description --height 440 --width 600 \\" > "$WISOTOOL_TMP"/zenity.sh
+        usage | grep '^ [a-z]' | sed 's/^ \([^ ]*\) *\(.*\)/FALSE "\1" '"'\2'/" | sed 's/$/ \\/' >> $WISOTOOL_TMP/zenity.sh
+        todo="`sh "$WISOTOOL_TMP"/zenity.sh | tr '|' ' '`"
+        ;;
+    kdialog)
+        packages=`usage | awk '/^ [a-z]/ {print $1}'`
+        todo="`kdialog_showmenu "wisotool" "Select a package to install" "Install?" "Package" $packages`"
+        ;;
+    xmessage)
+        packages=`usage | awk '/^ [a-z]/ {print $1}'`
+        todo="`xmessage_showmenu "wisotool" "Select a package to install" "Install?" "Package" $packages`"
+        ;;
+    esac
+
+    if test "$todo"x = x
+    then
+       exit 0
+    fi
+}
+
+#-----  Helpers  ------------------------------------------------
+
+# Execute with error checking
+try() {
+    # "VAR=foo try cmd" fails to put VAR in the environment
+    # with some versions of bash if try is a shell function?!
+    # Adding this explicit export works around it.
+    export WINEDLLOVERRIDES
+    echo Executing "$@"
+    # Mark executable - needed if running on windows vista
+    case "$1" in
+    *.exe) chmod +x "$1" || true
+      cmd /c "$@"
+      ;;
+    *)
+      "$@"
+      ;;
+    esac
+    status=$?
+    if test $status -ne 0
+    then
+        die "Note: command '$@' returned status $status.  Aborting."
+    fi
+}
+
+try_regedit() {
+    # on windows, doesn't work without cmd /c
+    case "$OS" in
+    "Windows_NT") cmdc="cmd /c";;
+    *) unset cmdc
+    esac
+
+    try early_wine $cmdc regedit "$@"
+}
+
+regedit() {
+    die oops, bug, please report
+}
+
+try_cabextract() {
+    # Not always installed, but shouldn't be fatal unless it's being used
+    CABEXTRACT="`which cabextract 2>/dev/null`"
+    if test ! -x "$CABEXTRACT"
+    then
+        die "Cannot find cabextract.  Please install it (e.g. 'sudo apt-get install cabextract' or 'sudo yum install cabextract')."
+    fi
+
+    try $CABEXTRACT "$@"
+}
+
+cabextract() {
+    die oops, bug, please report
+}
+
+# At some point, make the return value controllable by a global 
+# commandline option so we can see if we still need the workaround.
+workaround_wine_bug()
+{
+    if test "$WINE" = ""
+    then
+        echo No need to work around wine bug $1 on windows
+        return 1
+    fi
+    case $1 in
+    "$WISOTOOL_BLACKLIST") 
+        echo wine bug $1 workaround blacklisted, skipping
+        return 1
+        ;;
+    esac
+    warn Working around wine bug $1
+    return 0
+}
+
+# verify an sha1sum
+verify_sha1sum() {
+    wantsum=$1
+    file=$2
+
+    gotsum=`$SHA1SUM < $file | sed 's/ .*//'`
+    if [ "$gotsum"x != "$wantsum"x ]
+    then
+       die "sha1sum mismatch!  Rename $file and try again."
+    fi
+}
+
+# Download a file
+# Usage: package url [sha1sum [filename]]
+# Caches downloads in wisotoolcache/$package
+download() {
+    if [ "$4"x != ""x ]
+    then
+        file="$4"
+    else
+        file=`basename "$2"`
+    fi
+    cache="$WISOTOOL_CACHE/$1"
+    mkdir -p "$cache"
+    if test ! -f "$cache/$file"
+    then
+        cd "$cache"
+        # Mac folks tend to have curl rather than wget
+        # On Mac, 'which' doesn't return good exit status
+        # Need to jam in --header "Accept-Encoding: gzip,deflate" else
+        # redhat.com decompresses liberation-fonts.tar.gz!
+        if [ -x "`which wget 2>/dev/null`" ]
+        then
+           # Use -nd to insulate ourselves from people who set -x in WGETRC
+           # [*] --retry-connrefused works around the broken sf.net mirroring
+           # system when downloading corefonts
+           # [*] --read-timeout is useful on the adobe server that doesn't
+           # close the connection unless you tell it to (control-C or closing
+           # the socket)
+           try wget -O "$file" -nd -c --read-timeout=300 --retry-connrefused --header "Accept-Encoding: gzip,deflate" "$2"
+        else
+           # curl doesn't get filename from the location given by the server!
+           # fortunately, we know it
+           try curl -L -o "$file" -C - --header "Accept-Encoding: gzip,deflate" "$2"
+        fi
+        # Need to decompress .exe's that are compressed, else cygwin fails
+        # Only affects cygwin, so don't barf if 'file' not installed
+        FILE=`which file 2>/dev/null`
+        case $FILE-$file in
+        /*-*.exe)
+            case `file $file` in
+            *gzip*) mv $file $file.gz; gunzip < $file.gz > $file;;
+            esac
+        esac
+
+        cd "$olddir"
+    fi
+    if [ "$3"x != ""x ]
+    then
+        verify_sha1sum $3  "$cache/$file"
+    fi
+}
+
+set_winver() {
+    echo "Setting Windows version to $1"
+    cat > "$WISOTOOL_TMP"/set-winver.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine]
+"Version"="$1"
+
+_EOF_
+    try_regedit "$WISOTOOL_TMP_WIN"\\set-winver.reg
+}
+
+set_app_winver() {
+    app="$1"
+    version="$2"
+    echo "Setting $app to $version mode"
+    (
+    echo REGEDIT4
+    echo ""
+    echo "[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\$app]"
+    echo "\"Version\"=\"$version\""
+    ) > "$WISOTOOL_TMP"/set-winver.reg
+
+    try_regedit "$WISOTOOL_TMP_WIN"\\set-winver.reg
+    rm "$WISOTOOL_TMP"/set-winver.reg
+}
+
+
+load_vcdmount()
+{
+    if test "$WINE" != ""
+    then
+        return
+    fi
+
+    # Call only on real Windows.
+    # Sets VCD_DIR and ISO_MOUNT_ROOT
+
+    # The only free mount tool I know for Windows Vista is Virtual CloneDrive,
+    # which can be downloaded at
+    # http://www.slysoft.com/en/virtual-clonedrive.html
+    # FIXME: actually install it here
+
+    # Locate vcdmount.exe.
+    VCD_DIR="Elaborate Bytes/VirtualCloneDrive"
+    if test ! -x "$programfilesdir_unix/$VCD_DIR/vcdmount.exe" && test ! -x "$programfilesdir_x86_unix/$VCD_DIR/vcdmount.exe"
+    then
+        warn "Installing Virtual CloneDrive"
+        download . http://static.slysoft.com/SetupVirtualCloneDrive.exe
+        # have to use cmd else vista won't let cygwin run .exe's?
+        chmod +x "$WISOTOOL_CACHE"/SetupVirtualCloneDrive.exe
+        cd "$WISOTOOL_CACHE"
+        cmd /c SetupVirtualCloneDrive.exe
+        cd "$olddir"
+    fi
+    if test -x "$programfilesdir_unix/$VCD_DIR/vcdmount.exe"
+    then
+        VCD_DIR="$programfilesdir_unix/$VCD_DIR"
+    elif test -x "$programfilesdir_x86_unix/$VCD_DIR/vcdmount.exe"
+    then
+        VCD_DIR="$programfilesdir_x86_unix/$VCD_DIR"
+    else
+        die "can't find Virtual CloneDrive?"
+    fi
+
+    # FIXME: Use WMI to locate the drive named
+    # "ELBY CLONEDRIVE..." using WMI as described in
+    # http://delphihaven.wordpress.com/2009/07/05/using-wmi-to-get-a-drive-friendly-name/
+    # For now, you just have to hardcode it for your system :-(
+    warn "You probably need to edit the script to tell it which drive VirtualCloneDrive picked"
+    for ISO_MOUNT_LETTER in e f g h
+    do
+        ISO_MOUNT_ROOT=/cygdrive/$ISO_MOUNT_LETTER
+        test -d $ISO_MOUNT_ROOT || break
+    done
+    test -d $ISO_MOUNT_ROOT && die "cannot find the VirtualCloneDrive"
+}
+
+iso_mount()
+{
+    my_img="$1"
+    iso_umount
+
+    if test "$WINE" = ""
+    then
+        load_vcdmount
+        my_img_win="`$XXXPATH -w $my_img | tr '\012' ' ' | sed 's/ $//'`"
+        cd "$VCD_DIR"
+        try vcdmount.exe /l=$letter "$my_img_win"
+        cd "$olddir"
+        while ! test -d "$ISO_MOUNT_ROOT"
+        do
+            echo "Waiting for mount to finish"
+            sleep 1
+        done
+    else
+        # Linux
+        case "$SUDO" in
+        gksudo)
+          try $SUDO "mkdir -p $ISO_MOUNT_ROOT"
+          try $SUDO "mount -o ro,loop $my_img $ISO_MOUNT_ROOT"
+          ;;
+        *)
+          try $SUDO mkdir -p $ISO_MOUNT_ROOT
+          try $SUDO mount -o ro,loop "$my_img" $ISO_MOUNT_ROOT
+          ;;
+        esac
+        ISO_MOUNT_LETTER=i
+        echo "Mounting as drive ${ISO_MOUNT_LETTER}:"
+        # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
+        ln -sf "$my_img" "$WINEPREFIX/dosdevices/${ISO_MOUNT_LETTER}::"
+        ln -sf "$ISO_MOUNT_ROOT" "$WINEPREFIX/dosdevices/${ISO_MOUNT_LETTER}:"
+    fi
+}
+
+iso_umount()
+{
+    if test "$WINE" = ""
+    then
+        # Windows
+        load_vcdmount
+        cd "$VCD_DIR"
+        try vcdmount.exe /u
+        cd "$olddir"
+    else
+        echo "Running $SUDO umount $ISO_MOUNT_ROOT"
+        case "$SUDO" in
+        gksudo)
+          $SUDO "umount $ISO_MOUNT_ROOT"
+          try $SUDO "rm -rf $ISO_MOUNT_ROOT"
+          ;;
+        *)
+          $SUDO umount $ISO_MOUNT_ROOT
+          try $SUDO rm -rf $ISO_MOUNT_ROOT
+          ;;
+        esac
+        rm -f "$WINEPREFIX"/dosdevices/${ISO_MOUNT_LETTER}:
+        rm -f "$WINEPREFIX"/dosdevices/${ISO_MOUNT_LETTER}::
+    fi
+}
+
+#----------------------------------------------------------------
+
+# Only needed so dd doesn't live on if user kills script
+cleanup()
+{
+  echo "Caught signal, cleaning up."
+  case "$pid" in
+  "") ;;
+  *) kill $pid ;;
+  esac
+  echo "Done cleanup, quitting."
+  exit 1
+}
+
+load_iso() {
+   # Copy ISO
+   test -r /dev/sr0 || sudo chmod 666 /dev/sr0
+   while ! dd if=/dev/sr0 of=/dev/null count=1
+   do
+     sleep 1
+   done
+   trap cleanup 1 2 3 6
+   dd if=/dev/sr0 of="$WISOTOOL_CACHE"/temp.iso bs=2048 conv=noerror,sync & pid=$!
+   while ps -p $pid > /dev/null 2>&1
+   do
+     sleep 5
+     ls -l "$WISOTOOL_CACHE"/temp.iso
+   done
+   pid=""
+
+   echo "Computing sha1sum..."
+   # FIXME: can't handle spaces in "$WISOTOOL_CACHE"
+   sum=`sha1sum "$WISOTOOL_CACHE"/temp.iso | awk '{print $1}'`
+
+   mv "$WISOTOOL_CACHE"/temp.iso "$WISOTOOL_CACHE"/$sum.iso
+   if test "$1" != ""
+   then
+       # FIXME: in gui, prompt user for key if load= was chosen?
+       echo "$1" > "$WISOTOOL_CACHE"/$sum.txt
+   fi
+
+   migrate_files
+
+   eject
+}
+
+#----------------------------------------------------------------
+
+ahk_do() {
+   echo "$@" | tr ';' '\012' | sed "s/\$//" > "$WISOTOOL_TMP"/tmp.ahk
+   $WINE "$programfilesdir_unix/AutoHotkey/AutoHotkey.exe" "$WISOTOOL_TMP_WIN"\\tmp.ahk
+}
+
+# Put any helper functions needed here:
+ahk_helpers() {
+   cat > helper_tmp << __EOF__
+   SetControlDelay, -1
+   WINDOW_CLICK_LOOP(windowname, button, windowtext="", loops=10, wintimeout=10)
+{
+    WinWait, %windowname%, %windowtext%, %wintimeout%
+    if ErrorLevel
+    {
+        exit 1
+    }
+    IfWinNotActive, %windowname%, %windowtext%
+    {
+        WinActivate, %windowname%, %windowtext%
+    }
+
+    Loop, %loops%
+    {
+        IfWinExist, %windowname%, %windowtext%
+        {
+            ControlClick, %button%, %windowname%, %windowtext%
+        }
+        Else
+        {
+            break
+        }
+        sleep 1000
+    }
+
+}
+__EOF__
+
+cat helper_tmp | tr ';' '\012' | sed "s/\$//" > helpers.ahk
+
+}
+
+#----------------------------------------------------------------
+
+load_autohotkey()
+{
+    test -f "$programfilesdir_unix/AutoHotkey/AutoHotkey.exe" || try sh "$WINETRICKS" -q autohotkey
+}
+
+#----------------------------------------------------------------
+
+# Must precede first call to announce_verb
+file_map="case \$1 in "
+
+announce_verb()
+{
+    # Usage: announce_verb verbname "description" file1 file2 ...
+    verbname=$1
+    shift
+    description="$1"
+    shift
+    for file
+    do
+       file_map="$file_map $file) echo $verbname;; "
+    done
+}
+
+map_file_to_verb()
+{
+   eval $file_map
+}
+
+list_available_verbs()
+{
+    find $WISOTOOL_CACHE/. -type f | sed 's,.*/,,' > /tmp/wfiles
+    for file in `cat /tmp/wfiles`
+    do
+        map_file_to_verb $file
+    done | sort -u
+}
+
+migrate_files()
+{
+    # Only needed if you load an iso before wisotools supports it, and you then update wisotools
+    for file in $WISOTOOL_CACHE/*.iso
+    do
+        barefile=`basename $file`
+        verb=`map_file_to_verb $barefile`
+        if test "$verb" != ""
+        then
+            mkdir -p $WISOTOOL_CACHE/$verb
+            movee=`echo $file | sed 's/.iso$/.*/' `
+            echo Moving $movee to $WISOTOOL_CACHE/$verb/
+            mv $movee $WISOTOOL_CACHE/$verb/
+        fi
+    done
+}
+
+#----------------------------------------------------------------
+
+announce_verb assassinscreed "Assassins Creed (Ubisoft, 2008)" a62112860423b32bf3ea77df6f5fe0b60c772de2.iso
+
+load_assassinscreed() {
+    load_autohotkey
+
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/a62112860423b32bf3ea77df6f5fe0b60c772de2.iso
+    ahk_do "
+        run ${ISO_MOUNT_LETTER}:setup.exe
+        SetTitleMatchMode, 2
+        winwait, InstallShield Wizard, Language
+        ControlClick Next, InstallShield Wizard
+        winwait, InstallShield Wizard, Welcome
+        ControlClick Next, InstallShield Wizard
+        winwait, InstallShield Wizard, License
+        sleep 500
+        send a{Enter}
+        winwait, InstallShield Wizard, begin
+        sleep 1000
+        ControlClick &Install, InstallShield Wizard
+        winwait, Product Registration, register
+        ControlClick Never, Product Registration
+        ControlClick Button1, Product Registration
+        winwait, InstallShield Wizard, inish
+        send {Enter}
+    "
+    iso_umount
+}
+
+#----------------------------------------------------------------
+
+# http://appdb.winehq.org/objectManager.php?sClass=version&iId=408
+announce_verb baldursgate2       "Baldur's Gate 2 - Shadows of Amn (Bioware, 2000)" \
+  cc9359dce1a7be6c64bb6f8e6dea6d14d4a5f716.iso \
+  429872605dad10433c3c581a1c11eba4d0988c46.iso \
+  a6d18fcd7d16ddafbda7aa028b117566b1e09d2a.iso \
+  94ed41768949c89a1a6479305f00a9cee1d2dcd5.iso.iso
+
+load_baldursgate2() {
+    load_autohotkey
+
+    # Possible wine bug: cd is still in use, even if wine eject is used. Workaround it by
+    # copying all the cd's to a directory, and running the installer from there.
+    # You still need the first CD mounted at the end, however...
+    if test ! -d "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+    then
+        try mkdir -p "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+        iso_mount "$WISOTOOL_CACHE"/$PACKAGE/cc9359dce1a7be6c64bb6f8e6dea6d14d4a5f716.iso
+        sleep 5s
+        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+        iso_mount "$WISOTOOL_CACHE"/$PACKAGE/429872605dad10433c3c581a1c11eba4d0988c46.iso
+        sleep 5s
+        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+        iso_mount "$WISOTOOL_CACHE"/$PACKAGE/a6d18fcd7d16ddafbda7aa028b117566b1e09d2a.iso
+        sleep 5s
+        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+        iso_mount "$WISOTOOL_CACHE"/$PACKAGE/94ed41768949c89a1a6479305f00a9cee1d2dcd5.iso
+        sleep 5s
+        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+    fi
+    
+    # Will perform a full install, so no cd's needed
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/cc9359dce1a7be6c64bb6f8e6dea6d14d4a5f716.iso
+    
+    ahk_do "
+        run "$WISOTOOL_CACHE"/$PACKAGE/tempcd/setup.exe
+        winwait, Baldur's Gate, Welcome to the Baldur's Gate
+        send {N}
+        winwait, Baldur's Gate, Please read the following License Agreement
+        sleep 500
+        ControlClick, &Yes, Baldur's Gate, Please read the following License Agreement
+        winwait, Baldur's Gate, Setup will install Baldur's Gate
+        send {N}
+        winwait, Baldur's Gate, Click the type of Setup you prefer
+        send {F}
+        send {Enter}
+        winwait, Baldur's Gate, Setup will add program icons
+        sleep 500
+        send {Enter}
+        winwait, Setup Needs The Next Disk
+        Send {Home}
+        Send {Shift down}
+        Send {End}
+        Send I:{Enter}
+        winwait, Information
+        Send {Enter}
+        Sleep 5000
+        process, wait, Promo.exe, 5
+        promopid = %ErrorLevel%
+        winclose, ahk_pid %promopid%
+        winwait, Baldur's Gate, Setup has finished installing
+        Send {Enter}
+        "
+    try rm -rf "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+}
+
+#----------------------------------------------------------------
+
+announce_verb diablo2       "Diablo II (Blizzard, 2000)" \
+  e20efb1ea60e58b4a25275a00571aabfe3ab4511.iso \
+  51e2c630d5dd017e6168a8cf3ee24e39010316d9.iso \
+  382ea98f270e39855b558b8fac0d609712a54ae8.iso \
+  e20efb1ea60e58b4a25275a00571aabfe3ab4511.iso
+
+load_diablo2() {
+    warn "You must have already done 'wisotool load=YOURKEY' on the install disc, and 'wisotool load' on the other two discs." 
+    load_autohotkey
+    download diablo2 http://ftp.blizzard.com/pub/diablo2/patches/PC/D2Patch_113c.exe c78761bfb06999a9788f25a23a1ed30260ffb8ab
+
+    # Force clean-ish install
+    test -d "$programfilesdir_unix/Diablo II" && rm -rf "$programfilesdir_unix/Diablo II"
+
+    # Get user's key
+    DIABLOIIKEY=`cat "$WISOTOOL_CACHE"/$PACKAGE/e20efb1ea60e58b4a25275a00571aabfe3ab4511.txt | tr -d -`
+
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/e20efb1ea60e58b4a25275a00571aabfe3ab4511.iso
+    ahk_do "
+        run ${ISO_MOUNT_LETTER}:setup.exe
+        winwait, Diablo II Setup
+        send {i}
+        winwait, Choose Installation Size
+        send {u}
+        send {Enter}
+        send {Raw}$USERNAME
+        send {Tab}{Raw}$DIABLOIIKEY
+        send {Enter}
+        winwait, Diablo II - choose install directory
+        send {Enter}
+        winwait, Desktop Shortcut
+        send {N}; winwait, Insert Disc"
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/51e2c630d5dd017e6168a8cf3ee24e39010316d9.iso
+    # Needed by patch 1.13c to avoid disc swapping
+    cp "$ISO_MOUNT_ROOT"/d2music.mpq "$programfilesdir_unix/Diablo II/"
+    ahk_do "send, {Enter}; Sleep 1000; winwait, Insert Disc"
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/382ea98f270e39855b558b8fac0d609712a54ae8.iso
+    ahk_do "send, {Enter}; Sleep 1000; winwait, Insert Disc"
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/e20efb1ea60e58b4a25275a00571aabfe3ab4511.iso
+    ahk_do "
+        send, {Enter}
+        Sleep 1000
+        winwait, View ReadMe?
+        ControlClick &No, View ReadMe?
+        winwait, Register Diablo II Electronically?
+        send {N}
+        winwait, Diablo II Setup - Video Test
+        ControlClick &Cancel, Diablo II Setup - Video Test
+        winclose, Diablo II Setup"
+    iso_umount
+
+    try "$WINE" "$WISOTOOL_CACHE"/diablo2/D2Patch_113c.exe
+    # Dagnabbit, the darn updater starts the game after it updates, no matter what I do?
+    ahk_do "
+        winwait Blizzard Updater v2.72
+        send {Enter}
+        winwait Diablo II
+        ControlClick &Cancel, Diablo II"
+
+    warn "When starting the game, be patient, wait until the menu appears.  The game seems to hang if it looses focus, see bug 14456, you may need to set winecfg to virtual desktop."
+}
+
+#----------------------------------------------------------------
+
+announce_verb dragonage     "Dragon Age: Origins (Bioware, 2009)" 705a6b06d0dd807bf62b4391d278649d728ebda4.iso
+
+load_dragonage() {
+    warn "You must have already done 'wisotool load=YOURKEY' on the install disc." 
+    load_autohotkey
+
+    # Get user's key
+    DRAGONAGEKEY=`cat "$WISOTOOL_CACHE"/$PACKAGE/705a6b06d0dd807bf62b4391d278649d728ebda4.txt | tr -d -`
+
+    # Installer has a non-fatal crash on exit, so ignore it.
+    sh "$WINETRICKS" -q nocrashdialog physx vcrun2005
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/705a6b06d0dd807bf62b4391d278649d728ebda4.iso
+
+    ahk_do "
+        Run, ${ISO_MOUNT_LETTER}:Setup.exe
+        SetTitleMatchMode, 2
+        winwait, Installer Language
+        send {Enter}
+        winwait, Dragon Age: Origins Setup
+        ControlClick Next, Dragon Age: Origins Setup
+        winwait, Dragon Age: Origins Setup, End User License
+        ControlClick Button4, Dragon Age: Origins Setup
+        ControlClick I agree, Dragon Age: Origins Setup
+        SetTitleMatchMode, 1
+        winwait, Dragon Age: Origins, Registration
+        send $DRAGONAGEKEY
+        send {Enter}
+        winwait, Dragon Age: Origins Setup, Install Type
+        Sleep 1000
+        send {Enter}
+        loop 100
+        {
+            IfWinExist, Dragon Age: Origins Setup
+                sleep 60000
+        }
+        exit 0
+    "
+    iso_umount
+}
+
+#----------------------------------------------------------------
+
+announce_verb morrowind     "The Elder Scrolls III: Morrowind (Bethesda, 2002)" \
+  c8368ed30d3f3fcd7fccf8bffcfcdf0a6d4cb68b.iso
+
+load_morrowind_goty() {
+    cd $WISOTOOL_TMP
+    # FIXME: Untested on Windows!
+
+    # FIXME: Only supports the main installer, and the construction set (which follows automatically)
+    # eventually should support the expansions as well
+    load_autohotkey
+
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/c8368ed30d3f3fcd7fccf8bffcfcdf0a6d4cb68b.iso
+    ahk_helpers
+    cat > morrowind.tmp << __EOF__
+#include helpers.ahk
+Run, ${ISO_MOUNT_LETTER}:Setup.exe
+
+WINDOW_CLICK_LOOP("The Elder Scrolls III:  Morrowind Setup", "&Yes", "The Elder Scrolls III:  Morrowind (License Agreement)", 10, 100)
+WINDOW_CLICK_LOOP("The Elder Scrolls III:  Morrowind Setup", "&Next >", "Please read the following important information.", 10, 100)
+WINDOW_CLICK_LOOP("The Elder Scrolls III:  Morrowind Setup", "&Next >", "Setup will install Morrowind in the following folder.", 10, 100)
+WINDOW_CLICK_LOOP("The Elder Scrolls III:  Morrowind Setup", "&Next >", "Setup has enough information to start copying the program files.", 10, 100)
+
+; Then launched construction set setup
+WINDOW_CLICK_LOOP("The Elder Scrolls Construction Set Setup", "&Yes", "The Elder Scrolls Construction Set (License Agreement)", 10, 500)
+
+; No confirm screen? (FIXME: verify on windows)
+WINDOW_CLICK_LOOP("The Elder Scrolls Construction Set Setup", "&Next >", "Setup has enough information to start copying the program files", 10, 100)
+WINDOW_CLICK_LOOP("The Elder Scrolls Construction Set Setup", "Finish", "Setup has finished installing TES Construction Set on your computer.", 10, 100)
+
+; Exits the Construction set setup on its own, and goes back to main installer
+; The text box is split into two lines separately, not using word wrap, hence the weird sentence..
+WINDOW_CLICK_LOOP("Question", "&No", "Would you like to register Morrowind online now?  Make sure", 10, 100)
+
+; Sometimes finicky here, short sleep here works around it
+Sleep 10000
+WINDOW_CLICK_LOOP("The Elder Scrolls III:  Morrowind Setup", "Finish", "Setup has finished installing Morrowind on your computer.", 10, 100)
+WINDOW_CLICK_LOOP("Information", "&OK", "You have installed Windows XP, which includes DirectX 8.1", 10, 100)
+
+exit 0
+__EOF__
+sed -e 's/$/\r/' morrowind.tmp > morrowind.ahk
+    try $WINE "$programfilesdir_unix/AutoHotkey/AutoHotkey.exe" morrowind.ahk
+
+    sleep 30s
+    iso_umount
+    cd $olddir
+}
+
+#----------------------------------------------------------------
+
+announce_verb plantsvszombies "Plants vs. Zombies (PopCap Games, 2009)" PlantsVsZombiesSetup.exe
+
+load_plantsvszombies() {
+    load_autohotkey
+
+    if ! test -f "$WISOTOOL_CACHE/plantsvszombies/PlantsVsZombiesSetup.exe"
+    then
+        download plantsvszombies "http://downloads.popcap.com/www/popcap_downloads/PlantsVsZombiesSetup.exe" fcae7b8c63d9a5b5f6ed783232bc5f612fd5c963
+    fi
+
+    cd "$WISOTOOL_CACHE/plantsvszombies"
+    ahk_do "
+        run PlantsVsZombiesSetup.exe
+        winwait, Plants vs. Zombies Installer
+        send {Enter}
+        winwait, Plants vs. Zombies License Agreement
+        ControlClick Button1
+        winwait, Plants vs. Zombies Installation Complete!
+        send {Space}{Enter}
+        ControlClick, x309 y278, Plants vs. Zombies Installation Complete!,,,, Pos
+    "
+}
+
+#----------------------------------------------------------------
+
+announce_verb sims3         "The Sims 3 (EA, 2009)" 8a82a067f3bb8f68d034a06954e9a16ea381958a.iso
+
+load_sims3() {
+    load_autohotkey
+
+    if workaround_wine_bug 22350
+    then
+        try sh "$WINETRICKS" -q dotnet20
+    fi
+
+    if workaround_wine_bug 21517
+    then
+        try sh "$WINETRICKS" -q d3dx9
+    fi
+    
+    # Get user's key
+    KEY=`cat "$WISOTOOL_CACHE"/$PACKAGE/8a82a067f3bb8f68d034a06954e9a16ea381958a.txt | tr -d -`
+
+    echo KEY is $KEY
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/8a82a067f3bb8f68d034a06954e9a16ea381958a.iso
+    # Default lang, USA, accept defaults, uncheck EA dl mgr, uncheck readme
+    ahk_do "
+        run ${ISO_MOUNT_LETTER}:Sims3Setup.exe
+        winwait, Choose Setup Language
+        send {Enter}
+        SetTitleMatchMode, 2
+        winwait, - InstallShield Wizard
+        sleep 1000
+        ControlClick &Next >, - InstallShield Wizard
+        sleep 1000
+        send uuuuuu{Tab}{Tab}{Enter}
+        sleep 1000
+        send a{Enter}
+        sleep 1000
+        send {Raw}$KEY
+        send {Enter}
+        winwait, - InstallShield Wizard, Setup Type
+        send {Enter}
+        winwait, - InstallShield Wizard, Click Install to begin
+        send {Enter}
+        winwait, - InstallShield Wizard, EA Download Manager
+        ControlClick Yes, - InstallShield Wizard
+        send {Enter}
+        winwait, - InstallShield Wizard, Complete
+        ControlClick View the readme file, - InstallShield Wizard
+        ControlClick Finish, - InstallShield Wizard
+    "
+    iso_umount
+    cd "$programfilesdir_unix/Electronic Arts/The Sims 3/Game/Bin"
+    
+    currentversion=$(head -n 1 skuversion.txt | awk '{print $3}' | tr -d '\r\n')
+    # FIXME: Find a way of determining the newest version from ea.com. The below code works, but the xml is outdated, and returns 1.4.6.00002. For now, hardcode it.
+    # newestversion=$(wget -O - http://na.llnet.eadownloads.ea.com/u/f/sims/sims3/patches/sims3_sku2_update_manifest.xml | grep NewVersion= | head -n1 | awk -F\" '{print $2}')
+    newestversion=1.6.6.002001
+    download sims3 http://na.llnet.eadownloads.ea.com/u/f/sims/sims3/patches/Sims3_${newestversion}_from_${currentversion}.exe
+
+    cd "$WISOTOOL_CACHE"/sims3
+    ahk_do "
+        run Sims3_${newestversion}_from_${currentversion}.exe
+        SetTitleMatchMode, 2
+        winwait, - InstallShield Wizard, Complete
+        ControlClick Finish, - InstallShield Wizard
+    "
+
+}
+
+#----------------------------------------------------------------
+
+announce_verb starcraft     "Starcraft Battle Chest (Blizzard, 1998)" 8d6cc11bc76b8af22868a95e17e0282277e9c53c.iso 966bae1f2e2035e066139e78137e623c92838254.iso
+
+load_starcraft() {
+    warn "You must have already done 'wisotool load=YOURKEY' on the install disc, and 'wisotool load' on the other disc." 
+    load_autohotkey
+
+    # Force clean-ish install
+    test -d "$programfilesdir_unix/StarCraft" && rm -rf "$programfilesdir_unix/StarCraft"
+
+    # Get user's key
+    KEY=`cat "$WISOTOOL_CACHE"/$PACKAGE/8d6cc11bc76b8af22868a95e17e0282277e9c53c.txt`
+
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/8d6cc11bc76b8af22868a95e17e0282277e9c53c.iso
+    ahk_do "
+        run ${ISO_MOUNT_LETTER}:StarCraft (Windows).exe
+        winwait, StarCraft - Brood War
+        send {i}
+        winwait, End User License Agreement
+        Sleep 2000
+        send {a}
+        winwait, CD-Key
+        send $USERNAME
+        send {Tab}$KEY
+        send {Enter}
+        winwait, Installation Destination Directory
+        send {Enter}
+        winwait,,Please insert"
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/966bae1f2e2035e066139e78137e623c92838254.iso
+    ahk_do "
+        send, {Enter}
+        SetTitleMatchMode, 2
+        winwait, - StarCraft
+        winwaitclose, - StarCraft
+        Sleep 2000
+        send {e}"
+    iso_umount
+
+    # FIXME: apply patch, follow instructions in http://us.blizzard.com/support/article.xml?articleId=21150
+}
+
+#----------------------------------------------------------------
+
+announce_verb starcraft2    "Starcraft II beta (Blizzard, 2010)" 
+
+load_starcraft2() {
+    load_autohotkey
+
+    if test -d "$programfilesdir_unix/StarCraft II Beta"
+    then
+        warn "$PACKAGE already installed, skipping."
+        return 0
+    fi
+
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE/StarCraft II Beta enUS 13891 Installer/Installer.exe"
+    then
+        die "You must have run the downloader and told it to save in $WISOTOOL_CACHE/$PACKAGE"
+    fi
+
+    if ! test -f "$WINDIR"/system32/plugin.ocx && workaround_wine_bug 22089
+    then
+        try sh "$WINETRICKS" -q ie6
+    fi
+
+    cd "$WISOTOOL_CACHE/$PACKAGE/StarCraft II Beta enUS 13891 Installer"
+    ahk_do "
+        SetTitleMatchMode, 2
+        run Installer.exe
+        winwait, StarCraft II Beta Installer
+        ControlClick, x300 y200
+        winwait, End User License Agreement
+        winactivate
+        MouseMove, 300, 300
+        Click WheelDown, 70
+        Sleep, 1000
+        ControlClick, Agree
+        winwait, Installation Destination Directory
+        send {Enter}
+        winwait, StarCraft II v, update was successful
+        winclose
+    "
+}
+
+#----------------------------------------------------------------
+
+announce_verb stfu          "Starwars: The Force Unleashed (Aspyr, 2009)" 0d0f4e826c3a04542a68d7bcc971f4df7526965b.iso 5d6e2eb1b08b9d4a71b2390b385c3048ec91f3df.iso
+
+load_stfu() {
+    load_autohotkey
+
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/0d0f4e826c3a04542a68d7bcc971f4df7526965b.iso
+    ahk_do "
+        run ${ISO_MOUNT_LETTER}:setup.exe
+        SetTitleMatchMode, 2
+        winwait, Select Setup Language
+        send {Enter}
+        winwait, Setup, Welcome
+        send {Enter}
+        winwait, Setup, License
+        sleep 500
+        send {Tab}a{Space}{Enter}
+        winwait, Setup, Destination
+        send {Enter}
+        winwait, Setup, Menu
+        send {Enter}
+        winwait, Setup, Tasks
+        send {Space}{Enter}
+        winwait, Setup, begin
+        sleep 1000
+        ControlClick &Install, Setup
+        winwait, Setup Needs the Next Disk
+    "
+    iso_umount
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/5d6e2eb1b08b9d4a71b2390b385c3048ec91f3df.iso
+    ahk_do "
+        SetTitleMatchMode, 2
+        send {Enter}
+        winwait, Setup, Completing
+        ControlClick Finish
+    "
+    iso_umount
+
+    # Patch to 1.2
+    # FIXME: add a commandline option to disable patching in general
+    # URL from http://www.lucasfiles.com/index.php?s=&action=download&id=1537&agree=true 
+    # See also http://www.forceunleashed.net/news/force-unleashed-patch-1-2/
+    download stfu http://xfer.lfnetwork.com/lucasfiles.com/downloads/1537/SWTFU_PC_EF_1.2_Update.exe cfd8043c4b86f4dc0ff0acd4c108b11c4b76e716
+    cd "$WISOTOOL_CACHE/stfu"
+    ahk_do "
+        run SWTFU_PC_EF_1.2_Update.exe
+        SetTitleMatchMode, 2
+        winwait, Patch
+        send {Enter}
+        winwait, Patch, Successful
+        send {Enter}
+    "
+}
+
+#----------------------------------------------------------------
+
+announce_verb wog           "World of Goo demo (2D Boy, 2008)" WorldOfGooDemo.1.0.exe
+
+load_wog() {
+    load_autohotkey
+
+    if ! test -f "$WISOTOOL_CACHE/wog/WorldOfGooDemo.1.0.exe"
+    then
+        # Get temporary download location
+        download wog "http://www.worldofgoo.com/dl2.php?lk=demo&filename=WorldOfGooDemo.1.0.exe"
+        URL=`cat "$WISOTOOL_CACHE/wog/dl2.php?lk=demo&filename=WorldOfGooDemo.1.0.exe" | 
+           grep WorldOfGooDemo.1.0.exe | sed 's,.*http,http,;s,".*,,'`
+        rm "$WISOTOOL_CACHE/wog/dl2.php?lk=demo&filename=WorldOfGooDemo.1.0.exe"
+       
+        download wog "$URL" e61d8253b9fe0663cb3c69018bb3d2ec6152d488
+    fi
+
+    cd "$WISOTOOL_CACHE/wog"
+    ahk_do "
+        run WorldOfGooDemo.1.0.exe
+        winwait, World of Goo Setup, License Agreement
+	send {Enter}
+        winwait, World of Goo Setup, Choose Components
+	send {Enter}
+        winwait, World of Goo Setup, Choose Install Location
+	send {Enter}
+        winwait, World of Goo Setup, Thank you
+	ControlClick, Make me dirty right now, World of Goo Setup, Thank you
+	send {Enter}
+        "
+}
+
+#----------------------------------------------------------------
+
+print_version() {
+    echo "$VERSION"
+}
+
+#--------- Main program -----------------------------------------
+
+# Must follow last announce_verb
+file_map="$file_map esac"
+
+# On Solaris, choose more modern commands (needed for id -u).
+case `uname -s` in
+SunOS) PATH="/usr/xpg6/bin:/usr/xpg4/bin:$PATH"
+      ;;
+esac
+
+case "$1" in
+-V|--version)
+    echo "wisotool version $VERSION.  (C) 2007-2010 Dan Kegel et al.  LGPL."
+    exit 0
+    ;;
+esac
+
+detect_menu
+detect_sudo
+
+GUI=0
+case x"$1" in
+x) GUI=1 ;;
+x-h|x--help|xhelp) usage ; exit 1 ;;
+esac
+
+case "$OS" in
+ "Windows_NT")
+  ;;
+ *)
+  # Prevent running with wrong user id.
+  # It's bad to create files as the wrong user!
+  die_if_user_not_dirowner "$WINEPREFIX"
+  die_if_user_not_dirowner "$WISOTOOL_CACHE"
+
+  if [ ! -x "`which "$WINE" 2>/dev/null`" ]
+  then
+      die "Cannot find wine ($WINE)"
+  fi
+
+  # Create wineprefix if not already there
+  test -d "$WINEPREFIX" || WINEDLLOVERRIDES=mshtml= $WINE cmd /c echo yes > /dev/null 2>&1
+  ;;
+esac
+
+mkdir -p "$WISOTOOL_TMP"
+
+case $GUI in
+1) showmenu ; set $todo ;;
+esac
+
+mkdir -p "$WISOTOOL_CACHE"
+olddir=`pwd`
+srcdir=`dirname $0`
+srcdir=`cd $srcdir; pwd`
+
+WINETRICKS="$srcdir/winetricks"
+if ! test -f "$WINETRICKS"
+then
+    WINETRICKS="$WISOTOOL_CACHE/winetricks"
+    wget -o "$WINETRICKS" http://kegel.com/wine/winetricks
+fi
+
+# Clean up after failed runs, if needed
+rm -rf "$WISOTOOL_TMP"/*
+
+# The folder-name is localized!
+programfilesdir_win="`unset WINEDEBUG; WINEDLLOVERRIDES=mshtml= $WINE cmd.exe /c echo "%ProgramFiles%" | tr -d '\015'`"
+test x"$programfilesdir_win" != x || die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string"
+programfilesdir_unix="`unset WINEDEBUG; $XXXPATH -u "$programfilesdir_win" | tr -d '\015' `"
+test x"$programfilesdir_unix" != x || die "winepath -u $programfilesdir_win returned empty string"
+wisotool_tmp_win="`$XXXPATH -w "$WISOTOOL_TMP"`"
+
+# 64 bit windows has a second directory for program files
+programfilesdir_x86_win="${programfilesdir_win} (x86)"
+programfilesdir_x86_unix="${programfilesdir_unix} (x86)"
+if ! test -d "$programfilesdir_x86_unix"
+then
+    programfilesdir_x86_win="${programfilesdir_win}"
+    programfilesdir_x86_unix="${programfilesdir_unix}"
+fi
+export programfilesdir_x86_unix
+
+# (Fixme: get fonts path from SHGetFolderPath
+# See also http://blogs.msdn.com/oldnewthing/archive/2003/11/03/55532.aspx)
+#
+# Did the user rename Fonts to fonts?
+if test ! -d "$WINDIR"/Fonts && test -d "$WINDIR"/fonts
+then
+    winefontsdir="$WINDIR"/fonts
+else
+    winefontsdir="$WINDIR"/Fonts
+fi
+
+# Mac folks tend to not have sha1sum, but we can make do with openssl
+if [ -x "`which sha1sum 2>/dev/null`" ]
+then
+   SHA1SUM="sha1sum"
+elif [ -x "`which openssl 2>/dev/null`" ]
+then
+   SHA1SUM="openssl dgst -sha1"
+else
+   die "No sha1sum utility available."
+fi
+
+if [ ! -x "`which unzip 2>/dev/null`" ]
+then
+    die "Cannot find unzip.  Please install it (e.g. 'sudo apt-get install unzip' or 'sudo yum install unzip')."
+fi
+
+while test "$1" != ""
+do
+    PACKAGE=$1
+    case $1 in
+    -q) WISOTOOL_QUIET="/q"
+        WISOTOOL_QUIET_T="/qt" # Microsoft Control Pad
+        WISOTOOL_UNIXQUIET="-q"
+        WISOTOOL_SILENT="/silent"
+        WISOTOOL_UNIXSILENT="-silent"
+        WISOTOOL_S="/S"                 # for NSIS installers
+        WINEDEBUG=${WINEDEBUG:-"fixme-all"}
+        export WINEDEBUG
+        ;;
+    -v) set -x;;
+    assassinscreed) load_assassinscreed;;
+    baldursgate2) load_baldursgate2;;
+    diablo2) load_diablo2;;
+    dragonage) load_dragonage;;
+    ls) list_available_verbs;;
+    load) load_iso;;
+    load=*) key="`echo $1 | sed 's/load=//'`"; load_iso "$key";;
+    migrate) migrate_files;;
+    morrowind|morrowind_goty) load_morrowind_goty;;
+    plantsvszombies) load_plantsvszombies;;
+    sims3) load_sims3;;
+    starcraft) load_starcraft;;
+    starcraft2) load_starcraft2;;
+    stfu) load_stfu;;
+    version) print_version;;
+    wog) load_wog;;
+    *) echo Unknown arg $1; usage ; exit 1;;
+    esac
+    # Provide a bit of feedback
+    test "$WISOTOOL_QUIET" = "" && case $1 in
+    -q) echo Setting quiet mode;;
+    -v) echo Setting verbose mode;;
+    *) #echo "$1 done" ;;
+    esac
+    shift
+
+    # User-specific postinstall hook.  
+    # Source it so the script can call download() if needed.
+    if [ -f "$WISOTOOL_CACHE"/$PACKAGE/$PACKAGE-postinstall.sh ]
+    then
+        ( . "$WISOTOOL_CACHE"/$PACKAGE/$PACKAGE-postinstall.sh )
+    fi
+
+    # cleanup
+    rm -rf "$WISOTOOL_TMP"/* "$WISOTOOL_TMP/tmp.ahk"
+done
+
+# remove the temp directory
+rm -rf "$WISOTOOL_TMP"
+
+#test "$WISOTOOL_QUIET" = "" && echo wisotool done. || true

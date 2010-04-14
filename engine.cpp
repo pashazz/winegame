@@ -224,13 +224,13 @@ void engine::lauchPreset(QString preset, bool msg)
     }
     QSettings s(workdir + CTRL, QSettings::IniFormat, this);
 //which wine
-    {
+
     QProcess *proc = new QProcess (this);
     proc->start ("which wine");
     proc->waitForFinished();
      wineBinary = proc->readAll();
      qDebug() << "engine: setting wine binary to " << wineBinary; // да я знаю, что можно было обойтись одной строкой
- }
+
  //ставим компоненты
      QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
      //Для вычисления префикса нам не подходят стандартные методы Engine. Поэтому, воспользуемся своим
@@ -303,7 +303,6 @@ void engine::lauchPreset(QString preset, bool msg)
         }
      }
      qDebug() << tr("engine: starting Windows program %1 with wine binary %2").arg(exe).arg(wineBinary);
-     QProcess *proc = new QProcess (this);
      proc->setProcessEnvironment(env);;
      proc->start(wineBinary+ " \"" + exe  +"\"" );
      proc->waitForFinished(-1);
@@ -321,9 +320,7 @@ void engine::lauchPreset(QString preset, bool msg)
      if (result == QMessageBox::No)
          qApp->quit();
      }
-
  }
-
 
 QString engine::getName(QString path)
 {

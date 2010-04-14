@@ -18,6 +18,12 @@ protected:
 
 private:
     Ui::MainWindow *ui;
+
+private slots:
+
+
+private slots:
+    void on_action_About_triggered();
 };
 
 #endif // MAINWINDOW_H
