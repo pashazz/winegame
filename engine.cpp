@@ -254,6 +254,13 @@ void engine::lauchPreset(QString preset, bool msg)
              setMemory(mem);
          }
      }
+     proc->setProcessEnvironment(env);
+     proc->setWorkingDirectory(workdir);
+     if (QFile::exists(workdir + "/preinst"))
+     {
+         proc->start ("\"" +workdir + "/preinst\"");
+     proc->waitForFinished(-1);
+ }
      //запускаем EXE
      //теперь ищем упоминание о запускаемом файле в control
      QString exefile = s.value("application/setup").toString();
@@ -301,12 +308,21 @@ void engine::lauchPreset(QString preset, bool msg)
      proc->start(wineBinary+ " \"" + exe  +"\"" );
      proc->waitForFinished(-1);
 
+     //ну а теперь финальная часть, запуск postinst
+     if (QFile::exists(workdir + "/postinst"))
+     {
+     proc->start("\"" + workdir + "/postinst\"");
+     proc->waitForFinished(-1);
+ }
+     makefix(prefix);
+
      if (msg) {
      int result = QMessageBox::question(0, tr("Question"), tr("Would you like to install a new game?"), QMessageBox::Yes, QMessageBox::No);
      if (result == QMessageBox::No)
          qApp->quit();
      }
-     }
+
+ }
 
 
 QString engine::getName(QString path)
