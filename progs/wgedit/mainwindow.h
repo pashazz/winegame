@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtGui>
 
 namespace Ui {
     class MainWindow;
@@ -18,11 +18,13 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-QSettings *s;
+QSettings  *s;
+QDir myDir;
 private slots:
 
 
 private slots:
+    void on_actNew_triggered();
     void on_action_About_triggered();
 };
 

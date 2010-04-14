@@ -44,3 +44,11 @@ void MainWindow::on_action_About_triggered()
     AboutDialog *dlg = new AboutDialog(this);
     dlg->exec();
 }
+
+void MainWindow::on_actNew_triggered()
+{
+    //создание нового пресета
+    QString dirName = QFileDialog::getExistingDirectory(this, tr("Select a directory for winegame package"));
+    myDir = QDir(dirName);
+    //TODO & coming soon
+}
