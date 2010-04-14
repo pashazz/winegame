@@ -389,7 +389,8 @@ QIcon engine::getIcon(QString path)
         return icon;
 }
     else
-        return QIcon();
+        return QIcon::fromTheme("application-default-icon");
+
 }
 QString engine::getPrefixName(QString path)
 {

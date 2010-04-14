@@ -18,7 +18,7 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-
+QSettings *s;
 private slots:
 
 

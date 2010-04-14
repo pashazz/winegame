@@ -83,6 +83,7 @@ void MainWindow::buildList()
     buildPreset();
     //а тут мы создаем родительский node
     QTreeWidgetItem *par = new QTreeWidgetItem (ui->lstGames);
+    par->setIcon(0, QIcon(":/desktop/winegame.png"));
     par->setText(0, tr("Applications"));
     foreach (QString entry, wdir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
     {
@@ -99,6 +100,7 @@ void MainWindow::buildList()
 void MainWindow::buildPreset() {
     QTreeWidgetItem *par = new QTreeWidgetItem (ui->lstGames);
     par->setText(0, tr("Pre-Sets (Templates)"));
+    par->setIcon(0, QIcon(":/desktop/winegame.png"));
    QDir dir (gamepath + "/presets");
    foreach (QString entry, dir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
    {
@@ -106,8 +108,8 @@ void MainWindow::buildPreset() {
          it->setText(0,  engine::getName( gamepath + "/presets/" + QDir::separator() + entry));
          it->setData(0,Qt::UserRole,  entry);
        it->setData(0, 64,  true); // ролью 64 мы определяем, что это пресет.
-       }
-   }
+     }
+}
 
 void MainWindow::lauchEngine(QString pkgpath)
 {
@@ -148,9 +150,6 @@ void MainWindow::on_buttonBox_accepted()
         QMessageBox::warning(this, tr("Warning"), tr("Select item to run"));
     }
 }
-
-
-
 
 void MainWindow::saveGeom()
 {
