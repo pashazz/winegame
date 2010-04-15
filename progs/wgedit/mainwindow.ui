@@ -76,7 +76,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QTextEdit" name="textEdit"/>
+           <widget class="QTextEdit" name="txtNote">
+            <property name="statusTip">
+             <string>You can use HTML here :)</string>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QPushButton" name="pushButton">
@@ -240,7 +244,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="action_About_Qt">
    <property name="text">
-    <string>&amp;About Qt</string>
+    <string>About &amp;Qt</string>
    </property>
   </action>
   <action name="action_Quit">
