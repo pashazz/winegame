@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-//just a test
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 MainWindow::MainWindow(QWidget *parent) :
@@ -91,6 +90,8 @@ void MainWindow::buildList()
             continue;
         QTreeWidgetItem *it = new QTreeWidgetItem (par);
         it->setData(0, Qt::UserRole, gamepath + QDir::separator() + entry);
+        if (AutoPackage::isAutoPackage(gamepath + QDir::separator() + entry))
+            it->setData(0, 63, true); //ролью 63 мы определяем, что это автопакет.
         it->setText(0,  engine::getName( gamepath + QDir::separator() + entry));
         //загружаем icon как значок игры (если есть)
         it->setIcon(0,engine::getIcon(gamepath + QDir::separator() + entry));
@@ -124,7 +125,13 @@ if (dir.exists())
   return;
     }
 }
-    engine *eng = new engine (this);
+if  (AutoPackage::isAutoPackage(pkgpath))
+{
+    //это автопакет, значит он предназначен для установки с CD/DVD
+    QMessageBox::warning(this, tr("Warning"), tr("It`s necessary that the application was installed from CD/DVD.<br>To do this , insert DVD witrg run WineGame with your cd/dvd (for example, winegame /media/cdrom from console."));
+    return;
+}
+engine *eng = new engine (this);
    eng->setDiskpath(diskpath);
    eng->setCdMode(cdMode);
    eng->lauch(pkgpath);
@@ -159,9 +166,6 @@ void MainWindow::saveGeom()
    f.close();
 }
 
-
-
-
 void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
     if (item->data(0, 64).toBool())
@@ -174,7 +178,6 @@ void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column
     QString exe = engine::getStandardExe(workdir + "/control");
     if (!exe.isEmpty())
     {
-
     QString wineprefix = engine::prefixPath(workdir);
     QString wine = engine::getWine(workdir);
     //QtConcurrent
@@ -197,7 +200,6 @@ void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
         return;
     }
     ui->lblNote->setText( engine::getNote(item->data(column,Qt::UserRole).toString()));
-
 }
 
 void MainWindow::lauchPresetEngine(QString name)

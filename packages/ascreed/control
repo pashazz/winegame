@@ -1,6 +1,0 @@
-[application]
-prefix="ascreed"
-setup="setup.exe"
-[wine]
-components="3dx9 ddr=opengl mwo=force"
-

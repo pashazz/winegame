@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     qt.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     a.installTranslator(&qt);
     QTranslator app;
-    app.load(":/ts/l10n/wg_" + QLocale::system().name());
+    app.load(":/l10n/wg_" + QLocale::system().name());
     a.installTranslator(&app);
 
     //set Linux console encoding to UTF-8

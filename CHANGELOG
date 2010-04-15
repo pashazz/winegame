@@ -6,3 +6,5 @@ r4:engine fixes, saving window geometry improved
 r5:adding .desktop files to Desktop folder (see EXEPATH), opening CD/DVD ISO images improved. 
 r6:engine fixes, VIDEO_MEMORY_SIZE added
 r7:engine fixes, using INI format for control file, presets
+r8:editor included
+r9:autopackages included

@@ -33,7 +33,7 @@ bool DiscDetector::tryDetect(QString path)
         //читаем файл .cdrom
         QString filename = gamepath + QDir::separator() + dir + "/.cdrom." + QLocale::system().name();
         if (!QFile::exists(filename))
-            filename = gamepath + QDir::separator() + dir + "/.cdrom"; //ну ведь в разных странах разные релиы игр, правда? Вот и мы можем сделать разные cdrom
+            filename = gamepath + QDir::separator() + dir + "/.cdrom"; //ну ведь в разных странах разные релизы игр, правда? Вот и мы можем сделать разные cdrom
         QFile file (filename);
         QTextStream stream (&file);
 
@@ -83,7 +83,10 @@ if (dlg->exec() == QDialog::Accepted)
     if (isAuto)
     {
         //Передаем управление системе автопакетов
-        //здесь код
+        qDebug() << "loading autopackage";
+      AutoPackage apkg;
+      apkg.setWorkingDirectory(gamefolder);
+      apkg.load();
         return;
     }
     if (prdir.exists())

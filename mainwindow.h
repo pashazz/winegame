@@ -23,6 +23,7 @@
 #include "linux.h"
 #include "engine.h"
 #include "prefixdialog.h"
+#include "autopackage.h" //для проверки на автопакет
 namespace Ui {
     class MainWindow;
 }

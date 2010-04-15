@@ -22,14 +22,17 @@ HEADERS += mainwindow.h \
     prefix.h \
     prefixdialog.h \
     isomaster.h \
-    TRANSLATIONS \
-    = \
-    l10n/wg_ru.ts \
     autopackage.h
 FORMS += mainwindow.ui \
     gamedialog.ui \
     prefixdialog.ui
 RESOURCES += res.qrc
+TRANSLATIONS += l10n/wg_ru.ts
+
+##################################################
+# Install information                            #
+##################################################
+
 tools.path = /usr/bin
 tools.files = tools/*
 pkgs.path = /usr/share/winegame

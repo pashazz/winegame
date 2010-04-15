@@ -32,7 +32,9 @@
 
 class AutoPackage : public QObject
 {
-public:
+Q_OBJECT
+    public:
+
     AutoPackage();
     void load();
     void setWorkingDirectory (QString work) {_dir=work;}
