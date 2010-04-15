@@ -13,33 +13,39 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
-#ifndef DISCDETECTOR_H
-#define DISCDETECTOR_H
 
-#include <QObject>
-#include "linux.h"
-#include "engine.h"
-#include "gamedialog.h"
-#include "autopackage.h"
-class DiscDetector : public QObject
+#ifndef AUTOPACKAGE_H
+#define AUTOPACKAGE_H
+
+#include <QtCore>
+#include <QSettings>
+#include <QMessageBox>
+#include <QInputDialog>
+#include "engine.h" //for Engine::showNotify
+/*!
+ WISOtool class.
+ BETA version now
+  */
+
+class AutoPackage : public QObject
 {
-Q_OBJECT
 public:
-    explicit DiscDetector(QObject *parent = 0);
- bool  tryDetect (QString path);
- QString getGame () {return gamefolder;}
- void lauchApp (); //call only even tryDetect is TRUE!!!!!!!!
-signals:
-
-public slots:
-
+    AutoPackage();
+    void load();
+    void setWorkingDirectory (QString work) {_dir=work;}
+    static bool isAutoPackage(QString dir);
 private:
- QString gamefolder;
- QString cdroot;
- bool isAuto;
+    void startInstall();
+
+
+    QString _prefix;
+    QString _dir;
+    QString _game;
+  bool dvd;
+  QProcessEnvironment env;
 };
 
-#endif // DISCDETECTOR_H
+#endif // AUTOPACKAGE_H
