@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     gamedialog.cpp \
     prefix.cpp \
     prefixdialog.cpp \
-    isomaster.cpp
+    isomaster.cpp \
+    autopackage.cpp
 HEADERS += mainwindow.h \
     linux.h \
     engine.h \
@@ -23,7 +24,8 @@ HEADERS += mainwindow.h \
     isomaster.h \
     TRANSLATIONS \
     = \
-    l10n/wg_ru.ts
+    l10n/wg_ru.ts \
+    autopackage.h
 FORMS += mainwindow.ui \
     gamedialog.ui \
     prefixdialog.ui

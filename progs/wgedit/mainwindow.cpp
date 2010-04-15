@@ -49,6 +49,13 @@ void MainWindow::on_action_About_triggered()
 void MainWindow::openProj(QString directory)
 {
       //openProject
+    //check if dir is writable
+    QFileInfo info (directory);
+    if (!info.isWritable())
+    {
+        QMessageBox::critical(this, tr ("Critical error"), tr("Directory not writable, failed to open project."));
+        return;
+    }
     closeProj();
     dir = QDir (directory);
     if (!checkProj())
@@ -129,12 +136,29 @@ void MainWindow::saveProj()
         return;
     }
     s = new QSettings (dir + "/control", QSettings::IniFormat, this);
-
     s->setValue("application/prefix", ui->txtPrefix->text());
     s->setValue("application/setup", ui->txtSetup->text());
     s->setValue("application/container", ui->txtContainer->text());
     s->setValue("wine/distr", ui->txtDistr->text());
     s->setValue("wine/memory", ui->cbMemory->isChecked());
+    // components will be here
+    s->sync();
+
+//now, .name
+QFile f;
+QTextStream stream (&f);
+f.setFileName(dir + "/.name");
+f.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
+stream << ui->txtName->text();
+f.close();
+
+f.setFileName(dir + "/.note");
+f.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
+stream << ui->txtNote->text();
+f.close();
+
+//CD/DVD info
+
 }
 
 void browse(QLineEdit *edit)
@@ -148,5 +172,20 @@ void browse(QLineEdit *edit)
         QMessageBox::warning(this, tr("Warning"), tr("This file is not executable. Select other file"));
         goto selectfile;
     }
+edit->setText(fileName);
+}
+
+void MainWindow::on_cmdPreInstall_clicked()
+{
+    browse(ui->txtPreinst);
+}
+
+void MainWindow::on_cmdPostInstall_clicked()
+{
+    browse (ui->txtPostinst);
+}
+
+void MainWindow::saveDVD()
+{
 
 }
