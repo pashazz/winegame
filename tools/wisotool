@@ -50,7 +50,7 @@ mkdir -p $WISOTOOL_TMP
 USERNAME=${USERNAME:-$LOGNAME}
 
 # Overridden for windows
-ISO_MOUNT_ROOT=/mnt/wisotool
+ISO_MOUNT_ROOT=$HOME/.wisotoolmount
 
 WINDIR="$DRIVE_C/windows"
 
@@ -104,9 +104,9 @@ warn() {
     # For some reason, nulls were showing up in $@?!, causing truncated output in zenity
     msg="`echo $@ | tr '\000' ' '`"
     case $MENU in
-    *zenity) zenity --error --title=Winetricks --text="$msg" --no-wrap;;
-    *kdialog) kdialog --title Winetricks --error "$msg" ;;
-    *xmessage) xmessage -title Winetricks -center "  Error: $msg  " ;;
+    *zenity) zenity --error --title=WISOTool --text="$msg" --no-wrap;;
+    *kdialog) kdialog --title WISOTool --error "$msg" ;;
+    *xmessage) xmessage -title WISOTool -center "  Error: $msg  " ;;
     esac
 }
 
@@ -465,7 +465,7 @@ iso_mount()
         case "$SUDO" in
         gksudo)
           try $SUDO "mkdir -p $ISO_MOUNT_ROOT"
-          try $SUDO "mount -o ro,loop $my_img $ISO_MOUNT_ROOT"
+          try $SUDO "fuseiso $my_img $ISO_MOUNT_ROOT"
           ;;
         *)
           try $SUDO mkdir -p $ISO_MOUNT_ROOT
@@ -490,17 +490,7 @@ iso_umount()
         try vcdmount.exe /u
         cd "$olddir"
     else
-        echo "Running $SUDO umount $ISO_MOUNT_ROOT"
-        case "$SUDO" in
-        gksudo)
-          $SUDO "umount $ISO_MOUNT_ROOT"
-          try $SUDO "rm -rf $ISO_MOUNT_ROOT"
-          ;;
-        *)
-          $SUDO umount $ISO_MOUNT_ROOT
-          try $SUDO rm -rf $ISO_MOUNT_ROOT
-          ;;
-        esac
+        echo "Running fusermount -u $ISO_MOUNT_ROOT"
         rm -f "$WINEPREFIX"/dosdevices/${ISO_MOUNT_LETTER}:
         rm -f "$WINEPREFIX"/dosdevices/${ISO_MOUNT_LETTER}::
     fi
@@ -522,8 +512,8 @@ cleanup()
 
 load_iso() {
    # Copy ISO
-   test -r /dev/sr0 || sudo chmod 666 /dev/sr0
-   while ! dd if=/dev/sr0 of=/dev/null count=1
+   test -r /dev/cdrom || sudo chmod 666 /dev/cdrom
+   while ! dd if=/dev/cdrom of=/dev/null count=1
    do
      sleep 1
    done
@@ -556,7 +546,8 @@ load_iso() {
 #----------------------------------------------------------------
 
 ahk_do() {
-   echo "$@" | tr ';' '\012' | sed "s/\$//" > "$WISOTOOL_TMP"/tmp.ahk
+   echo "$@" | tr ';' '\012' | sed "s/\$/
+/" > "$WISOTOOL_TMP"/tmp.ahk
    $WINE "$programfilesdir_unix/AutoHotkey/AutoHotkey.exe" "$WISOTOOL_TMP_WIN"\\tmp.ahk
 }
 
@@ -592,7 +583,8 @@ ahk_helpers() {
 }
 __EOF__
 
-cat helper_tmp | tr ';' '\012' | sed "s/\$//" > helpers.ahk
+cat helper_tmp | tr ';' '\012' | sed "s/\$/
+/" > helpers.ahk
 
 }
 
