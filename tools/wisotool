@@ -66,20 +66,6 @@ esac
 #---- Functions -------------------------------------------------
 
 # Detect which sudo to use
-detect_sudo() {
-    SUDO=sudo
-    test "$GUI" = 1 || return
-    if test x"$DISPLAY" != x""
-    then
-        if test -x "`which gksudo 2>/dev/null`"
-        then
-            SUDO=gksudo
-        elif test -x "`which kdesudo 2>/dev/null`"
-        then
-            SUDO=kdesudo
-        fi
-    fi
-}
 
 # Detect which menu program to use
 detect_menu() {
@@ -462,16 +448,8 @@ iso_mount()
         done
     else
         # Linux
-        case "$SUDO" in
-        gksudo)
-          try $SUDO "mkdir -p $ISO_MOUNT_ROOT"
-          try $SUDO "fuseiso $my_img $ISO_MOUNT_ROOT"
-          ;;
-        *)
-          try $SUDO mkdir -p $ISO_MOUNT_ROOT
-          try $SUDO mount -o ro,loop "$my_img" $ISO_MOUNT_ROOT
-          ;;
-        esac
+	mkdir -p $ISO_MOUNT_ROOT
+        try fuseiso $my_img $ISO_MOUNT_ROOT
         ISO_MOUNT_LETTER=i
         echo "Mounting as drive ${ISO_MOUNT_LETTER}:"
         # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
@@ -491,6 +469,7 @@ iso_umount()
         cd "$olddir"
     else
         echo "Running fusermount -u $ISO_MOUNT_ROOT"
+	fusermount -u $ISO_MOUNT_ROOT
         rm -f "$WINEPREFIX"/dosdevices/${ISO_MOUNT_LETTER}:
         rm -f "$WINEPREFIX"/dosdevices/${ISO_MOUNT_LETTER}::
     fi
@@ -518,7 +497,7 @@ load_iso() {
      sleep 1
    done
    trap cleanup 1 2 3 6
-   dd if=/dev/sr0 of="$WISOTOOL_CACHE"/temp.iso bs=2048 conv=noerror,sync & pid=$!
+   dd if=/dev/cdrom of="$WISOTOOL_CACHE"/temp.iso bs=2048 conv=noerror,sync & pid=$!
    while ps -p $pid > /dev/null 2>&1
    do
      sleep 5
@@ -818,7 +797,7 @@ load_dragonage() {
 
     # Installer has a non-fatal crash on exit, so ignore it.
     sh "$WINETRICKS" -q nocrashdialog physx vcrun2005
-    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/705a6b06d0dd807bf62b4391d278649d728ebda4.iso
+    iso_mount "$WISOTOOL_CACHE"/705a6b06d0dd807bf62b4391d278649d728ebda4.iso
 
     ahk_do "
         Run, ${ISO_MOUNT_LETTER}:Setup.exe
@@ -1187,7 +1166,6 @@ case "$1" in
 esac
 
 detect_menu
-detect_sudo
 
 GUI=0
 case x"$1" in
@@ -1229,7 +1207,7 @@ WINETRICKS="$srcdir/winetricks"
 if ! test -f "$WINETRICKS"
 then
     WINETRICKS="$WISOTOOL_CACHE/winetricks"
-    wget -o "$WINETRICKS" http://kegel.com/wine/winetricks
+    wget -o "$WINETRICKS" http://winezeug.googlecode.com/svn/trunk/winetricks
 fi
 
 # Clean up after failed runs, if needed

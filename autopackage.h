@@ -40,14 +40,11 @@ Q_OBJECT
     void setWorkingDirectory (QString work) {_dir=work;}
     static bool isAutoPackage(QString dir);
 private:
-    void startInstall();
-
-
+    void startInstall(QProcess *p);
     QString _prefix;
     QString _dir;
     QString _game;
   bool dvd;
-  QProcessEnvironment env;
 };
 
 #endif // AUTOPACKAGE_H

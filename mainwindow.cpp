@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
    statusBar()->addWidget(cdlab);
 buildList();
 engine::showNotify(tr("Hello"), tr("Please connect to Internet!"));
+ui->lstGames->expandAll();
 }
 
 MainWindow::~MainWindow()

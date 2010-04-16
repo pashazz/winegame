@@ -59,12 +59,12 @@ bool DiscDetector::tryDetect(QString path)
         {
             if (disclist.contains(str, Qt::CaseInsensitive))
                 i++;
-        }
-        if (i>4)
+                }
+        if (i>=disclist.count() -2) //для всяких кряков, чтобы их не включать в .cdrom, но диски определялис
         {
             gamefolder = gamepath + QDir::separator() + dir;
             //Смотрим, мб. нам попался автопакет. Если так, ставим автоматический режим в детекторе дисков.
-            isAuto = AutoPackage::isAutoPackage(path);
+            isAuto = AutoPackage::isAutoPackage(gamefolder);
             return true;
         }
     }
@@ -89,6 +89,7 @@ if (dlg->exec() == QDialog::Accepted)
       apkg.load();
         return;
     }
+    qDebug() << "not an autopackage";
     if (prdir.exists())
     {
         //Может быть, нам стоит запустить AutoRun?

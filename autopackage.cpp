@@ -22,7 +22,7 @@
 AutoPackage::AutoPackage()
 {
     //Проверяем тип второго аргумента WineGame. Если это директория, то используем режим DVD;
-   QFileInfo info (qApp->arguments().at(2));
+   QFileInfo info (qApp->arguments().at(1));
    //Я гарантирую, что класс AutoPackage будет использоваться только в DiscDetector
    if (info.isDir())
        dvd = true;
@@ -35,55 +35,58 @@ AutoPackage::AutoPackage()
 }
 bool AutoPackage::isAutoPackage(QString dir)
 {
-    QSettings stg (dir + "/control",  QSettings::IniFormat, 0);
+    QSettings stg (dir + CTRL,  QSettings::IniFormat, 0);
     stg.beginGroup("application");
-    //Проверяем, что значение game корректно.
+     //Проверяем, что значение game корректно.
     return !stg.value("game", "").toString().isEmpty();
 }
 
 void AutoPackage::load()
 {
-    QSettings stg (_dir + "/.control");
+    QSettings stg (_dir + CTRL, QSettings::IniFormat, this);
+   QProcessEnvironment  env= QProcessEnvironment::systemEnvironment();
+
     stg.beginGroup("application");
-    _prefix = stg.value("prefix").toString();
+    _prefix = QDir::homePath() + winepath + QDir::separator() +  stg.value("prefix").toString();
     _game = stg.value("game").toString();
+    qDebug() << "debug: myPrefix is" << _prefix <<"myGame is" << _game;
     env.insert("WINEPREFIX", _prefix);
     env.insert("WINEDEBUG", "-all");
-    QProcess p (this);
-    p.setProcessEnvironment(env);
+    QProcess *p = new  QProcess (this);
+   p->setProcessEnvironment(env);
     QString cdkey;
    if (stg.value("cdkey", true).toBool()) //запрашиваем CDKEY
     {
        cdkey = QInputDialog::getText(0, tr("Insert CD-KEY for this game"), tr("Please, enter CD-KEY and click OK"));
    }
-   QString myCmd;
+   QString myArg;
     if (dvd)
     {
         //Code when we need to load DVD
                 if (cdkey.isEmpty())
-           myCmd = QString ("/usr/bin/wisotool load");
+                    myArg="load";
      else
-            myCmd = QString("/usr/bin/wisotool load=%1").arg(cdkey);
+                    myArg = "load=" + cdkey;
     }
     else
     {
         // FIXME: No code yet
     }
     engine::showNotify(tr("Starting disc clone"), tr("Don`t worry! WineGame clones your DVD into image. Wait ~5 mins"));
-    qDebug() << "starting  wisotool" << myCmd;
-  p.start(myCmd);
-  p.waitForFinished(-1);
-  startInstall();
+    qDebug() << "starting  wisotool" << myArg;
+    p->start("wisotool " + myArg);
+
+  p->waitForFinished(-1);
+   startInstall(p);
 }
 
-void AutoPackage::startInstall()
+void AutoPackage::startInstall(QProcess *p)
 {
-    QProcess p;
-    p.setProcessEnvironment(env);
     QStringList args;
     args << _game;
     qDebug() << "/usr/bin/wisotool" << args;
     engine::showNotify(tr("Ready to install"), tr("Now we will install your game and all needed software."));
-    p.start("/usr/bin/wisotool", args);
+    p->start("wisotool", args);
+    p->waitForFinished(-1);
     //TODO: memory;
 }

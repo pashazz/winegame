@@ -63,7 +63,7 @@ if (a.arguments().length() > 1) {
 
     if (info.isDir()) //запускаем детектор диска
     {
-        if (!QFile::exists(info.absoluteFilePath() + "/autorun.inf"))
+        if (!QFile::exists(info.absoluteFilePath() + "/autorun.inf") && (!QFile::exists(info.absoluteFilePath() + "/Setup.exe"/*блядь, это все EA Games кривые*/)))
         {
             QMessageBox::critical(0, QObject::tr("I am confused"), QObject::tr ("This disc is not Windows Software disc, exiting"));
             return -2;
