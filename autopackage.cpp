@@ -72,11 +72,12 @@ void AutoPackage::load()
     {
         // FIXME: No code yet
     }
-    engine::showNotify(tr("Starting disc clone"), tr("Don`t worry! WineGame clones your DVD into image. Wait ~5 mins"));
+    engine::showNotify(tr("Starting disc clone"), tr("Don`t worry! WineGame clones your DVD into image. Wait ~5 mins."));
     qDebug() << "starting  wisotool" << myArg;
     p->start("wisotool " + myArg);
 
   p->waitForFinished(-1);
+  engine::makefix(_prefix);
    startInstall(p);
 }
 
@@ -88,5 +89,23 @@ void AutoPackage::startInstall(QProcess *p)
     engine::showNotify(tr("Ready to install"), tr("Now we will install your game and all needed software."));
     p->start("wisotool", args);
     p->waitForFinished(-1);
-    //TODO: memory;
+    //Now we`re set memory
+    //Прочитаем значение видеопамяти.
+    QSettings stg (QDir::homePath() + config, QSettings::IniFormat, this);
+    QString mem = stg.value("VideoMemory").toString();
+    const QString reg = "/tmp/win.reg";
+    QFile f (reg);
+    QTextStream stream (&f);
+    f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate);
+    stream << "\n";
+    stream << "REGEDIT4\n";
+    stream << "[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]";
+    stream << "\n";
+    stream << "\"VideoMemorySize\"=";
+    stream << tr("\"%1\"").arg(mem);
+    stream << "\n";
+    f.close();
+    p->start("regedit " + reg);
+    p->waitForFinished(-1);
+    f.remove();
 }

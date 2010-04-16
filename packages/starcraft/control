@@ -1,4 +1,5 @@
 [application]
-game=starcraft
 prefix=starcraft
+[wine]
+components="ie6 rtlm=readtex"
 

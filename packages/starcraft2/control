@@ -1,4 +1,6 @@
 [application]
 prefix=starcraft2
-game=starcraft2
 
+[wine]
+components="win7 sound=oss"
+memory=true

@@ -1,3 +1,6 @@
 [application]
 prefix=dragonage
-game=dragonage
+setup=Setup.exe
+[wine]
+components="nocrashdialog physx vcrun2005"
+memory=true

@@ -574,6 +574,7 @@ env.insert("WINEPREFIX", prefix);
 p.setProcessEnvironment(env);
 p.start(wineBinary, args);
 p.waitForFinished(-1);
+f.remove();
 }
 QString engine::getStandardExe(QString controlFile)
 {

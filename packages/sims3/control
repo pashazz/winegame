@@ -1,4 +1,6 @@
 [application]
-game=sims3
 prefix=sims3
-
+setup=Sims3Setup.exe
+[wine]
+components="dotnet20 d3dx9"
+memory=true
