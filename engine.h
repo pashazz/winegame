@@ -62,6 +62,7 @@ private slots:
  void exitApp ();
 private:
 static  QString getVariableValue (QString value, const QStringList &vars);
+static QString getExeWorkingDirectory();
 bool cdMode;
 QString diskpath;
 QProgressDialog *progress;

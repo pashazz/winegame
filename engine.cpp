@@ -97,7 +97,7 @@ if (!s.value("wine/components").toString().isEmpty())
 //запускаем скрипт Preinst
 QProcess *proc = new QProcess (this);
 proc->setProcessEnvironment(myEnv);
-proc->setWorkingDirectory(workdir);
+proc->setWorkingDirectory(getExeWorkingDirectory());
 if (QFile::exists(workdir + "/preinst"))
 {
     proc->start ("\"" +workdir + "/preinst\"");
@@ -112,7 +112,7 @@ if (cdMode)
 {
     if (QFile::exists(diskpath + QDir::separator() + exefile))
     {
-   exe = diskpath +exefile;
+        exe = diskpath + QDir::separator() +exefile;
 }
     else
     {
@@ -143,8 +143,8 @@ else
        return;
    }
 }
-qDebug() << tr("engine: starting Windows program %1 with wine binary %2").arg(exe).arg(winebin);
-
+qDebug() << tr("engine: starting Windows program %1 with wine binary %2").arg(exe).arg(winebin) << proc->workingDirectory();
+qDebug() << winebin + " \"" + exe  +"\"" ;
 proc->start(winebin + " \"" + exe  +"\"" );
 proc->waitForFinished(-1);
 
@@ -255,7 +255,7 @@ void engine::lauchPreset(QString preset, bool msg)
          }
      }
      proc->setProcessEnvironment(env);
-     proc->setWorkingDirectory(workdir);
+     proc->setWorkingDirectory(getExeWorkingDirectory());
      if (QFile::exists(workdir + "/preinst"))
      {
          proc->start ("\"" +workdir + "/preinst\"");
@@ -302,6 +302,7 @@ void engine::lauchPreset(QString preset, bool msg)
             return;
         }
      }
+     qDebug() << exe;
      qDebug() << tr("engine: starting Windows program %1 with wine binary %2").arg(exe).arg(wineBinary);
      proc->setProcessEnvironment(env);;
      proc->start(wineBinary+ " \"" + exe  +"\"" );
@@ -377,6 +378,7 @@ void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
     QProcess p (this);
   p.setProcessEnvironment(env);
   QStringList plist = pkgs.split(" ", QString::SkipEmptyParts);
+plist.prepend("-q"); //Quiet
     p.start("/usr/bin/winetricks", plist);
     p.waitForFinished(-1);
  }
@@ -595,4 +597,14 @@ void engine::makefix(QString prefix)
     file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate);
     stream << registry;
     file.close();
+}
+
+QString engine::getExeWorkingDirectory()
+{
+        QString arg = qApp->arguments().at(1);
+    QFileInfo info (arg);
+    if (info.isDir())
+        return arg;
+    else
+        return QDir::homePath() + MOUNT_DIR;   
 }

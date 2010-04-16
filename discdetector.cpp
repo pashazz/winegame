@@ -64,7 +64,6 @@ bool DiscDetector::tryDetect(QString path)
         {
             gamefolder = gamepath + QDir::separator() + dir;
             //Смотрим, мб. нам попался автопакет. Если так, ставим автоматический режим в детекторе дисков.
-            isAuto = AutoPackage::isAutoPackage(gamefolder);
             return true;
         }
     }
@@ -80,7 +79,7 @@ GameDialog *dlg = new GameDialog(0, gamefolder);
 if (dlg->exec() == QDialog::Accepted)
 {
     QDir prdir (QDir::homePath() + winepath + QDir::separator() + engine::getPrefixName(gamefolder));
-    if (isAuto)
+/*    if (isAuto)
     {
         //Передаем управление системе автопакетов
         qDebug() << "loading autopackage";
@@ -90,6 +89,7 @@ if (dlg->exec() == QDialog::Accepted)
         return;
     }
     qDebug() << "not an autopackage";
+    */
     if (prdir.exists())
     {
         //Может быть, нам стоит запустить AutoRun?

@@ -26,4 +26,5 @@ const QString winepath = "/Windows";
 const QString CTRL="/control"; //control file, DO NOT EDIT
 const QString TMP = "/tmp";
 const QString config = "/.config/winegame.conf";
+const QString MOUNT_DIR = "/game";
 #endif

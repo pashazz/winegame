@@ -23,7 +23,7 @@ IsoMaster::IsoMaster(QObject *parent, QString imageFile) : //просто кон
     QObject(parent), image (imageFile)
 {
 
-    mountpoint = QDir::homePath() + "/game";
+    mountpoint = QDir::homePath() + MOUNT_DIR;
     QDir dir (mountpoint);
     if (!dir.exists())
         dir.mkdir(dir.path());

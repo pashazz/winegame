@@ -39,7 +39,6 @@ public slots:
 private:
  QString gamefolder;
  QString cdroot;
- bool isAuto;
 };
 
 #endif // DISCDETECTOR_H
