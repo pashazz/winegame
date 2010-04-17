@@ -2,5 +2,5 @@
 prefix=starcraft2
 
 [wine]
-components="win7 sound=oss"
+components="fontfix fontsmooth-rgb gdiplus gecko vcrun2008 vcrun2005 allfonts d3dx9 win7 sound=alsa"
 memory=true
