@@ -78,6 +78,7 @@ QString program;
  QString downloadWine(QString url);
  void doDesktop(QString);
  void setMemory (QString);
+ void makecdlink();
 };
 
 #endif // ENGINE_H

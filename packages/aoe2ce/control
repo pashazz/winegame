@@ -1,0 +1,5 @@
+[application]
+prefix="aoe2ce"
+[wine]
+components="directplay"
+memory=yes

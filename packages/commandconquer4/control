@@ -1,0 +1,5 @@
+[application]
+prefix="comcon4"
+exepath="C:\\Program Files\\Electronic Arts\\Command & Conquer 4 Tiberian Twilight\\Data\\CNC4.game" -config "C:\\Program Files\\Electronic Arts\\Command & Conquer 4 Tiberian Twilight\\CNC4_English.SkuDef"
+[wine]
+memory=true

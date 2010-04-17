@@ -81,7 +81,8 @@ wineBinary = winebin; //для doDesktop;
 name = getName(workdir);
 note = getNote(workdir);
 program = getStandardExe(workdir);
-//что делать теперь? Хм
+//Делаем ссылки на CD-диск.
+makecdlink();
 //запускаем preinst с набором variables
 QProcessEnvironment myEnv = QProcessEnvironment::systemEnvironment();
 qDebug() << tr("engine: setting Prefix: %1").arg(prefix);
@@ -607,4 +608,33 @@ QString engine::getExeWorkingDirectory()
         return arg;
     else
         return QDir::homePath() + MOUNT_DIR;   
+}
+
+void engine::makecdlink()
+{
+  //Запустили меня с ISO или нет?
+    if (!cdMode)
+        return;
+    QFileInfo info (qApp->arguments().at(1));
+    if (info.isDir())
+    {
+        //делаем ссылки: d:: на /dev/cdrom и d: на нашу папку.
+        QString devcdrom;
+        if (QFile::exists("/dev/cdrom"))
+            devcdrom = "/dev/cdrom";
+        else  //берем /dev/sr0
+            devcdrom = "/dev/sr0";
+
+        QFile::link(devcdrom, prefix + "/dosdevices/d::");
+        QFile::link(info.absoluteFilePath(), prefix + "/dosdevices/d:");
+        //Мы должны зашить D:/ в программу
+        //потому что это стандарт для скриптов (preinst/postinst)
+    }
+    else
+    {
+        //Значит, мы имеем дело с файлом .iso/.mdf/.nrg
+        QFile::link(qApp->arguments().at(1), prefix + "/dosdevices/d::");
+        QFile::link(QDir::homePath() + MOUNT_DIR,  prefix + "/dosdevices/d:");
+    }
+
 }

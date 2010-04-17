@@ -1,0 +1,6 @@
+[application]
+prefix=aoe3
+
+[wine]
+components="nocrashdialog msxml3 msxml4 directx9 mfc42 psm=off"
+memory=true
