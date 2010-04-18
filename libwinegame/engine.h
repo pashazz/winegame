@@ -28,15 +28,17 @@
 #include <QFile>
 #include <QDir>
 #include <QFileDialog>
-#include <QtCore>
 #include <QUrl>
 #include <QProgressDialog>
 #include <QIcon>
 #include <QSettings>
 #include <QtNetwork>
 #include <QDesktopServices>
+
+#include "corelib.h"
 #include "linux.h"
-class engine : public QObject
+#include "libwinegame_global.h"
+class WINESTUFFSHARED_EXPORT  engine : public QObject
 {
 Q_OBJECT
 public:
@@ -63,6 +65,7 @@ private slots:
 private:
 static  QString getVariableValue (QString value, const QStringList &vars);
 bool cdMode;
+corelib *core;
 QString diskpath;
 QProgressDialog *progress;
 void doPkgs (QString pkgs, const QProcessEnvironment &env);

@@ -53,7 +53,7 @@ QFuture <void> fProc = run(rp, tr("%1  \"%2\"").arg(wine).arg(exepath),  this->e
 }
 void Prefix::lauch_c()
 {
-  QFuture <void> fProc = run(rp, "xdg-open " + wineprefix + "/drive_c", env);
+    QDesktopServices::openUrl(QUrl(wineprefix + "/drive_c"));
 }
 void Prefix::lauchWinetricks(QStringList args)
 {

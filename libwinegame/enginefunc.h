@@ -21,9 +21,9 @@
 #include <QtCore>
 #include <QDebug>
 #include <QMessageBox>
+#include "libwinegame_global.h"
 
-
- void unpackWine (QString distr, QString destination)
+void unpackWine (QString distr, QString destination)
 {
      QDir dir (destination);
      if (!dir.exists())

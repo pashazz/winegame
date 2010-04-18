@@ -10,11 +10,10 @@ fuseiso
 notify-send/KDialog
 =========================================
 Installation:
-qmake
-make
-sudo make install
-
-
+cd libwinegame
+qmake && make && sudo make install
+cd ..
+qmake && make && sudo make install
 Thanks, pashazz.
 (c) Pavel Zinin, 2010
 

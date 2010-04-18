@@ -16,27 +16,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
-/// для работы этого класса необходим FuseISO
-#ifndef ISOMASTER_H
-#define ISOMASTER_H
+
+#ifndef CORELIB_H
+#define CORELIB_H
 
 #include <QtCore>
-
-class IsoMaster : public QObject
+#include "libwinegame_global.h"
+class  WINESTUFFSHARED_EXPORT corelib : public QObject
 {
-Q_OBJECT
 public:
-    explicit IsoMaster(QObject *parent, QString imageFile);
-    void lauchApp ();
-signals:
-
-public slots:
-
-private:
-    QString mount, umount;
-    QString mountpoint;
-
-QString image;
+    corelib();
+     static QString whichBin (QString bin);
 };
 
-#endif // ISOMASTER_H
+#endif // CORELIB_H

@@ -105,7 +105,7 @@ if (dlg->exec() == QDialog::Accepted)
             env.insert("WINEPREFIX", engine::prefixPath(gamefolder));
             env.insert("WINEDEBUG", "-all");
             p.setProcessEnvironment(env);
-            p.setWorkingDirectory(cdroot);
+            p.setWorkingDirectory(engine::getExeWorkingDirectory(myExe));
             p.start(myWine, QStringList (myExe));
             p.waitForFinished(-1);
 

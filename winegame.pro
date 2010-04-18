@@ -6,7 +6,6 @@ TEMPLATE = app
 QT += network
 SOURCES += main.cpp \
     mainwindow.cpp \
-    engine.cpp \
     discdetector.cpp \
     gamedialog.cpp \
     prefix.cpp \
@@ -14,9 +13,6 @@ SOURCES += main.cpp \
     isomaster.cpp \
     autopackage.cpp
 HEADERS += mainwindow.h \
-    linux.h \
-    engine.h \
-    enginefunc.h \
     discdetector.h \
     gamedialog.h \
     prefix.h \
@@ -26,24 +22,25 @@ HEADERS += mainwindow.h \
 FORMS += mainwindow.ui \
     gamedialog.ui \
     prefixdialog.ui
+INCLUDEPATH += libwinegame/
 RESOURCES += res.qrc
+LIBS += -L/usr/lib -lwinestuff
 TRANSLATIONS += l10n/wg_ru.ts
-
+VERSION=0.0.1
 ##################################################
 # Install information                            #
 ##################################################
 
-tools.path = /usr/bin
+tools.path = /usr/local/bin
 tools.files = tools/*
 pkgs.path = /usr/share/winegame
 pkgs.files = packages/*
-prog.path = /usr/bin
-prog.files = winegame
+target.path = /usr/local/bin
 desktop.path = /usr/share/applications
 desktop.files = desktop/winegame.desktop
 icon.path = /usr/share/pixmaps
 icon.files = desktop/winegame.png
-INSTALLS += prog \
+INSTALLS += target \
     pkgs \
     tools \
     desktop \

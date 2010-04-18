@@ -36,9 +36,6 @@ int main(int argc, char *argv[])
     //set Linux console encoding to UTF-8
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
      QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-      //проверяем Winetricks
-     if (!QFile::exists("/usr/bin/winetricks"))
-         QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Winetricks not found. Put it in /usr/bin/winetricks"));
       QDir dir (QDir::homePath() + QDir::separator() + winepath);
 if (!dir.exists())
     dir.mkdir(dir.path()); //проверяем главную папочку  WineGame

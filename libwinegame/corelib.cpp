@@ -16,27 +16,18 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
-/// для работы этого класса необходим FuseISO
-#ifndef ISOMASTER_H
-#define ISOMASTER_H
 
-#include <QtCore>
-
-class IsoMaster : public QObject
+#include "corelib.h"
+//The core of WineGame. Commonly used func.
+corelib::corelib()
 {
-Q_OBJECT
-public:
-    explicit IsoMaster(QObject *parent, QString imageFile);
-    void lauchApp ();
-signals:
+}
 
-public slots:
-
-private:
-    QString mount, umount;
-    QString mountpoint;
-
-QString image;
-};
-
-#endif // ISOMASTER_H
+QString corelib::whichBin(QString bin) {
+    QProcess p (0);
+    p.start("which", QStringList (bin));
+    p.waitForFinished(-1);
+    QString path = QString(p.readAll()).trimmed();
+    path.remove('\n');
+    return path;
+}
