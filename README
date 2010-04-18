@@ -13,7 +13,7 @@ Installation:
 ./quickinstall.sh
 
 Uninstallation:
-sudo rm `cat installmanifest.txt | xargs` (or similar)
+sudo rm -rf `cat installmanifest.txt | xargs` (or similar)
 PLEASE, PLEASE, DONT USE make uninstall AT ALL!
 ==========================================
 

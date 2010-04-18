@@ -5,3 +5,4 @@
 /usr/local/bin/winegame
 /usr/local/bin/winetricks
 /usr/local/bin/wisotool
+/usr/share/winegame
