@@ -32,24 +32,21 @@ int main(int argc, char *argv[])
     QTranslator app;
     app.load(":/l10n/wg_" + QLocale::system().name());
     a.installTranslator(&app);
-
     //set Linux console encoding to UTF-8
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
      QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
       QDir dir (QDir::homePath() + QDir::separator() + winepath);
+
+      //Set some refspecs
+      a.setApplicationName("WineGame");
+      a.setApplicationVersion("0.0.1");
+      a.setOrganizationName("Pashazz");
+      a.setOrganizationDomain("org");
 if (!dir.exists())
     dir.mkdir(dir.path()); //проверяем главную папочку  WineGame
-//проверяем наличие конфига
-if (!QFile::exists(QDir::homePath() + config))
-{
-    int mem = 0;
-     mem= QInputDialog::getInt(0, QObject::tr("WineGame"), QObject::tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
-        if (mem == 0)
-            mem = 128;
-        QSettings stg (QDir::homePath() + config, QSettings::IniFormat, 0);
-        stg.setValue("VideoMemory", mem);
-        stg.sync();
-}
+
+corelib::init();
+
 if (a.arguments().length() > 1) {
     QFileInfo info (a.arguments().at(1));
     if (!info.exists())

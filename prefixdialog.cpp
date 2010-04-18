@@ -26,7 +26,7 @@ PrefixDialog::PrefixDialog(QWidget *parent, QString path) :
 {
     ui->setupUi(this);
     ui->toolBox->setCurrentIndex(0);//это если вдруг я забыл переместить страницу в designer
-    setWindowTitle(pr->getName());
+    setWindowTitle((pr->name()));
     connect (ui->cmdC, SIGNAL(clicked()), pr, SLOT (lauch_c()));
 }
 

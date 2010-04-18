@@ -78,7 +78,8 @@ void DiscDetector::lauchApp()
 GameDialog *dlg = new GameDialog(0, gamefolder);
 if (dlg->exec() == QDialog::Accepted)
 {
-    QDir prdir (QDir::homePath() + winepath + QDir::separator() + engine::getPrefixName(gamefolder));
+    Prefix *prefix = new Prefix (this, gamefolder);
+    QDir prdir (prefix->prefixPath());
 /*    if (isAuto)
     {
         //Передаем управление системе автопакетов
@@ -98,11 +99,11 @@ if (dlg->exec() == QDialog::Accepted)
             QSettings stg (cdroot + "/autorun.inf", QSettings::IniFormat, this);
             stg.beginGroup("autorun");
             QString myExe = stg.value("open").toString();
-             QString myWine = engine::getWine(gamefolder);
+             QString myWine = prefix->wine();
             qDebug() << "DDT: Starting Autorun: " << myWine << myExe;
             QProcess p;
             QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-            env.insert("WINEPREFIX", engine::prefixPath(gamefolder));
+            env.insert("WINEPREFIX", prefix->prefixPath());
             env.insert("WINEDEBUG", "-all");
             p.setProcessEnvironment(env);
             p.setWorkingDirectory(engine::getExeWorkingDirectory(myExe));

@@ -79,42 +79,39 @@ void MainWindow::buildList()
     QStringList taboo;
     //поддержка пресетов
     taboo << "presets";
-    //тут работаем с пресетами.
-    buildPreset();
+
     //а тут мы создаем родительский node
     QTreeWidgetItem *par = new QTreeWidgetItem (ui->lstGames);
     par->setIcon(0, QIcon(":/desktop/winegame.png"));
     par->setText(0, tr("Applications"));
+    QTreeWidgetItem *presetpar = new QTreeWidgetItem (ui->lstGames);
+      presetpar->setIcon(0, QIcon(":/desktop/winegame.png"));
+       presetpar->setText(0, tr("Pre-Sets (Templates)"));
     foreach (QString entry, wdir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
     {
         if (taboo.contains(entry))
             continue;
-        QTreeWidgetItem *it = new QTreeWidgetItem (par);
-        it->setData(0, Qt::UserRole, gamepath + QDir::separator() + entry);
+        Prefix myPrefix (this, gamepath + QDir::separator() + entry);
+        QTreeWidgetItem *it = new QTreeWidgetItem (0);
+                it->setData(0, Qt::UserRole, gamepath + QDir::separator() + entry);
         if (AutoPackage::isAutoPackage(gamepath + QDir::separator() + entry))
             it->setData(0, 63, true); //ролью 63 мы определяем, что это автопакет.
-        it->setText(0,  engine::getName( gamepath + QDir::separator() + entry));
+        it->setText(0,  myPrefix.name());
         //загружаем icon как значок игры (если есть)
-        it->setIcon(0,engine::getIcon(gamepath + QDir::separator() + entry));
+        it->setIcon(0, myPrefix.icon());
+        if (myPrefix.isPreset())
+            presetpar->addChild(it);
+        else
+            par->addChild(it);
+        myPrefix.deleteLater();
         }
     }
 
-void MainWindow::buildPreset() {
-    QTreeWidgetItem *par = new QTreeWidgetItem (ui->lstGames);
-    par->setText(0, tr("Pre-Sets (Templates)"));
-    par->setIcon(0, QIcon(":/desktop/winegame.png"));
-   QDir dir (gamepath + "/presets");
-   foreach (QString entry, dir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
-   {
-         QTreeWidgetItem *it = new QTreeWidgetItem (par);
-         it->setText(0,  engine::getName( gamepath + "/presets/" + QDir::separator() + entry));
-         it->setData(0,Qt::UserRole,  gamepath + "/presets/" + QDir::separator() + entry);
-     }
-}
 
 void MainWindow::lauchEngine(QString pkgpath)
 {
-    QDir dir (QDir::homePath() + winepath + QDir::separator() + engine::getPrefixName(pkgpath));
+    Prefix *prefix = new Prefix (this, pkgpath);
+    QDir dir (prefix->prefixPath());
 if (dir.exists())
 {
     QStringList list = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -164,16 +161,17 @@ void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column
 {
     if (item->data(0, 64).toBool())
         return;
-
     //Запуск приложения по EXEPATH
     if (item->data(column, Qt::UserRole).toString().isEmpty())
         return;
+
     QString workdir = item->data(column, Qt::UserRole).toString();
-    QString exe = engine::getStandardExe(workdir + "/control");
+    Prefix  *prefix = new Prefix (this, workdir);
+    QString exe = prefix->standardExe();
     if (!exe.isEmpty())
     {
-    QString wineprefix = engine::prefixPath(workdir);
-    QString wine = engine::getWine(workdir);
+    QString wineprefix = prefix->prefixPath();
+     QString wine = prefix->wine();
     //QtConcurrent
     qDebug() << "MainWindow: starting EXE:" << wine << exe;
     QProcess p (this);
@@ -184,6 +182,7 @@ void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column
     p.start(wine, QStringList(exe));
     p.waitForFinished(-1);
 }
+prefix->deleteLater();
 }
 
 void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
@@ -193,6 +192,8 @@ void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
         ui->lblNote->setText("");
         return;
     }
-    ui->lblNote->setText( engine::getNote(item->data(column,Qt::UserRole).toString()));
+    Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString());
+    ui->lblNote->setText(prefix->note());
+    prefix->deleteLater();
 }
 

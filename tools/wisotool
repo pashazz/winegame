@@ -3,6 +3,7 @@
 # Adapted from winetricks as of r995
 # Copyright 2007, 2008, 2009, 2010 Google (Dan Kegel, dank@kegel.com)
 # Copyright 2008, 2009, 2010 Austin English (austinenglish@gmail.com)
+# License: LGPL (for compatibility with winehq)
 # Please report problems at http://code.google.com/p/winezeug/issues
 # Note to contributors: please avoid gnu extensions in this shell script,
 # as it has to run on MacOSX and Solaris, too.  A good book on the topic is
@@ -50,7 +51,7 @@ mkdir -p $WISOTOOL_TMP
 USERNAME=${USERNAME:-$LOGNAME}
 
 # Overridden for windows
-ISO_MOUNT_ROOT=$HOME/.wisotoolmount
+ISO_MOUNT_ROOT=/mnt/wisotool
 
 WINDIR="$DRIVE_C/windows"
 
@@ -66,6 +67,20 @@ esac
 #---- Functions -------------------------------------------------
 
 # Detect which sudo to use
+detect_sudo() {
+    SUDO=sudo
+    test "$GUI" = 1 || return
+    if test x"$DISPLAY" != x""
+    then
+        if test -x "`which gksudo 2>/dev/null`"
+        then
+            SUDO=gksudo
+        elif test -x "`which kdesudo 2>/dev/null`"
+        then
+            SUDO=kdesudo
+        fi
+    fi
+}
 
 # Detect which menu program to use
 detect_menu() {
@@ -90,9 +105,9 @@ warn() {
     # For some reason, nulls were showing up in $@?!, causing truncated output in zenity
     msg="`echo $@ | tr '\000' ' '`"
     case $MENU in
-    *zenity) zenity --error --title=WISOTool --text="$msg" --no-wrap;;
-    *kdialog) kdialog --title WISOTool --error "$msg" ;;
-    *xmessage) xmessage -title WISOTool -center "  Error: $msg  " ;;
+    *zenity) zenity --error --title=Wisotool --text="$msg" --no-wrap;;
+    *kdialog) kdialog --title Wisotool --error "$msg" ;;
+    *xmessage) xmessage -title Wisotool -center "  Error: $msg  " ;;
     esac
 }
 
@@ -133,19 +148,28 @@ usage() {
     echo " -v         verbose"
     echo " -V         display Version"
     echo "Packages:"
+# TODO: call verblist_get_descriptions instead of hardcoding list here
+    echo " 3dmark03      3D Mark 03 (Futuremark, 2003)"
+    echo " 3dmark05      3D Mark 05 (Futuremark, 2005)"
+    echo " 3dmark06      3D Mark 06 (Futuremark, 2006)"
     echo " assassinscreed Assassins Creed (Ubisoft, 2008)"
     echo " diablo2       Diablo II (Blizzard, 2000)"
     echo " dragonage     Dragon Age: Origins (Bioware, 2009)"
     echo " morrowind     The Elder Scrolls III: Morrowind (Bethesda, 2002)"
+    echo " pcmark04      PC Mark 04 (Futuremark, 2004)"
+    echo " pcmark05      PC Mark 05 (Futuremark, 2005)"
     echo " plantsvszombies Plants vs. Zombies (PopCap Games, 2009)"
+    echo " re5bench      Resident Evil 5 Benchmark (Capcom, 2009)"
+    echo " quake3        Quake 3 (ID Software, 1999)"
     echo " sims3         The Sims 3 (EA, 2009)"
     echo " starcraft     Starcraft Battle Chest (Blizzard, 1998)"
     echo " starcraft2    Starcraft II beta (Blizzard, 2010)"
     echo " stfu          Starwars: The Force Unleashed (Aspyr, 2009)"
+    echo " unigine_heaven Unigen Heaven 2 Benchmark (Unigen, 2010)"
     echo " wog           World of Goo demo (2D Boy, 2008)"
     echo "Pseudopackages:"
     echo " load          Load a new iso"
-    echo " load=KEY      Load a new iso (with given key)"
+    echo " load=KEY      Load a new iso (with given key; only works from commandline at moment)"
 }
 
 #----------------------------------------------------------------
@@ -193,18 +217,19 @@ xmessage_showmenu() {
 
 showmenu()
 {
+    # FIXME: call verblist_get_descriptions instead of scraping usage() ?
     case $MENU in
     zenity)
         echo "zenity --title 'Select a package to install' --text 'Install?' --list --checklist --column '' --column Package --column Description --height 440 --width 600 \\" > "$WISOTOOL_TMP"/zenity.sh
-        usage | grep '^ [a-z]' | sed 's/^ \([^ ]*\) *\(.*\)/FALSE "\1" '"'\2'/" | sed 's/$/ \\/' >> $WISOTOOL_TMP/zenity.sh
+        usage | grep '^ [3a-z]' | sed 's/^ \([^ ]*\) *\(.*\)/FALSE "\1" '"'\2'/" | sed 's/$/ \\/' >> $WISOTOOL_TMP/zenity.sh
         todo="`sh "$WISOTOOL_TMP"/zenity.sh | tr '|' ' '`"
         ;;
     kdialog)
-        packages=`usage | awk '/^ [a-z]/ {print $1}'`
+        packages=`usage | awk '/^ [3a-z]/ {print $1}'`
         todo="`kdialog_showmenu "wisotool" "Select a package to install" "Install?" "Package" $packages`"
         ;;
     xmessage)
-        packages=`usage | awk '/^ [a-z]/ {print $1}'`
+        packages=`usage | awk '/^ [3a-z]/ {print $1}'`
         todo="`xmessage_showmenu "wisotool" "Select a package to install" "Install?" "Package" $packages`"
         ;;
     esac
@@ -448,8 +473,16 @@ iso_mount()
         done
     else
         # Linux
-	mkdir -p $ISO_MOUNT_ROOT
-        try fuseiso $my_img $ISO_MOUNT_ROOT
+        case "$SUDO" in
+        gksudo)
+          try $SUDO "mkdir -p $ISO_MOUNT_ROOT"
+          try $SUDO "mount -o ro,loop $my_img $ISO_MOUNT_ROOT"
+          ;;
+        *)
+          try $SUDO mkdir -p $ISO_MOUNT_ROOT
+          try $SUDO mount -o ro,loop "$my_img" $ISO_MOUNT_ROOT
+          ;;
+        esac
         ISO_MOUNT_LETTER=i
         echo "Mounting as drive ${ISO_MOUNT_LETTER}:"
         # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
@@ -468,8 +501,17 @@ iso_umount()
         try vcdmount.exe /u
         cd "$olddir"
     else
-        echo "Running fusermount -u $ISO_MOUNT_ROOT"
-	fusermount -u $ISO_MOUNT_ROOT
+        echo "Running $SUDO umount $ISO_MOUNT_ROOT"
+        case "$SUDO" in
+        gksudo)
+          $SUDO "umount $ISO_MOUNT_ROOT"
+          try $SUDO "rm -rf $ISO_MOUNT_ROOT"
+          ;;
+        *)
+          $SUDO umount $ISO_MOUNT_ROOT
+          try $SUDO rm -rf $ISO_MOUNT_ROOT
+          ;;
+        esac
         rm -f "$WINEPREFIX"/dosdevices/${ISO_MOUNT_LETTER}:
         rm -f "$WINEPREFIX"/dosdevices/${ISO_MOUNT_LETTER}::
     fi
@@ -490,14 +532,28 @@ cleanup()
 }
 
 load_iso() {
-   # Copy ISO
-   test -r /dev/cdrom || sudo chmod 666 /dev/cdrom
-   while ! dd if=/dev/cdrom of=/dev/null count=1
+   # Detect raw device
+   dev=/dev/null
+   for dev in /dev/cdrom /dev/sr0
+   do
+       test -b $dev && break
+   done
+   test $dev = /dev/null && die "can't find cd/dvd drive"
+
+   # Hack for Gentoo - make sure we can read from the drive
+   test -r $dev || sudo chmod 666 $dev
+
+   # Wait for user to insert disc
+   while ! dd if=$dev of=/dev/null count=1
    do
      sleep 1
    done
+
+   # Copy disc to .iso file, display progress every 5 seconds
+   # Use conv=noerror,sync to replace unreadable blocks with zeroes
+   dd if=/dev/sr0 of="$WISOTOOL_CACHE"/temp.iso bs=2048 conv=noerror,sync & pid=$!
+   # Since we're running dd in the background, register a handler to kill it if user presses ^C
    trap cleanup 1 2 3 6
-   dd if=/dev/cdrom of="$WISOTOOL_CACHE"/temp.iso bs=2048 conv=noerror,sync & pid=$!
    while ps -p $pid > /dev/null 2>&1
    do
      sleep 5
@@ -517,6 +573,12 @@ load_iso() {
        echo "$1" > "$WISOTOOL_CACHE"/$sum.txt
    fi
 
+   # Note: if you haven't written the verb for this disc yet,
+   # the .iso won't be moved to the right directory.  
+   # So when writing a new verb, first run 'sh wisotool load',
+   # then write just the verblist_add part (including sha1sum), then
+   # run 'sh wisotool migrate' to move the iso into the right directory,
+   # and then write the rest of the verb.
    migrate_files
 
    eject
@@ -525,8 +587,7 @@ load_iso() {
 #----------------------------------------------------------------
 
 ahk_do() {
-   echo "$@" | tr ';' '\012' | sed "s/\$/
-/" > "$WISOTOOL_TMP"/tmp.ahk
+   echo "$@" | sed "s/\$//" > "$WISOTOOL_TMP"/tmp.ahk
    $WINE "$programfilesdir_unix/AutoHotkey/AutoHotkey.exe" "$WISOTOOL_TMP_WIN"\\tmp.ahk
 }
 
@@ -562,8 +623,7 @@ ahk_helpers() {
 }
 __EOF__
 
-cat helper_tmp | tr ';' '\012' | sed "s/\$/
-/" > helpers.ahk
+cat helper_tmp | tr ';' '\012' | sed "s/\$//" > helpers.ahk
 
 }
 
@@ -576,12 +636,22 @@ load_autohotkey()
 
 #----------------------------------------------------------------
 
-# Must precede first call to announce_verb
-file_map="case \$1 in "
-
-announce_verb()
+verblist_init()
 {
-    # Usage: announce_verb verbname "description" file1 file2 ...
+    # Must call this before first call to verblist_add
+    file_map="case \$1 in "
+}
+
+verblist_finish()
+{
+    # Must follow last call to verblist_add
+    file_map="$file_map esac"
+}
+
+# Update list of known verbs and what file each uses
+verblist_add()
+{
+    # Usage: verblist_add verbname "description" file1 file2 ...
     verbname=$1
     shift
     description="$1"
@@ -592,11 +662,13 @@ announce_verb()
     done
 }
 
+# Given a file, output the verb it belongs to
 map_file_to_verb()
 {
    eval $file_map
 }
 
+# Output a list of the verbs for which the needed files are in the cache
 list_available_verbs()
 {
     find $WISOTOOL_CACHE/. -type f | sed 's,.*/,,' > /tmp/wfiles
@@ -606,9 +678,9 @@ list_available_verbs()
     done | sort -u
 }
 
+# Move any/all *.iso still at top level into the proper subdirectory
 migrate_files()
 {
-    # Only needed if you load an iso before wisotools supports it, and you then update wisotools
     for file in $WISOTOOL_CACHE/*.iso
     do
         barefile=`basename $file`
@@ -623,9 +695,144 @@ migrate_files()
     done
 }
 
+#----- Verbs ----------------------------------------------------
+
+verblist_init
+
+# TODO: load any external verbs from $srcdir/wisotool.d/*.verb
+
 #----------------------------------------------------------------
 
-announce_verb assassinscreed "Assassins Creed (Ubisoft, 2008)" a62112860423b32bf3ea77df6f5fe0b60c772de2.iso
+verblist_add 3dmark03 "3D Mark 03 (Futuremark, 2003)" 3DMark03_v360_1901.exe
+
+load_3dmark03() {
+    load_autohotkey
+
+    # http://www.futuremark.com/benchmarks/3dmark03/download/
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE/3DMark03_v360_1901.exe"
+    then
+        download $PACKAGE "http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark03_v360_1901.exe"
+    fi
+
+    cd "$WISOTOOL_CACHE/$PACKAGE"
+    warn "Don't use mouse while this installer is running.  Sorry..."
+    # This old installer doesn't seem to be scriptable the usual way, so spray and pray.
+    ahk_do "
+        run 3DMark03_v360_1901.exe
+        Sleep 4000
+        ; Welcome
+        Send {Enter}
+        Sleep 2000
+        ; Accept license
+        Send a
+        Send {Enter}
+        Sleep 2000
+        ; Choose Destination
+        Send {Enter}
+        Sleep 2000
+        ; Begin install
+        Send {Enter}
+        ; Wait for install to finish
+        Sleep 35000
+        ; Purchase later
+        Send {Tab}
+        Send {Tab}
+        Send {Enter}
+        ; Uncheck readme
+        Send {Space}
+        Send {Tab}
+        Send {Tab}
+        Send {Enter}
+    "
+}
+
+#----------------------------------------------------------------
+
+verblist_add 3dmark05 "3D Mark 05 (Futuremark, 2005)" 3DMark05_v130_1901.exe
+
+load_3dmark05() {
+    load_autohotkey
+
+    # http://www.futuremark.com/download/3dmark05/
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE/3DMark05_v130_1901.exe"
+    then
+        download $PACKAGE http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark05_v130_1901.exe
+    fi
+
+    cd "$WISOTOOL_CACHE/$PACKAGE"
+    ahk_do "
+        run 3DMark05_v130_1901.exe
+        WinWait ahk_class #32770, Welcome
+        Send {Enter}
+        WinWait, ahk_class #32770, License
+        ControlClick Button1 ; Accept
+        ControlClick Button4 ; Next
+        WinWait, ahk_class #32770, Destination
+        ControlClick Button1 ; Next
+        WinWait, ahk_class #32770, Install
+        ControlClick Button1 ; Install
+        WinWait, ahk_class #32770, Purchase
+        ControlClick Button4 ; Later
+        WinWait, ahk_class #32770, Complete
+        ControlClick Button1 ; Uncheck view readme
+        ControlClick Button3 ; Finish
+    "
+    if workaround_wine_bug 22392
+    then
+        warn "You must run the app with the -nosysteminfo option to avoid a crash on startup"
+    fi
+}
+
+#----------------------------------------------------------------
+
+verblist_add 3dmark06 "3D Mark 06 (Futuremark, 2006)" 3DMark06_v120_1901.exe
+
+load_3dmark06() {
+    load_autohotkey
+
+    # http://www.futuremark.com/benchmarks/3dmark06/download/
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE/3DMark06_v120_1901.exe"
+    then
+        download $PACKAGE "http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark06_v120_1901.exe" 2e4a52d5b0f7caebd7b4407dfa9e258ac623b5dd
+    fi
+
+    cd "$WISOTOOL_CACHE/$PACKAGE"
+    ahk_do "
+        run 3DMark06_v120_1901.exe
+        WinWait ahk_class #32770, Welcome
+        Send {Enter}
+        WinWait, ahk_class #32770, License
+        ControlClick Button1 ; Accept
+        ControlClick Button4 ; Next
+        WinWait, ahk_class #32770, Destination
+        ControlClick Button1 ; Next
+        WinWait, ahk_class #32770, Install
+        ControlClick Button1 ; Install
+        WinWait ahk_class OpenAL Installer
+        ControlClick Button2 ; OK
+        WinWait ahk_class #32770
+        ControlClick Button1 ; OK
+        WinWait, ahk_class #32770, Purchase
+        ControlClick Button4 ; Later
+        WinWait, ahk_class #32770, Complete
+        ControlClick Button1 ; Uncheck view readme
+        ControlClick Button3 ; Finish
+    "
+
+    if workaround_wine_bug 22393
+    then
+        # "Demo" button doesn't work without this
+        sh "$WINETRICKS" -q d3dx9_28 d3dx9_36
+    fi
+    if workaround_wine_bug 22392
+    then
+        warn "You must run the app with the -nosysteminfo option to avoid a crash on startup"
+    fi
+}
+
+#----------------------------------------------------------------
+
+verblist_add assassinscreed "Assassins Creed (Ubisoft, 2008)" a62112860423b32bf3ea77df6f5fe0b60c772de2.iso
 
 load_assassinscreed() {
     load_autohotkey
@@ -656,7 +863,7 @@ load_assassinscreed() {
 #----------------------------------------------------------------
 
 # http://appdb.winehq.org/objectManager.php?sClass=version&iId=408
-announce_verb baldursgate2       "Baldur's Gate 2 - Shadows of Amn (Bioware, 2000)" \
+verblist_add baldursgate2       "Baldur's Gate 2 - Shadows of Amn (Bioware, 2000)" \
   cc9359dce1a7be6c64bb6f8e6dea6d14d4a5f716.iso \
   429872605dad10433c3c581a1c11eba4d0988c46.iso \
   a6d18fcd7d16ddafbda7aa028b117566b1e09d2a.iso \
@@ -722,7 +929,7 @@ load_baldursgate2() {
 
 #----------------------------------------------------------------
 
-announce_verb diablo2       "Diablo II (Blizzard, 2000)" \
+verblist_add diablo2       "Diablo II (Blizzard, 2000)" \
   e20efb1ea60e58b4a25275a00571aabfe3ab4511.iso \
   51e2c630d5dd017e6168a8cf3ee24e39010316d9.iso \
   382ea98f270e39855b558b8fac0d609712a54ae8.iso \
@@ -753,13 +960,20 @@ load_diablo2() {
         winwait, Diablo II - choose install directory
         send {Enter}
         winwait, Desktop Shortcut
-        send {N}; winwait, Insert Disc"
+        send {N}
+        winwait, Insert Disc"
     iso_mount "$WISOTOOL_CACHE"/$PACKAGE/51e2c630d5dd017e6168a8cf3ee24e39010316d9.iso
     # Needed by patch 1.13c to avoid disc swapping
     cp "$ISO_MOUNT_ROOT"/d2music.mpq "$programfilesdir_unix/Diablo II/"
-    ahk_do "send, {Enter}; Sleep 1000; winwait, Insert Disc"
+    ahk_do "
+        send, {Enter}
+        Sleep 1000
+        winwait, Insert Disc"
     iso_mount "$WISOTOOL_CACHE"/$PACKAGE/382ea98f270e39855b558b8fac0d609712a54ae8.iso
-    ahk_do "send, {Enter}; Sleep 1000; winwait, Insert Disc"
+    ahk_do "
+        send, {Enter}
+        Sleep 1000
+        winwait, Insert Disc"
     iso_mount "$WISOTOOL_CACHE"/$PACKAGE/e20efb1ea60e58b4a25275a00571aabfe3ab4511.iso
     ahk_do "
         send, {Enter}
@@ -786,7 +1000,7 @@ load_diablo2() {
 
 #----------------------------------------------------------------
 
-announce_verb dragonage     "Dragon Age: Origins (Bioware, 2009)" 705a6b06d0dd807bf62b4391d278649d728ebda4.iso
+verblist_add dragonage     "Dragon Age: Origins (Bioware, 2009)" 705a6b06d0dd807bf62b4391d278649d728ebda4.iso
 
 load_dragonage() {
     warn "You must have already done 'wisotool load=YOURKEY' on the install disc." 
@@ -797,7 +1011,7 @@ load_dragonage() {
 
     # Installer has a non-fatal crash on exit, so ignore it.
     sh "$WINETRICKS" -q nocrashdialog physx vcrun2005
-    iso_mount "$WISOTOOL_CACHE"/705a6b06d0dd807bf62b4391d278649d728ebda4.iso
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/705a6b06d0dd807bf62b4391d278649d728ebda4.iso
 
     ahk_do "
         Run, ${ISO_MOUNT_LETTER}:Setup.exe
@@ -828,7 +1042,7 @@ load_dragonage() {
 
 #----------------------------------------------------------------
 
-announce_verb morrowind     "The Elder Scrolls III: Morrowind (Bethesda, 2002)" \
+verblist_add morrowind     "The Elder Scrolls III: Morrowind (Bethesda, 2002)" \
   c8368ed30d3f3fcd7fccf8bffcfcdf0a6d4cb68b.iso
 
 load_morrowind_goty() {
@@ -878,7 +1092,131 @@ sed -e 's/$/\r/' morrowind.tmp > morrowind.ahk
 
 #----------------------------------------------------------------
 
-announce_verb plantsvszombies "Plants vs. Zombies (PopCap Games, 2009)" PlantsVsZombiesSetup.exe
+verblist_add pcmark04 "PC Mark 04 (Futuremark, 2004)" PCMark04_v130_installer.exe
+
+load_pcmark04() {
+    load_autohotkey
+
+    # http://www.futuremark.com/download/pcmark04/
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE/PCMark04_v130_installer.exe"
+    then
+        die "Sorry, you have to download PCMark04_v130_installer.exe yourself and put it in $WISOTOOL_CACHE/$PACKAGE/PCMark04_v130_installer.exe"
+    fi
+
+    warn "Please don't use mouse while this installer is running.  Sorry..."
+    cd "$WISOTOOL_CACHE/$PACKAGE"
+    ahk_do "
+        SetTitleMatchMode, 2
+        run PCMark04_v130_installer.exe
+        ; Skip past the two windows warning about WMP9 etc.
+        WinWait, Information
+        Send {Enter}
+        WinWaitClose, Information
+        WinWait, Information
+        Send {Enter}
+
+        WinWait ahk_class #32770, Welcome
+        Send {Enter}
+        WinWait, ahk_class #32770, License
+        Send a ; Accept
+        Send {Enter} ; Next
+        Sleep 3000 ; Wait for Destination window
+        Send {Enter}
+        Sleep 3000 ; Wait for Install window
+        Send {Enter}
+        ; Wait for install to finish
+        WinWait, PCMark04, Registration
+        ; Purchase later
+        ; This window won't activate any other way!
+        MsgBox, 32, , Preparing your dungeon.  Why not enjoy a delicious slime mold while you wait?, 1
+        Send {Enter}
+        Sleep 3000
+        ; Uncheck readme
+        Send {Space}
+        Send {Tab}
+        Send {Tab}
+        Send {Enter}
+    "
+    if workaround_wine_bug 22402
+    then
+        warn "You may need to apply the patch from bug 22402 to avoid a crash in the tumbling blocks test."
+    fi
+}
+
+#----------------------------------------------------------------
+
+verblist_add pcmark05 "PC Mark 05 (Futuremark, 2005)" PCMark05_v130_1901.exe
+
+load_pcmark05() {
+    load_autohotkey
+
+    # http://www.futuremark.com/download/pcmark05/
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE/PCMark05_v120_1901.exe"
+    then
+        download $PACKAGE http://www.bulletproofnerds.com/uploadedfiles/futuremark/PCMark05_v120_1901.exe
+    fi
+
+    warn "Don't use mouse while this installer is running.  Sorry..."
+    cd "$WISOTOOL_CACHE/$PACKAGE"
+    ahk_do "
+        SetTitleMatchMode, 2
+        run PCMark05_v120_1901.exe
+        ; Skip past the two windows warning about WMP10 etc.
+        WinWait, Information
+        Send {Enter}
+        WinWaitClose, Information
+        WinWait, Information
+        Send {Enter}
+
+        WinWait ahk_class #32770, Welcome
+        Send {Enter}
+        WinWait, ahk_class #32770, License
+        Send a ; Accept
+        Send {Enter} ; Next
+        Sleep 3000 ; Wait for 2nd Welcome window
+        Send {Enter}
+        Sleep 3000 ; Wait for Destination window
+        Send {Enter}
+        Sleep 3000 ; Wait for Install window
+        Send {Enter}
+        ; Wait for install to finish
+        WinWait, PCMark05, Registration
+        ; Purchase later
+        ; This window won't activate any other way!
+        MsgBox, 32, , Preparing your dungeon.  Why not enjoy a delicious slime mold while you wait?, 1
+        Send {Enter}
+        Sleep 2000
+        ; Uncheck readme
+        Send {Space}
+        Send {Tab}
+        Send {Tab}
+        Send {Enter}
+    "
+}
+
+#----------------------------------------------------------------
+
+verblist_add passmark7 "Performance Test 7 (Passmark, 2010)" petst.exe
+
+load_passmark7() {
+    load_autohotkey
+
+    # http://www.passmark.com/download/pt_download.htm
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE/petst.exe"
+    then
+        download $PACKAGE http://www.passmark.com/ftp/petst.exe
+    fi
+
+    cd "$WISOTOOL_CACHE/$PACKAGE"
+    ahk_do "
+        run petst.exe
+    "
+    warn "TODO: finish."
+}
+
+#----------------------------------------------------------------
+
+verblist_add plantsvszombies "Plants vs. Zombies (PopCap Games, 2009)" PlantsVsZombiesSetup.exe
 
 load_plantsvszombies() {
     load_autohotkey
@@ -903,7 +1241,73 @@ load_plantsvszombies() {
 
 #----------------------------------------------------------------
 
-announce_verb sims3         "The Sims 3 (EA, 2009)" 8a82a067f3bb8f68d034a06954e9a16ea381958a.iso
+verblist_add re5bench "Resident Evil 5 Benchmark (Capcom, 2009)" nzd_ResidentEvil5_Benchmark.exe
+
+load_re5bench() {
+    load_autohotkey
+
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE/nzd_ResidentEvil5_Benchmark.exe"
+    then
+        download $PACKAGE "http://download.nvidia.com/downloads/nZone/demos/nzd_ResidentEvil5_Benchmark.exe"
+    fi
+
+    cd "$WISOTOOL_CACHE/$PACKAGE"
+    ahk_do "
+        run nzd_ResidentEvil5_Benchmark.exe
+        WinWait ahk_class MsiDialogCloseClass 
+        ControlClick Button1 ; Next
+        WinWait ahk_class MsiDialogCloseClass, License
+        ControlClick Button3 ; Accept
+        ControlClick Button5 ; Next
+        WinWait ahk_class MsiDialogCloseClass, Destination
+        ControlClick Button1 ; Next
+        WinWait ahk_class MsiDialogCloseClass, Ready
+        ControlClick Button1 ; Install
+        WinWait ahk_class MsiDialogCloseClass, Completed
+        ControlClick Button3 ; Uncheck Launch
+        ControlClick Button1 ; Finish
+    "
+
+    if workaround_wine_bug 21939
+    then
+        try sh "$WINETRICKS" -q wmp9
+    fi
+}
+
+#----------------------------------------------------------------
+
+verblist_add quake3         "Quake 3 (ID Software, 1999)" 4d2102a8df3c1fea237f2a6a141346c436614d5e.iso
+
+load_quake3() {
+    load_autohotkey
+
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/4d2102a8df3c1fea237f2a6a141346c436614d5e.iso
+    ahk_do "
+        Run ${ISO_MOUNT_LETTER}:Setup.exe
+        WinWait, Quake III Arena
+        ControlClick, x532 y206 ; Click Install
+        WinWait, Welcome
+        ControlClick, Button1 ; Click Next
+        WinWait, Software License Agreement
+        ControlClick, Button2 ; Click Yes
+        WinWait, Setup Type
+        ControlClick, Button2 ; Click Next
+        WinWait, Choose Destination Location
+        ControlClick, Button1 ; Click Next
+        WinWait, Select Program Folder
+        ControlClick, Button2 ; Click Next
+        WinWait, Question, Would you like to place a Shortcut on your Desktop?
+        ControlClick, Button7 ; Click No
+        WinWait, Setup Complete
+        ControlClick, Button3 ; Click No I will restart my computer later.
+        ControlClick, Button5 ; Click Finish
+    "
+    iso_umount
+}
+
+#----------------------------------------------------------------
+
+verblist_add sims3         "The Sims 3 (EA, 2009)" 8a82a067f3bb8f68d034a06954e9a16ea381958a.iso
 
 load_sims3() {
     load_autohotkey
@@ -971,7 +1375,7 @@ load_sims3() {
 
 #----------------------------------------------------------------
 
-announce_verb starcraft     "Starcraft Battle Chest (Blizzard, 1998)" 8d6cc11bc76b8af22868a95e17e0282277e9c53c.iso 966bae1f2e2035e066139e78137e623c92838254.iso
+verblist_add starcraft     "Starcraft Battle Chest (Blizzard, 1998)" 8d6cc11bc76b8af22868a95e17e0282277e9c53c.iso 966bae1f2e2035e066139e78137e623c92838254.iso
 
 load_starcraft() {
     warn "You must have already done 'wisotool load=YOURKEY' on the install disc, and 'wisotool load' on the other disc." 
@@ -1013,7 +1417,7 @@ load_starcraft() {
 
 #----------------------------------------------------------------
 
-announce_verb starcraft2    "Starcraft II beta (Blizzard, 2010)" 
+verblist_add starcraft2    "Starcraft II beta (Blizzard, 2010)" 
 
 load_starcraft2() {
     load_autohotkey
@@ -1055,7 +1459,7 @@ load_starcraft2() {
 
 #----------------------------------------------------------------
 
-announce_verb stfu          "Starwars: The Force Unleashed (Aspyr, 2009)" 0d0f4e826c3a04542a68d7bcc971f4df7526965b.iso 5d6e2eb1b08b9d4a71b2390b385c3048ec91f3df.iso
+verblist_add stfu          "Starwars: The Force Unleashed (Aspyr, 2009)" 0d0f4e826c3a04542a68d7bcc971f4df7526965b.iso 5d6e2eb1b08b9d4a71b2390b385c3048ec91f3df.iso
 
 load_stfu() {
     load_autohotkey
@@ -1110,7 +1514,42 @@ load_stfu() {
 
 #----------------------------------------------------------------
 
-announce_verb wog           "World of Goo demo (2D Boy, 2008)" WorldOfGooDemo.1.0.exe
+verblist_add unigine_heaven "Unigen Heaven 2 Benchmark (Unigen, 2010)" Unigine_Heaven-2.0.msi 6a0bd499ae8ed8d73d74d964d3c4312a0a40b7e6
+
+load_unigine_heaven() {
+    load_autohotkey
+
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE/Unigine_Heaven-2.0.msi"
+    then
+        warn "This download is slow, you may want to do a manual download from http://downloads.guru3d.com/Unigine-Heaven-DirectX-11-benchmark-2.0-download-2414.html instead"
+        #download $PACKAGE http://www.techpowerup.com/downloads/1775e/Unigine_Heaven-2.0.msi 6a0bd499ae8ed8d73d74d964d3c4312a0a40b7e6
+        download $PACKAGE http://unigine.com/download/files/Unigine_Heaven-2.0.msi 6a0bd499ae8ed8d73d74d964d3c4312a0a40b7e6
+    fi
+
+    cd "$WISOTOOL_CACHE/$PACKAGE"
+    ahk_do "
+        run msiexec /i Unigine_Heaven-2.0.msi
+        WinWait ahk_class MsiDialogCloseClass 
+        Send {Enter}
+        WinWait ahk_class MsiDialogCloseClass, License
+        ControlClick Button1 ; Accept
+        ControlClick Button3 ; Accept
+        WinWait ahk_class MsiDialogCloseClass, Choose
+        ControlClick Button1 ; Typical
+        WinWait ahk_class MsiDialogCloseClass, Ready
+        ControlClick Button2 ; Install
+        WinWait ahk_class OpenAL Installer
+        ControlClick Button2 ; OK
+        WinWait ahk_class #32770
+        ControlClick Button1 ; OK
+        WinWait ahk_class MsiDialogCloseClass, Completed
+        ControlClick Button1 ; Finish
+    "
+}
+
+#----------------------------------------------------------------
+
+verblist_add wog           "World of Goo demo (2D Boy, 2008)" WorldOfGooDemo.1.0.exe
 
 load_wog() {
     load_autohotkey
@@ -1149,8 +1588,7 @@ print_version() {
 
 #--------- Main program -----------------------------------------
 
-# Must follow last announce_verb
-file_map="$file_map esac"
+verblist_finish
 
 # On Solaris, choose more modern commands (needed for id -u).
 case `uname -s` in
@@ -1166,6 +1604,7 @@ case "$1" in
 esac
 
 detect_menu
+detect_sudo
 
 GUI=0
 case x"$1" in
@@ -1207,7 +1646,7 @@ WINETRICKS="$srcdir/winetricks"
 if ! test -f "$WINETRICKS"
 then
     WINETRICKS="$WISOTOOL_CACHE/winetricks"
-    wget -o "$WINETRICKS" http://winezeug.googlecode.com/svn/trunk/winetricks
+    wget -o "$WINETRICKS" http://kegel.com/wine/winetricks
 fi
 
 # Clean up after failed runs, if needed
@@ -1271,22 +1710,34 @@ do
         export WINEDEBUG
         ;;
     -v) set -x;;
-    assassinscreed) load_assassinscreed;;
-    baldursgate2) load_baldursgate2;;
-    diablo2) load_diablo2;;
-    dragonage) load_dragonage;;
     ls) list_available_verbs;;
     load) load_iso;;
     load=*) key="`echo $1 | sed 's/load=//'`"; load_iso "$key";;
     migrate) migrate_files;;
+    version) print_version;;
+
+# TODO: call verblist_handle_verb, or something like that, instead of hardcoding list here
+    3dmark03) load_3dmark03;;
+    3dmark05) load_3dmark05;;
+    3dmark06) load_3dmark06;;
+    assassinscreed) load_assassinscreed;;
+    baldursgate2) load_baldursgate2;;
+    diablo2) load_diablo2;;
+    dragonage) load_dragonage;;
     morrowind|morrowind_goty) load_morrowind_goty;;
+    passmark7) load_passmark7;;
+    pcmark04) load_pcmark04;;
+    pcmark05) load_pcmark05;;
     plantsvszombies) load_plantsvszombies;;
+    quake3) load_quake3;;
+    re5bench) load_re5bench;;
     sims3) load_sims3;;
     starcraft) load_starcraft;;
     starcraft2) load_starcraft2;;
     stfu) load_stfu;;
-    version) print_version;;
+    unigine_heaven) load_unigine_heaven;;
     wog) load_wog;;
+
     *) echo Unknown arg $1; usage ; exit 1;;
     esac
     # Provide a bit of feedback

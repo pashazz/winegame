@@ -44,18 +44,11 @@ Q_OBJECT
 public:
     explicit engine(QObject *parent = 0);
  void lauch (QString workdir, bool msg = true);
- void lauchPreset (QString preset, bool msg = true); //запускает движок с определенным preset
  void setCdMode (bool mode){cdMode=mode;}
  void setDiskpath (QString path){diskpath = path;}
- static QString getName (QString path);
- static QString getNote(QString path);
- static QIcon getIcon (QString path);
- static QString getPrefixName (QString path);
- static QString getWine (QString path);
  static void showNotify (QString, QString);
  static  QString prefixPath (QString dir);
  static void makefix (QString prefix); //исправляет запуск WineBrowser
- static QString getStandardExe (QString); //значение EXEPATH в control, которое выполняется при дабл-клике
  static QString getExeWorkingDirectory(QString exe);
 
 private slots:

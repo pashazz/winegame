@@ -8,14 +8,12 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     discdetector.cpp \
     gamedialog.cpp \
-    prefix.cpp \
     prefixdialog.cpp \
     isomaster.cpp \
     autopackage.cpp
 HEADERS += mainwindow.h \
     discdetector.h \
     gamedialog.h \
-    prefix.h \
     prefixdialog.h \
     isomaster.h \
     autopackage.h
@@ -24,13 +22,14 @@ FORMS += mainwindow.ui \
     prefixdialog.ui
 INCLUDEPATH += libwinegame/
 RESOURCES += res.qrc
-LIBS += -L/usr/lib -lwinestuff
+LIBS += -L/usr/lib \
+    -lwinestuff
 TRANSLATIONS += l10n/wg_ru.ts
-VERSION=0.0.1
-##################################################
-# Install information                            #
-##################################################
+VERSION = 0.0.1
 
+# #################################################
+# Install information                            #
+# #################################################
 tools.path = /usr/local/bin
 tools.files = tools/*
 pkgs.path = /usr/share/winegame

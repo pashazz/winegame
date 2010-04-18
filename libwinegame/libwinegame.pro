@@ -6,12 +6,14 @@ TARGET = winestuff
 TEMPLATE = lib
 DEFINES += WINESTUFF_LIBRARY
 SOURCES += engine.cpp \
-    corelib.cpp
+    corelib.cpp \
+    prefix.cpp
 HEADERS += libwinegame_global.h \
     engine.h \
     enginefunc.h \
     linux.h \
-    corelib.h
+    corelib.h \
+    prefix.h
 target.path = /usr/lib/
 INSTALLS += target
 VERSION = 0.0.1

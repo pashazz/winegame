@@ -40,9 +40,10 @@ private:
     Ui::MainWindow *ui;
 QString diskpath;
 bool cdMode;
+
+
 void saveGeom();
     void buildList();
-    void buildPreset ();
     void lauchEngine(QString pkgpath);
 private slots:
     void on_lstGames_itemClicked(QTreeWidgetItem* item, int column);

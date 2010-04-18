@@ -24,6 +24,7 @@ GameDialog::GameDialog(QWidget *parent, QString path) :
     ui(new Ui::GameDialog),
     _path (path)
 {
+    Prefix *prefix = new Prefix (this, path);
     ui->setupUi(this);
     //setting the UI
     if (qApp->arguments().length() > 1)
@@ -33,8 +34,8 @@ GameDialog::GameDialog(QWidget *parent, QString path) :
 
 
     ui->lblIcon->setText("");
-    ui->lblName->setText(tr("A Microsoft Windows(r) application is found on this disc. <br><br><b>%1</b><br><br> Would you like to install it? ").arg(engine::getName(path)));
-    ui->lblDesc->setText(engine::getNote(path));
+    ui->lblName->setText(tr("A Microsoft Windows(r) application is found on this disc. <br><br><b>%1</b><br><br> Would you like to install it? ").arg(prefix->name()));
+    ui->lblDesc->setText(prefix->note());
 
 }
 

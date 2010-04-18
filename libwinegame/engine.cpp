@@ -17,6 +17,7 @@
 */
 
 #include "engine.h"
+#include "prefix.h"
 #include "enginefunc.h"
 #include <QtDebug>
 #include <QPushButton>
@@ -29,12 +30,12 @@ core = new corelib;
 }
 void engine::lauch(QString workdir, bool msg)
 {
-    QString wineBinary;
     QSettings s (workdir + CTRL,  QSettings::IniFormat, this);
     if (QFile::exists(workdir + CTRL))
         controlFile = workdir + CTRL;
     else
         return;
+   Prefix *wPrefix = new Prefix (this, workdir);
 
     QString prefixName = myPrefixName(); //собственно имя префикса
     prefix = QDir::homePath() + winepath + QDir::separator() + prefixName; //путь к префиксу
@@ -53,7 +54,7 @@ void engine::lauch(QString workdir, bool msg)
 if (!s.value("application/container").toString().isEmpty())
 {
     QString container = downloadWine(s.value("application/container").toString());
-    unpackWine(TMP + QDir::separator() + container, prefix);
+    core->unpackWine(TMP + QDir::separator() + container, prefix);
 }
 
 //найдем переменную WINEDISTR для развертывания Wine (если есть)
@@ -72,7 +73,7 @@ qDebug() << "engine: setting wine binary to " << wineBinary;
 if (!QFile::exists(wineBinary))
 {
     QString distrname =     downloadWine(distr);
-    unpackWine(distrname, destination);
+    core->unpackWine(distrname, destination);
 }
 //выходим из условия
 }
@@ -90,9 +91,9 @@ if (wineBinary.isEmpty())
     qDebug() << "engine: exiting";
     return;
 }
-name = getName(workdir);
-note = getNote(workdir);
-program = getStandardExe(workdir);
+ name = wPrefix->name();
+note = wPrefix->note();
+program = wPrefix->standardExe();
 QProcessEnvironment myEnv = QProcessEnvironment::systemEnvironment();
 qDebug() << tr("engine: setting Prefix: %1").arg(prefix);
 myEnv.insert("FILESDIR", workdir + "/files");
@@ -172,56 +173,6 @@ if (result == QMessageBox::No)
 }
               }
 
-
-QString engine::getName(QString path)
-{
-    //попробуем найти локализованный файл name сначала
-
-    //ищем файл .name в данном path
-    QFile file (path + QDir::separator() + ".name." + QLocale::system().name() );
-    if (file.exists())
-    {
-        file.open(QIODevice::ReadOnly | QIODevice::Text);
-        QString ret = file.readAll();
-        file.close();
-        return ret;
-    }
-    else
-    {
- //cначала попробуем открыть просто .name
-        file.setFileName(path + QDir::separator() + ".name");
-        if (file.exists())
-        {
-            file.open(QIODevice::ReadOnly | QIODevice::Text);
-            QString ret = file.readAll();
-            file.close();
-            return ret;
-        }
-        else
-        {
-            QDir dir (path);
-            return dir.dirName();
-        }
-
-    }
-}
-QString engine::getNote(QString path)
-{
-    /// не забываем, что в note можно вставлять HTML-код!
-    QString fileName;
-    if (QFile::exists(path + "/.note." + QLocale::system().name())) //читаем локализованное примечание
-        fileName =path + "/.note." + QLocale::system().name();
-    else if (QFile::exists((path + "/.note")))
-        fileName = path + "/.note";
-    else
-        return QString();
-QFile file (fileName);
-file.open(QIODevice::Text | QIODevice::ReadOnly);
-QString note = file.readAll();
-file.close();
-return note;
-
-}
 void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
 {
     showNotify(tr("Downloading packages..."), tr("Now we will install Microsoft components"));
@@ -229,47 +180,6 @@ void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
   p.setProcessEnvironment(env);
     p.start(core->whichBin("winetricks") + " " + pkgs);
     p.waitForFinished(-1);
-}
-QIcon engine::getIcon(QString path)
-{
-    if (QFile::exists(path + "/icon"))
-    {
-        QIcon icon (path + "/icon");
-        return icon;
-}
-    else
-        return QIcon::fromTheme("application-default-icon");
-
-}
-QString engine::getPrefixName(QString path)
-{
-    QSettings stg(path + CTRL, QSettings::IniFormat, 0 );
-stg.beginGroup("application");
-return stg.value("prefix").toString();
-}
-QString engine::prefixPath(QString dir)
-{
-    if (engine::getPrefixName(dir).isEmpty())
-        return QString();
-
-    QString prefix = QDir::homePath() + winepath + QDir::separator() + engine::getPrefixName(dir);
-        return prefix;
-}
-
-QString engine::getWine(QString path)
-{
-    QSettings stg(path + CTRL, QSettings::IniFormat, 0 );
- stg.beginGroup("wine");
- QString distr = stg.value("distr").toString();
- if (distr.isEmpty())
-    {
-     return corelib::whichBin("wine");
- }
-    else
-    {
-        QString prefix = getPrefixName(path);
-        return QDir::homePath() + winepath + "/wines/" + prefix + "/usr/bin/wine";
-    }
 }
 
 QString engine::downloadWine(QString url) //TODO: проверка на ошибки.
@@ -388,7 +298,6 @@ void engine::doDesktop(QString workname)
        QFile iconFile (iconPath);
     QFileInfo info (iconFile);
     if (iconFile.exists()) {
-        qDebug() << "engine: copy ico to " << QDir::homePath() + "/.local/share/icons/" + info.fileName();
     iconFile.copy(QDir::homePath() + "/.local/share/icons/" + info.fileName());
     stream << tr("Icon=%1").arg(QDir::homePath() + "/.local/share/icons/" + info.fileName());
 }
@@ -417,13 +326,7 @@ env.insert("WINEPREFIX", prefix);
 p.setProcessEnvironment(env);
 p.start(wineBinary, args);
 p.waitForFinished(-1);
-f.remove();
-}
-QString engine::getStandardExe(QString controlFile)
-{
-    QSettings stg(controlFile, QSettings::IniFormat, 0 );
-    stg.beginGroup("application");
-    return stg.value("exepath").toString();
+//f.remove();
 }
 
 void engine::makefix(QString prefix)
@@ -459,6 +362,7 @@ void engine::makecdlink()
 
         QFile::link(devcdrom, prefix + "/dosdevices/d::");
         QFile::link(info.absoluteFilePath(), prefix + "/dosdevices/d:");
+
         //Мы должны зашить D:/ в программу
         //потому что это стандарт для скриптов (preinst/postinst)
     }
@@ -532,3 +436,4 @@ QString engine::getExeWorkingDirectory(QString exe)
     QFileInfo info (exe);
     return info.absolutePath();
 }
+

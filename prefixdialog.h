@@ -20,7 +20,8 @@
 #define PREFIXDIALOG_H
 
 #include <QDialog>
-#include "prefix.h"
+#include <QFileDialog>
+#include "libwinegame/prefix.h"
 
 namespace Ui {
     class PrefixDialog;

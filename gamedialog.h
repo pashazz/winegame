@@ -20,7 +20,7 @@
 #define GAMEDIALOG_H
 
 #include <QtGui>
-#include "engine.h"
+#include "prefix.h"
 namespace Ui {
     class GameDialog;
 }

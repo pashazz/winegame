@@ -21,12 +21,17 @@
 #define CORELIB_H
 
 #include <QtCore>
+#include <QInputDialog>
+#include <QMessageBox>
+#include "linux.h"
 #include "libwinegame_global.h"
 class  WINESTUFFSHARED_EXPORT corelib : public QObject
 {
 public:
     corelib();
      static QString whichBin (QString bin);
+     static void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
+     static void unpackWine(QString distr, QString destination);
 };
 
 #endif // CORELIB_H
