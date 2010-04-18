@@ -1,3 +1,4 @@
 [wine]
+preset=true
 memory=true
 components="d3dx9 ddr=opengl psm=on npm-repack vsm-hard" 

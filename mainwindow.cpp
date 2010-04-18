@@ -108,8 +108,7 @@ void MainWindow::buildPreset() {
    {
          QTreeWidgetItem *it = new QTreeWidgetItem (par);
          it->setText(0,  engine::getName( gamepath + "/presets/" + QDir::separator() + entry));
-         it->setData(0,Qt::UserRole,  entry);
-       it->setData(0, 64,  true); // ролью 64 мы определяем, что это пресет.
+         it->setData(0,Qt::UserRole,  gamepath + "/presets/" + QDir::separator() + entry);
      }
 }
 
@@ -144,13 +143,7 @@ void MainWindow::on_buttonBox_accepted()
     if (ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString().isEmpty())
         return;
    if (!ui->lstGames->selectedItems().isEmpty()) {
-       if (ui->lstGames->selectedItems().first()->data(0, 64).toBool())
-       {
-           //это пресет
-           lauchPresetEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
-           return;
-       }
-        lauchEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
+         lauchEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
     }
 
     else
@@ -203,10 +196,3 @@ void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
     ui->lblNote->setText( engine::getNote(item->data(column,Qt::UserRole).toString()));
 }
 
-void MainWindow::lauchPresetEngine(QString name)
-{
-    engine *eng = new engine (this);
-   eng->setDiskpath(diskpath);
-   eng->setCdMode(cdMode);
-   eng->lauchPreset(name);
-}

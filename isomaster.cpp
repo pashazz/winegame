@@ -46,6 +46,7 @@ void IsoMaster::lauchApp()
     else
     {
         QMessageBox::critical(0, tr("Warning"), tr("I can not get Windows application from this image"));
+        //TODO: сделать небольшой диалог, чтобы юзер выбирал из списка пресетов
     }
     p.start(umount);
  p.waitForFinished(-1);

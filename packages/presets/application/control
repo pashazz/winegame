@@ -1,2 +1,3 @@
 [wine]
+preset=true
 components="fontsmooth-rgb allfonts vcrun2005sp1"

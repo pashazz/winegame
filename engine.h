@@ -54,7 +54,7 @@ public:
  static  QString prefixPath (QString dir);
  static void makefix (QString prefix); //исправляет запуск WineBrowser
  static QString getStandardExe (QString); //значение EXEPATH в control, которое выполняется при дабл-клике
- signals:
+ static QString getExeWorkingDirectory(QString exe);
 
 private slots:
  void error (QNetworkReply::NetworkError);
@@ -62,7 +62,6 @@ private slots:
  void exitApp ();
 private:
 static  QString getVariableValue (QString value, const QStringList &vars);
-static QString getExeWorkingDirectory();
 bool cdMode;
 QString diskpath;
 QProgressDialog *progress;
@@ -74,11 +73,14 @@ QString name;
 QString note;
 QString iconPath;
 QString program;
-//Функции собственно движка (исп. с QtConcurrent) объявлены в enginefunc.h
  QString downloadWine(QString url);
  void doDesktop(QString);
  void setMemory (QString);
  void makecdlink();
+ QString controlFile;
+ //И еще функции
+ QString getRunnableExe();
+QString myPrefixName();
 };
 
 #endif // ENGINE_H
