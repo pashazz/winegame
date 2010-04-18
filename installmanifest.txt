@@ -1,0 +1,7 @@
+/usr/lib/libwinestuff.so
+/usr/lib/libwinestuff.so.0
+/usr/lib/libwinestuff.so.0.0 
+/usr/lib/libwinestuff.so.0.0.1
+/usr/local/bin/winegame
+/usr/local/bin/winetricks
+/usr/local/bin/wisotool

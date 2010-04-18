@@ -10,14 +10,17 @@ fuseiso
 notify-send/KDialog
 =========================================
 Installation:
-cd libwinegame
-qmake && make && sudo make install
-cd ..
-qmake && make && sudo make install
+./quickinstall.sh
+
+Uninstallation:
+sudo rm `cat installmanifest.txt | xargs` (or similar)
+PLEASE, PLEASE, DONT USE make uninstall AT ALL!
+==========================================
+
 Thanks, pashazz.
-(c) Pavel Zinin, 2010
+(c) Pavel Zinin, 2010 (GPLv3)
 
 winetricks & wisotool
-(c) Dan Kegel 2007-2010, Austin English 2008-2010
+(c) Dan Kegel 2007-2010, Austin English 2008-2010 (LGPL)
 
 //P.S. Source of some icons is UNKNOWN! Use it`s content "as is".

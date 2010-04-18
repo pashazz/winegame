@@ -8,3 +8,4 @@ r6:engine fixes, VIDEO_MEMORY_SIZE added
 r7:engine fixes, using INI format for control file, presets
 r8:editor included
 r9:autopackages included
+r10:now engine in shared library. And autopackages removed.
