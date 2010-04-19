@@ -72,7 +72,7 @@ void AutoPackage::load()
     {
         // FIXME: No code yet
     }
-    engine::showNotify(tr("Starting disc clone"), tr("Don`t worry! WineGame clones your DVD into image. Wait ~5 mins."));
+    corelib::showNotify(tr("Starting disc clone"), tr("Don`t worry! WineGame clones your DVD into image. Wait ~5 mins."));
     qDebug() << "starting  wisotool" << myArg;
     p->start("wisotool " + myArg);
 
@@ -86,7 +86,7 @@ void AutoPackage::startInstall(QProcess *p)
     QStringList args;
     args << _game;
     qDebug() << "/usr/bin/wisotool" << args;
-    engine::showNotify(tr("Ready to install"), tr("Now we will install your game and all needed software."));
+    corelib::showNotify(tr("Ready to install"), tr("Now we will install your game and all needed software."));
     p->start("wisotool", args);
     p->waitForFinished(-1);
     //Now we`re set memory

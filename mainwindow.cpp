@@ -46,8 +46,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QLabel * cdlab = new QLabel (diskpath);
    statusBar()->addWidget(cdlab);
 buildList();
-engine::showNotify(tr("Hello"), tr("Please connect to Internet!"));
+corelib *core  = new corelib(this);
+core->showNotify(tr("Hello"), tr("Please connect to Internet!"));
 ui->lstGames->expandAll();
+
+//Обновляем вайны
+core->updateWines();
+core->deleteLater();
 }
 
 MainWindow::~MainWindow()

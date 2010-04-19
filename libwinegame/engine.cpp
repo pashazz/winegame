@@ -26,7 +26,7 @@ using namespace QtConcurrent;
 engine::engine(QObject *parent) : //сейчас мы не делаем ничего
     QObject(parent)
 {
-core = new corelib;
+core = new corelib (this);
 }
 void engine::lauch(QString workdir, bool msg)
 {
@@ -53,7 +53,7 @@ void engine::lauch(QString workdir, bool msg)
 //ищем контейнер префикса
 if (!s.value("application/container").toString().isEmpty())
 {
-    QString container = downloadWine(s.value("application/container").toString());
+    QString container = core->downloadWine(s.value("application/container").toString());
     core->unpackWine(TMP + QDir::separator() + container, prefix);
 }
 
@@ -72,7 +72,7 @@ wineBinary = destination + "/usr/bin/wine"; //дададада!
 qDebug() << "engine: setting wine binary to " << wineBinary;
 if (!QFile::exists(wineBinary))
 {
-    QString distrname =     downloadWine(distr);
+    QString distrname =   core->downloadWine(distr);
     core->unpackWine(distrname, destination);
 }
 //выходим из условия
@@ -175,108 +175,13 @@ if (result == QMessageBox::No)
 
 void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
 {
-    showNotify(tr("Downloading packages..."), tr("Now we will install Microsoft components"));
+    corelib::showNotify(tr("Downloading packages..."), tr("Now we will install Microsoft components"));
     QProcess p (this);
   p.setProcessEnvironment(env);
     p.start(core->whichBin("winetricks") + " " + pkgs);
     p.waitForFinished(-1);
 }
 
-QString engine::downloadWine(QString url) //TODO: проверка на ошибки.
-{
-    QUrl myurl = QUrl(url);
-    QFileInfo inf (myurl.path());
-    QString wineFileName =TMP + QDir::separator() +  inf.fileName();
-    //проверяем, есть ли у нас данный файл
-    if (QFile::exists(wineFileName))
-        return wineFileName;
-     showNotify(tr("Don`t worry!"), tr("Now WineGame will download some files, that will need for get your applicaton running"));
-  QProgressDialog *progress = new QProgressDialog(0);
-     QEventLoop loop;
-QNetworkAccessManager *manager = new QNetworkAccessManager (this);
-QNetworkRequest req; //request для Url
-this->progress = progress;
-req.setUrl(QUrl(url));
-req.setRawHeader("User-Agent", "Winegame-Browser 0.1");
-QNetworkReply *reply = manager->get(req);
-connect (reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(setRange(qint64,qint64)));
-connect (reply, SIGNAL(finished()), &loop, SLOT(quit()));
-progress->setModal(true);
-progress->setWindowTitle(tr("Downloading Wine..."));
-progress->setLabelText(tr("Downloading %1").arg(url));
-QPushButton *but = new QPushButton  (progress);
-but->setFlat(true);
-but->setDisabled(false);
-but->setText(tr("Cancel"));
-connect (but, SIGNAL(clicked()), this, SLOT (exitApp()));
-progress->setCancelButton(but);
-progress->show();
-loop.exec();
-progress->close();
-QByteArray buffer = reply->readAll();
-QFile file (wineFileName);
-if (file.open(QIODevice::WriteOnly))
-{
-        file.write(buffer);
-        file.close();
-                    }
-else
-    qDebug() << "engine: error open file (WINEDISTR):" << file.errorString();
-progress->deleteLater();
-return wineFileName;
-}
-
-void engine::showNotify (QString header, QString body) //функция НУ СОВСЕМ не доделана.
-{
-/// знаю что тупизм,но никто не хочет помогать
-    if (QProcessEnvironment::systemEnvironment().contains("KDE_FULL_SESSION")) //пока кеды юзают KDialog
-        //вся земля юзает notify-send
-        //чезез kdialog:
-    {
-                             QStringList arguments;
-                            arguments << "--passivepopup" <<body;
-                            arguments << "--title"<<header;
-                            QProcess::startDetached("/usr/bin/kdialog",arguments);
-                                      }
-
-
-        //Через notify-send:
-    else
-    {
-                             QStringList arguments;
-                            arguments << header << body;
-                            QProcess::startDetached("/usr/bin/notify-send",arguments);
-                        }
-
-   }
-
-void engine::setRange(qint64 aval, qint64 total)
-{
-    int kbAval = aval;
-    int kbTotal = total;
-    progress->setMaximum(kbTotal);
-    progress->setValue(kbAval);
-}
-
-void engine::exitApp()
-{
-    QMessageBox::critical(0, tr("Critical error"), tr("Wine distribution not downloaded, so exit application."));
-    qApp->exit(-4);
-}
-
-void engine::error(QNetworkReply::NetworkError error)
-{
-    if  (error != QNetworkReply::NoError)
-    {
-       return;
-   }
-    else
-    {
-        QMessageBox::warning(0, tr("Network error"), tr("Network error: %1. Exiting application"));
-        qApp->exit(-6);
-    }
-
-}
 
 void engine::doDesktop(QString workname)
      {
@@ -305,7 +210,6 @@ void engine::doDesktop(QString workname)
 }
 void engine::setMemory(QString mem)
 {
-    const QString reg = "/tmp/win.reg";
     QStringList args;
     args << "regedit";
     args << reg;
@@ -326,7 +230,7 @@ env.insert("WINEPREFIX", prefix);
 p.setProcessEnvironment(env);
 p.start(wineBinary, args);
 p.waitForFinished(-1);
-//f.remove();
+f.remove();
 }
 
 void engine::makefix(QString prefix)
@@ -436,4 +340,3 @@ QString engine::getExeWorkingDirectory(QString exe)
     QFileInfo info (exe);
     return info.absolutePath();
 }
-

@@ -3,14 +3,17 @@
 
 cd $WINEPREFIX
 wget http://www.dllbank.com/zip/w/wrap_oal.dll.zip
-unzip wrap_oal.dll.zip
+unzip -u wrap_oal.dll.zip
 if test -d "$WINEPREFIX/drive_c/Program Files/TmNationsForever/"
+then
   cp wrap_oal.dll "$WINEPREFIX/drive_c/Program Files/TmNationsForever/"
 fi
 
 if test -d "$WINEPREFIX/drive_c/Program Files/TmUnitedForever/"
+then
    cp wrap_oal.dll "$WINEPREFIX/drive_c/Program Files/TmUnitedForever/"
 fi
 
-rm wrap_oal.dll wrap_oal.dll.zip
+rm wrap_oal.dll
+rm wrap_oal.dll.zip
 exit 0

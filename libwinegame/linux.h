@@ -21,10 +21,11 @@
 #include <QString>
 
 //важные константы
-const QString gamepath = "/usr/share/winegame";
-const QString winepath = "/Windows";
+const QString gamepath = "/usr/share/winegame"; // Директория, где искать пакеты со скриптами
+const QString winepath = "/Windows"; // тут располагаются префиксы ($HOME/%winepath%)
 const QString CTRL="/control"; //control file, DO NOT EDIT
-const QString TMP = "/tmp";
-const QString config = "/.config/winegame.conf";
-const QString MOUNT_DIR = "/game";
+const QString TMP = "/tmp"; //временная директория
+const QString config = "/.config/winegame.conf"; //Конфиг программы  ($HOME/%config%)
+const QString MOUNT_DIR = "/game"; // Куда монтировать ISO ($HOME/%MOUNT_DIR%)
+const QString reg = "/tmp/win.reg"; //имя временного файла реестра, куда мы запишиваем все нужное
 #endif

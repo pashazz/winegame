@@ -19,7 +19,8 @@
 
 #include "corelib.h"
 //The core of WineGame. Commonly used func.
-corelib::corelib()
+corelib::corelib(QObject *parent)
+    :QObject(parent)
 {
 }
 
@@ -51,18 +52,165 @@ void corelib::unpackWine (QString distr, QString destination)
      QDir dir (destination);
      if (!dir.exists())
          dir.mkdir(dir.path());
-     else
+/*     else
      {
          int result = QMessageBox::question(0, QObject::tr("Question"), QObject::tr("I see, that Wine did installed previously for this application (Directory %1 exists).<br>Would you like to install wine now?").arg(destination), QMessageBox::Yes, QMessageBox::No);
          if (result == QMessageBox::No)
              return;
 
-     }
+     } */
  QProcess *proc = new QProcess (0); //не забываем удалять
  proc->setWorkingDirectory(destination);
  QString unpackLine =  QObject::tr ("tar xvpf %1 -C %2").arg(distr).arg(destination);
  proc->start(unpackLine);
   proc->waitForFinished(-1);
-  qDebug() << "DEBUG: Unpack commandline is " << unpackLine;
  qDebug() << QObject::tr("engine: Wine distribution %1 unpacked to %2").arg(distr).arg(destination);
+}
+
+QString corelib::downloadWine(QString url) //TODO: проверка на ошибки.
+{
+    QUrl myurl = QUrl(url);
+    QFileInfo inf (myurl.path());
+    QString wineFileName =TMP + QDir::separator() +  inf.fileName();
+    //проверяем, есть ли у нас данный файл
+    if (QFile::exists(wineFileName))
+        return wineFileName;
+     showNotify(tr("Don`t worry!"), tr("Now WineGame will download some files, that will need for get your applicaton running"));
+  progress = new QProgressDialog(0);
+     QEventLoop loop;
+QNetworkAccessManager *manager = new QNetworkAccessManager (this);
+QNetworkRequest req; //request для Url
+this->progress = progress;
+req.setUrl(QUrl(url));
+req.setRawHeader("User-Agent", "Winegame-Browser 0.1");
+QNetworkReply *reply = manager->get(req);
+connect (reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(setRange(qint64,qint64)));
+connect (reply, SIGNAL(finished()), &loop, SLOT(quit()));
+connect (reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT (error(QNetworkReply::NetworkError)));
+progress->setModal(true);
+progress->setWindowTitle(tr("Downloading Wine..."));
+progress->setLabelText(tr("Downloading %1").arg(url));
+QPushButton *but = new QPushButton  (progress);
+but->setFlat(true);
+but->setDisabled(false);
+but->setText(tr("Cancel"));
+connect (but, SIGNAL(clicked()), this, SLOT (exitApp()));
+progress->setCancelButton(but);
+progress->show();
+loop.exec();
+progress->close();
+QByteArray buffer = reply->readAll();
+QFile file (wineFileName);
+if (file.open(QIODevice::WriteOnly))
+{
+        file.write(buffer);
+        file.close();
+                    }
+else
+    qDebug() << "engine: error open file (WINEDISTR):" << file.errorString();
+progress->deleteLater();
+return wineFileName;
+}
+
+void corelib::updateWines() //Обновляет все вайны, если значение переменной distr известно
+{
+    QDir dir (gamepath);
+    foreach (QFileInfo appInfo, dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
+    {
+        //Создаем QSettings
+        QSettings s (appInfo.absoluteFilePath() + CTRL , QSettings::IniFormat, this);
+   QString wineDistr = s.value("wine/distr", "").toString();
+   QString prefix = s.value("application/prefix", "").toString();
+   if (prefix.isEmpty())
+       continue;
+   if (wineDistr.isEmpty() && dir.exists(QDir::homePath() + winepath + "/wines/" + prefix))
+   {
+       QProcess::startDetached("rm -rf " + QDir::homePath() + winepath + "/wines/" + prefix); /// Qt не имеет функции удаления непустых директорий
+       continue;
+   }
+   if (!wineDistr.isEmpty())
+   {
+       //Проверяем содержимое файла .distr в папке префикса
+       QFile file (QDir::homePath() + winepath  + QDir::separator() + prefix + "/.distr");
+       if (!file.exists())
+       {
+           QString wineFile =  downloadWine(wineDistr);
+           unpackWine(wineFile, QDir::homePath() + winepath + "/wines/" + prefix);
+           QTextStream stream  (&file);
+           file.open(QIODevice::WriteOnly | QIODevice::Text);
+           stream << wineDistr;
+           file.close();
+       }
+       else
+       {
+           //читаем содержимое file, сравниваем с .distr, если не совпадает, грузим новый вайн, удаляя старый
+           QTextStream stream  (&file);
+           file.open(QIODevice::ReadOnly | QIODevice::Text);
+           QString downloadedDistr = stream.readAll().trimmed();
+           file.close();
+           if (downloadedDistr != wineDistr)
+           {
+               qDebug() << "distr value in  control and .distr not equals, so downloading wine";
+               QString wineFile =  downloadWine(wineDistr);
+               unpackWine(wineFile, QDir::homePath() + winepath + "/wines/" + prefix);
+               //переписываем file
+               file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
+               stream << wineDistr;
+               file.close();
+           }
+       }
+
+    }
+}
+}
+
+void corelib::error(QNetworkReply::NetworkError error)
+{
+    if  (error != QNetworkReply::NoError)
+    {
+       return;
+   }
+    else
+    {
+        QMessageBox::warning(0, tr("Network error"), tr("Network error: %1. Exiting application"));
+        qApp->exit(-6);
+    }
+
+}
+void corelib::showNotify (QString header, QString body) //функция НУ СОВСЕМ не доделана.
+{
+/// знаю что тупизм,но никто не хочет помогать
+    if (QProcessEnvironment::systemEnvironment().contains("KDE_FULL_SESSION")) //пока кеды юзают KDialog
+        //вся земля юзает notify-send
+        //чезез kdialog:
+    {
+                             QStringList arguments;
+                            arguments << "--passivepopup" <<body;
+                            arguments << "--title"<<header;
+                            QProcess::startDetached("/usr/bin/kdialog",arguments);
+                                      }
+
+
+        //Через notify-send:
+    else
+    {
+                             QStringList arguments;
+                            arguments << header << body;
+                            QProcess::startDetached("/usr/bin/notify-send",arguments);
+                        }
+
+   }
+
+void corelib::setRange(qint64 aval, qint64 total)
+{
+    int kbAval = aval;
+    int kbTotal = total;
+    progress->setMaximum(kbTotal);
+    progress->setValue(kbAval);
+}
+
+void corelib::exitApp()
+{
+    QMessageBox::critical(0, tr("Critical error"), tr("Wine distribution not downloaded, so exit application."));
+    qApp->exit(-4);
 }

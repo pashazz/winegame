@@ -23,15 +23,32 @@
 #include <QtCore>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QProgressDialog>
+#include <QPushButton>
+#include <QtNetwork>
 #include "linux.h"
 #include "libwinegame_global.h"
 class  WINESTUFFSHARED_EXPORT corelib : public QObject
 {
+    Q_OBJECT
 public:
-    corelib();
+    corelib(QObject *parent);
      static QString whichBin (QString bin);
      static void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
      static void unpackWine(QString distr, QString destination);
+     static void showNotify (QString, QString);
+
+     void updateWines ();
+     QString downloadWine(QString url);
+
+private slots:
+     void error (QNetworkReply::NetworkError);
+     void setRange (qint64, qint64); //заглушка для QProgressDialog
+    void exitApp();
+
+private:
+    QProgressDialog *progress;
+
 };
 
 #endif // CORELIB_H

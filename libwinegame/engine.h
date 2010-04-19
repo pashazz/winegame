@@ -28,11 +28,8 @@
 #include <QFile>
 #include <QDir>
 #include <QFileDialog>
-#include <QUrl>
-#include <QProgressDialog>
 #include <QIcon>
 #include <QSettings>
-#include <QtNetwork>
 #include <QDesktopServices>
 
 #include "corelib.h"
@@ -46,21 +43,15 @@ public:
  void lauch (QString workdir, bool msg = true);
  void setCdMode (bool mode){cdMode=mode;}
  void setDiskpath (QString path){diskpath = path;}
- static void showNotify (QString, QString);
- static  QString prefixPath (QString dir);
  static void makefix (QString prefix); //исправляет запуск WineBrowser
  static QString getExeWorkingDirectory(QString exe);
 
-private slots:
- void error (QNetworkReply::NetworkError);
- void setRange (qint64, qint64); //заглушка для QProgressDialog
- void exitApp ();
+
 private:
 static  QString getVariableValue (QString value, const QStringList &vars);
 bool cdMode;
 corelib *core;
 QString diskpath;
-QProgressDialog *progress;
 void doPkgs (QString pkgs, const QProcessEnvironment &env);
 //нужные переменные
 QString prefix;
@@ -69,14 +60,13 @@ QString name;
 QString note;
 QString iconPath;
 QString program;
- QString downloadWine(QString url);
  void doDesktop(QString);
  void setMemory (QString);
  void makecdlink();
  QString controlFile;
  //И еще функции
  QString getRunnableExe();
-QString myPrefixName();
+QString myPrefixName(); /// имя префикса, используется в lauch
 };
 
 #endif // ENGINE_H
