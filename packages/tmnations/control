@@ -1,0 +1,6 @@
+[application]
+prefix="tmnations"
+
+[wine]
+components="d3dx9 psm=on vsm-hard"
+memory=true

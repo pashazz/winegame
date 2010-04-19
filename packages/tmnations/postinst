@@ -1,0 +1,16 @@
+#!/bin/bash
+#Патчим TrackMania на предмет wrap_oal.dll
+
+cd $WINEPREFIX
+wget http://www.dllbank.com/zip/w/wrap_oal.dll.zip
+unzip wrap_oal.dll.zip
+if test -d "$WINEPREFIX/drive_c/Program Files/TmNationsForever/"
+  cp wrap_oal.dll "$WINEPREFIX/drive_c/Program Files/TmNationsForever/"
+fi
+
+if test -d "$WINEPREFIX/drive_c/Program Files/TmUnitedForever/"
+   cp wrap_oal.dll "$WINEPREFIX/drive_c/Program Files/TmUnitedForever/"
+fi
+
+rm wrap_oal.dll wrap_oal.dll.zip
+exit 0
