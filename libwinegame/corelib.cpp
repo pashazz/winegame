@@ -114,6 +114,7 @@ return wineFileName;
 
 void corelib::updateWines() //Обновляет все вайны, если значение переменной distr известно
 {
+    /*
     QDir dir (gamepath);
     foreach (QFileInfo appInfo, dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
     {
@@ -128,12 +129,19 @@ void corelib::updateWines() //Обновляет все вайны, если з�
        QProcess::startDetached("rm -rf " + QDir::homePath() + winepath + "/wines/" + prefix); /// Qt не имеет функции удаления непустых директорий
        continue;
    }
-   if (!wineDistr.isEmpty())
+   qDebug() << "Wine is need download;";
+   QDir prefixDir (QDir::homePath() + winepath + QDir::separator() + prefix);
+   qDebug() << prefixDir.path() << "is prefix`s dir";
+   if (!prefixDir.exists())
+          continue;
+      if (!wineDistr.isEmpty())
    {
+          qDebug() << "winedistr is" << wineDistr;
        //Проверяем содержимое файла .distr в папке префикса
        QFile file (QDir::homePath() + winepath  + QDir::separator() + prefix + "/.distr");
        if (!file.exists())
        {
+          
            QString wineFile =  downloadWine(wineDistr);
            unpackWine(wineFile, QDir::homePath() + winepath + "/wines/" + prefix);
            QTextStream stream  (&file);
@@ -162,6 +170,7 @@ void corelib::updateWines() //Обновляет все вайны, если з�
 
     }
 }
+*/
 }
 
 void corelib::error(QNetworkReply::NetworkError error)

@@ -58,7 +58,7 @@ bool DiscDetector::tryDetect(QString path)
             if (disclist.contains(str, Qt::CaseInsensitive))
                 i++;
                 }
-        if (i>=disclist.count()) //для всяких кряков, чтобы их не включать в .cdrom, но диски определялис
+        if (i>=disclist.count())
         {
             gamefolder = gamepath + QDir::separator() + dirName;
             //Смотрим, мб. нам попался автопакет. Если так, ставим автоматический режим в детекторе дисков.
@@ -73,9 +73,10 @@ bool DiscDetector::tryDetect(QString path)
 
 void DiscDetector::lauchApp()
 {
-bool *ok;
-emit dialogRequested(ok);
-if (*ok) {
+
+GameDialog *dlg = new GameDialog(0, gamefolder);
+if (dlg->exec() == QDialog::Accepted)
+{
     Prefix *prefix = new Prefix (this, gamefolder);
     QDir prdir (prefix->prefixPath());
 /*    if (isAuto)
@@ -89,8 +90,13 @@ if (*ok) {
     }
     qDebug() << "not an autopackage";
     */
+
     if (prdir.exists())
     {
+        /*!
+          Хардкорный хак для FIFA 2010,  там некорректный авторан, но он блять прописан!! Я негодую
+          */
+            if (prefix->prefixName() == "fifa10") {goto dialog;}
         //Может быть, нам стоит запустить AutoRun?
         if (QFile::exists(cdroot + "/autorun.inf"))
         {
@@ -111,6 +117,7 @@ if (*ok) {
           }
         else {
         //TODO: создаем диалог редактирования виртуальной Windows
+            dialog:
 PrefixDialog *pdlg = new PrefixDialog (0, gamefolder);
 pdlg->exec();
         delete pdlg;
@@ -125,5 +132,5 @@ pdlg->exec();
     eng->lauch(gamefolder, false); //мы не будем показывать сообщение (установить еще) в конце.
 }
 }
+dlg->deleteLater();
 }
-

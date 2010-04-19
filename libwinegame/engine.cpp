@@ -68,14 +68,26 @@ if (!s.value("wine/distr").toString().isEmpty())
         dir.mkdir(dir.path());
 //а может быть Wine уже распакован, м
 //теперь устанавливаем переменную wineBinary
-wineBinary = destination + "/usr/bin/wine"; //дададада!
+wineBinary = destination + "/usr/bin/wine"; //дададада
 qDebug() << "engine: setting wine binary to " << wineBinary;
 if (!QFile::exists(wineBinary))
 {
-    QString distrname =   core->downloadWine(distr);
+    qDebug() << "WINE IS DOWNLOADING FROM" << distr << "to" <<TMP;
+        QString distrname =   core->downloadWine(distr);
+        qDebug() << "WINE IS UNPACKING TO " << destination << "FROM" << distrname;
     core->unpackWine(distrname, destination);
+    qDebug() << "wine distribution is" << distr;
+    //Записываем вайн в .distr
+    /*
+    QFile file (prefix + "/.distr");
+    file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
+    QTextStream s (&file);
+    s << distr;
+    file.close();
+    */
 }
 //выходим из условия
+
 }
 else
 {

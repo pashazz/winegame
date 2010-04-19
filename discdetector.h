@@ -33,7 +33,7 @@ public:
  QString getGame () {return gamefolder;}
  void lauchApp (); //call only even tryDetect is TRUE!!!!!!!!
 signals:
-void dialogRequested (bool *result);
+
 public slots:
 
 private:

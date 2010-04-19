@@ -20,15 +20,22 @@
 #include "isomaster.h"
 #include "discdetector.h"
 IsoMaster::IsoMaster(QObject *parent, QString imageFile) : //просто конструктор
-    QObject(parent), image (imageFile)
+    QObject(parent)
 {
 
     mountpoint = QDir::homePath() + MOUNT_DIR;
     QDir dir (mountpoint);
     if (!dir.exists())
         dir.mkdir(dir.path());
-    mount = tr("fuseiso \"%1\" \"%2\"").arg(imageFile).arg(mountpoint);
-    umount = tr("fusermount -u \"%1\"").arg(mountpoint);
+    if (detectSudo().isEmpty())
+    {
+    mount = QString("fuseiso \"%1\" \"%2\"").arg(imageFile).arg(mountpoint);
+    umount = QString("fusermount -u \"%1\"").arg(mountpoint);
+}
+    else
+        mount = QString("%1 mount -o loop \"%2\" \"%3\"").arg(detectSudo()).arg(imageFile).arg(mountpoint);
+    umount = QString ("%1 umount \"%2\"").arg(imageFile).arg(mountpoint);
+
 }
 void IsoMaster::lauchApp()
 {
@@ -38,7 +45,6 @@ void IsoMaster::lauchApp()
     DiscDetector det (this);
     if (det.tryDetect(mountpoint))
     {
-        connect (&det, SIGNAL(dialogRequested(bool*)), this, SIGNAL(dialogRequested(bool*)));
         det.lauchApp();
       p.start(umount);
    p.waitForFinished(-1);
@@ -53,3 +59,12 @@ void IsoMaster::lauchApp()
  p.waitForFinished(-1);
 }
 
+QString IsoMaster::detectSudo()
+{
+    if (QFile::exists(corelib::whichBin("kdesu")))
+        return "kdesu";
+    else if (QFile::exists(corelib::whichBin("gksu")))
+        return "gksu";
+    else
+        return "";
+}

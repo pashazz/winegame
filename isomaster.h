@@ -29,14 +29,13 @@ public:
     explicit IsoMaster(QObject *parent, QString imageFile);
     void lauchApp ();
 signals:
-void dialogRequested(bool *result);
+
 public slots:
 
 private:
     QString mount, umount;
     QString mountpoint;
-
-QString image;
+QString detectSudo ();
 };
 
 #endif // ISOMASTER_H
