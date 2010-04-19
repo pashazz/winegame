@@ -28,17 +28,15 @@ bool DiscDetector::tryDetect(QString path)
     // для начала просмотрим все папочки в gamepath
     qDebug() << tr("DDT: [scan] scanning dir %1").arg(path);
     QDir dir (gamepath);
-    foreach (QString dir, dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs))
+    foreach (QString dirName, dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs))
     {
+        QDir myDir (dir.path() + QDir::separator() + dirName + "/cdrom.d");
+        qDebug() << myDir.path() << "is scanning";
+        foreach (QFileInfo info, myDir.entryInfoList(QDir::Files | QDir::Readable))
+        {
         //читаем файл .cdrom
-        QString filename = gamepath + QDir::separator() + dir + "/.cdrom." + QLocale::system().name();
-        if (!QFile::exists(filename))
-            filename = gamepath + QDir::separator() + dir + "/.cdrom"; //ну ведь в разных странах разные релизы игр, правда? Вот и мы можем сделать разные cdrom
-        QFile file (filename);
+        QFile file (info.absoluteFilePath());
         QTextStream stream (&file);
-
-        if (!file.exists())
-            continue;
         if (!file.open(QIODevice::Text | QIODevice::ReadOnly))
         {
             qDebug() << tr("DDT: [warning] unable to open file %1: error %2").arg(file.fileName()).arg(file.errorString());
@@ -60,17 +58,18 @@ bool DiscDetector::tryDetect(QString path)
             if (disclist.contains(str, Qt::CaseInsensitive))
                 i++;
                 }
-        if (i>=disclist.count() -2) //для всяких кряков, чтобы их не включать в .cdrom, но диски определялис
+        if (i>=disclist.count()) //для всяких кряков, чтобы их не включать в .cdrom, но диски определялис
         {
-            gamefolder = gamepath + QDir::separator() + dir;
+            gamefolder = gamepath + QDir::separator() + dirName;
             //Смотрим, мб. нам попался автопакет. Если так, ставим автоматический режим в детекторе дисков.
             return true;
         }
     }
-//if (!dir.exists(cdroot)) /// пока я не знаю, что делать с этим
-    return false;
 
 }
+    //if (!dir.exists(cdroot)) /// пока я не знаю, что делать с этим
+        return false;
+    }
 
 void DiscDetector::lauchApp()
 {
