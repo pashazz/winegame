@@ -1,6 +1,0 @@
-[application]
-prefix=eafm10
-
-[wine]
-components="d3dx9 d3dxof psm=on vsm_hard"
-memory=true
