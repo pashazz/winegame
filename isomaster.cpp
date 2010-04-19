@@ -38,6 +38,7 @@ void IsoMaster::lauchApp()
     DiscDetector det (this);
     if (det.tryDetect(mountpoint))
     {
+        connect (&det, SIGNAL(dialogRequested(bool*)), this, SIGNAL(dialogRequested(bool*)));
         det.lauchApp();
       p.start(umount);
    p.waitForFinished(-1);

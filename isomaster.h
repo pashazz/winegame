@@ -29,7 +29,7 @@ public:
     explicit IsoMaster(QObject *parent, QString imageFile);
     void lauchApp ();
 signals:
-
+void dialogRequested(bool *result);
 public slots:
 
 private:

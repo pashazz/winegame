@@ -22,6 +22,11 @@
 #include "discdetector.h"
 #include "isomaster.h"
 #include "QDir"
+void dialogRequest (bool *result)
+{
+
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -65,6 +70,7 @@ if (a.arguments().length() > 1) {
         DiscDetector det;
         if (det.tryDetect(info.absoluteFilePath()))
         {
+            QObject::connect(&det, SIGNAL(dialogRequested(bool*)), SLOT(dialogRequest(bool*)));
             det.lauchApp();
             return 0;
         }

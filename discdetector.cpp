@@ -73,10 +73,9 @@ bool DiscDetector::tryDetect(QString path)
 
 void DiscDetector::lauchApp()
 {
-
-GameDialog *dlg = new GameDialog(0, gamefolder);
-if (dlg->exec() == QDialog::Accepted)
-{
+bool *ok;
+emit dialogRequested(ok);
+if (*ok) {
     Prefix *prefix = new Prefix (this, gamefolder);
     QDir prdir (prefix->prefixPath());
 /*    if (isAuto)
@@ -126,5 +125,5 @@ pdlg->exec();
     eng->lauch(gamefolder, false); //мы не будем показывать сообщение (установить еще) в конце.
 }
 }
-dlg->deleteLater();
 }
+

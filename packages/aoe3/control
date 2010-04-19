@@ -2,5 +2,5 @@
 prefix=aoe3
 
 [wine]
-components="nocrashdialog msxml3 msxml4 directx9 mfc42 psm=off"
+components="nocrashdialog msxml3 msxml4 d3dx9 quartz mfc42 psm=off"
 memory=true
