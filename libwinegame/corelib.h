@@ -37,6 +37,7 @@ public:
      static void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
      static void unpackWine(QString distr, QString destination);
      static void showNotify (QString, QString);
+     static bool checkPrefixName (QString);
 
      void updateWines ();
      QString downloadWine(QString url);

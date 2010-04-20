@@ -56,9 +56,11 @@ bool DiscDetector::tryDetect(QString path)
         foreach (QString str, list)
         {
             if (disclist.contains(str, Qt::CaseInsensitive))
+            {
                 i++;
+            }
                 }
-        if (i>=disclist.count())
+        if (i == disclist.count())
         {
             gamefolder = gamepath + QDir::separator() + dirName;
             //Смотрим, мб. нам попался автопакет. Если так, ставим автоматический режим в детекторе дисков.
@@ -102,7 +104,7 @@ if (dlg->exec() == QDialog::Accepted)
         {
             QSettings stg (cdroot + "/autorun.inf", QSettings::IniFormat, this);
             stg.beginGroup("autorun");
-            QString myExe = stg.value("open").toString();
+            QString myExe = cdroot + QDir::separator() + stg.value("open").toString();
              QString myWine = prefix->wine();
             qDebug() << "DDT: Starting Autorun: " << myWine << myExe;
             QProcess p;

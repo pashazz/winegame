@@ -27,28 +27,26 @@ IsoMaster::IsoMaster(QObject *parent, QString imageFile) : //просто кон
     QDir dir (mountpoint);
     if (!dir.exists())
         dir.mkdir(dir.path());
-    if (detectSudo().isEmpty())
-    {
+
     mount = QString("fuseiso \"%1\" \"%2\"").arg(imageFile).arg(mountpoint);
     umount = QString("fusermount -u \"%1\"").arg(mountpoint);
-}
-    else
-        mount = QString("%1 mount -o loop \"%2\" \"%3\"").arg(detectSudo()).arg(imageFile).arg(mountpoint);
-    umount = QString ("%1 umount \"%2\"").arg(imageFile).arg(mountpoint);
 
 }
-void IsoMaster::lauchApp()
+bool IsoMaster::lauchApp()
 {
     QProcess p (this);
+    qDebug() << mount;
     p.start(mount);
     p.waitForFinished(-1);
+    if (p.exitCode() != 0)
+        return false;
     DiscDetector det (this);
     if (det.tryDetect(mountpoint))
     {
         det.lauchApp();
       p.start(umount);
    p.waitForFinished(-1);
-        return;
+   return (p.exitCode() == 0);
     }
     else
     {
@@ -57,14 +55,5 @@ void IsoMaster::lauchApp()
     }
     p.start(umount);
  p.waitForFinished(-1);
-}
-
-QString IsoMaster::detectSudo()
-{
-    if (QFile::exists(corelib::whichBin("kdesu")))
-        return "kdesu";
-    else if (QFile::exists(corelib::whichBin("gksu")))
-        return "gksu";
-    else
-        return "";
+ return true;
 }

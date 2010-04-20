@@ -296,7 +296,7 @@ QString engine::getRunnableExe()
     QSettings stg (controlFile, QSettings::IniFormat, this);
     //Для начала посмотрим application/setup
     QString exe;
-    if ((!stg.value("application/setup").toString().isEmpty())  && QFile::exists(diskpath + QDir::separator() + stg.value("application/setup").toString()) )
+    if (QFile::exists(diskpath + QDir::separator() + stg.value("application/setup", "noexe").toString()) )
     {
         exe = diskpath + QDir::separator() + stg.value("application/setup").toString();
         return exe;
@@ -306,7 +306,7 @@ QString engine::getRunnableExe()
     {
         QSettings autorun(diskpath + "/autorun.inf", QSettings::IniFormat, this);
         autorun.beginGroup("autorun");
-        exe = diskpath + QDir::separator() + stg.value("open").toString();
+        exe = diskpath + QDir::separator() + autorun.value("open").toString();
         if (QFile::exists(exe))
             return exe;
         else
@@ -335,10 +335,12 @@ QString engine::myPrefixName ()
            dir.setPath(QDir::homePath() + winepath + QDir::separator() + myPrefix);
            if (dir.exists()){
 
-               QMessageBox::warning(0, tr("Application with this name is already installed."), tr(" To force installation process, remove directory %1.").arg(QDir::homePath() + winepath +QDir::separator() + myPrefix));
+               QMessageBox::warning(0, tr("Application with this name is already installed."), tr("To force installation process, remove directory %1.").arg(QDir::homePath() + winepath +QDir::separator() + myPrefix));
                //я знаю, это плохо
                goto dialog;
            }
+           if (!corelib::checkPrefixName(myPrefix))
+               goto dialog;
       return myPrefix;
     }
     else

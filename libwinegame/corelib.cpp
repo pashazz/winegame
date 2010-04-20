@@ -223,3 +223,13 @@ void corelib::exitApp()
     QMessageBox::critical(0, tr("Critical error"), tr("Wine distribution not downloaded, so exit application."));
     qApp->exit(-4);
 }
+
+bool corelib::checkPrefixName(QString prefix)
+{
+    //пока что тут у нас проверяется на пробелы.
+    if (prefix.contains(' '))
+        return false;
+ if (prefix == "wines") //зарезервировано для вайнов
+     return false;
+ return true;
+}

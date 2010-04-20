@@ -1,0 +1,6 @@
+[application]
+prefix="nfsundercover"
+setup="EASetup.exe"
+[wine]
+components="nocrashdialog d3dx9 ddr=opengl"
+memory=true

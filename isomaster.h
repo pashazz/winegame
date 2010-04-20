@@ -27,7 +27,7 @@ class IsoMaster : public QObject
 Q_OBJECT
 public:
     explicit IsoMaster(QObject *parent, QString imageFile);
-    void lauchApp ();
+    bool lauchApp ();
 signals:
 
 public slots:
@@ -35,7 +35,6 @@ public slots:
 private:
     QString mount, umount;
     QString mountpoint;
-QString detectSudo ();
 };
 
 #endif // ISOMASTER_H

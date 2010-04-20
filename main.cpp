@@ -81,7 +81,13 @@ if (a.arguments().length() > 1) {
 
         IsoMaster m (0, info.absoluteFilePath());
         qDebug() << "iso: [master] - sending disk image file" << info.absoluteFilePath();
-        m.lauchApp();
+
+        bool res = m.lauchApp();
+        if (!res)
+        {
+            QMessageBox::warning(0, QObject::tr("Error"), QObject::tr ("Error mount/unmount image"));
+            return -5;
+        }
         //Чистим за собой
         QDir dir (QDir::homePath() + MOUNT_DIR);
         dir.remove(dir.path());
