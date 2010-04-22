@@ -10,20 +10,17 @@ SOURCES += main.cpp \
     gamedialog.cpp \
     prefixdialog.cpp \
     isomaster.cpp \
-    autopackage.cpp \
-    templatedialog.cpp
+    autopackage.cpp 
 HEADERS += mainwindow.h \
     discdetector.h \
     gamedialog.h \
     prefixdialog.h \
     isomaster.h \
-    autopackage.h \
-    templatedialog.h
+    autopackage.h 
 FORMS += mainwindow.ui \
     gamedialog.ui \
-    prefixdialog.ui \
-    templatedialog.ui
-INCLUDEPATH += libwinegame/
+    prefixdialog.ui 
+INCLUDEPATH += libwinegame
 RESOURCES += res.qrc
 LIBS += -L/usr/lib \
     -lwinestuff
