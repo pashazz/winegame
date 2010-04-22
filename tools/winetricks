@@ -50,11 +50,26 @@ esac
 
 # Internal variables; these locations are not too important
 WINETRICKS_CACHE="${WINETRICKS_CACHE:-$HOME/.winetrickscache}"
-# Note: this won't work if WISOTOOL_CACHE isn't accesible via a drive letter mapping in wine.
 WINETRICKS_CACHE_WIN="`$XXXPATH -w $WINETRICKS_CACHE | tr '\012' ' ' | sed 's/ $//'`"
 WINETRICKS_TMP="$DRIVE_C"/winetrickstmp
 WINETRICKS_TMP_WIN='c:\winetrickstmp'
 mkdir -p $WINETRICKS_TMP
+
+# Handle case where z: doesn't exist
+if test "$WINETRICKS_CACHE_WIN" = ""
+then
+    # WINETRICKS_CACHE isn't accessible via a drive letter mapping, so make one,
+    # but be sure to clean it up later.
+    for letter in y x w v u t s r q
+    do
+        if ! test -d "$WINEPREFIX"/dosdevices/${letter}:
+        then
+            WINETRICKS_CACHE_SYMLINK="$WINEPREFIX"/dosdevices/${letter}:
+            ln -sf "$WINETRICKS_CACHE" "$WINETRICKS_CACHE_SYMLINK"
+            break
+        fi
+    done
+fi
 
 # Overridden for windows
 ISO_MOUNT_ROOT=/mnt/winetricks
@@ -310,6 +325,8 @@ usage() {
     echo " sound=nas        Set sound driver to Nas"
     echo " sound=oss        Set sound driver to OSS"
     echo " sound=disabled   Disable sound"
+    echo " strictdrawordering=enabled Enable StrictDrawOrdering (default)"
+    echo " strictdrawordering=disabled Disable StrictDrawOrdering"
     echo " nt40          Set windows version to nt40"
     echo " win98         Set windows version to Windows 98"
     echo " win2k         Set windows version to Windows 2000"
@@ -593,6 +610,19 @@ _EOF_
     try_regedit "$WINETRICKS_TMP"/set-rtlm.reg
 }
 
+set_sdo() {
+    echo "Setting StrictDrawOrdering to $1"
+    cat > "$WINETRICKS_TMP"/set-sdo.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"StrictDrawOrdering"="$1"
+
+_EOF_
+    try_regedit "$WINETRICKS_TMP"/set-sdo.reg
+
+}
+
 set_vsm() {
     echo "Setting  Vertex Shaders to $1"
     cat > "$WINETRICKS_TMP"/set-vsm.reg <<_EOF_
@@ -706,18 +736,27 @@ _EOF_
 }
 
 sandbox() {
-    # remove symlinks
-    try rm "$WINEPREFIX/drive_c/users/$USER/Desktop"
-    try rm "$WINEPREFIX/drive_c/users/$USER/My Documents"
-    try rm "$WINEPREFIX/drive_c/users/$USER/My Music"
-    try rm "$WINEPREFIX/drive_c/users/$USER/My Pictures"
-    try rm "$WINEPREFIX/drive_c/users/$USER/My Videos"
-    # create replacement directories
-    try mkdir "$WINEPREFIX/drive_c/users/$USER/Desktop"
-    try mkdir "$WINEPREFIX/drive_c/users/$USER/My Documents"
-    try mkdir "$WINEPREFIX/drive_c/users/$USER/My Music"
-    try mkdir "$WINEPREFIX/drive_c/users/$USER/My Pictures"
-    try mkdir "$WINEPREFIX/drive_c/users/$USER/My Videos"
+    # Unmap drive Z
+    # Might want to unpack gecko first, since Wine won't be able to get to /usr/lib/wine after this
+    rm -f "$WINEPREFIX/dosdevices/z:"
+
+    # remove symlinks (won't do anything if they're already directories)
+    rm -f "$WINEPREFIX/drive_c/users/$USER/Desktop"
+    rm -f "$WINEPREFIX/drive_c/users/$USER/My Documents"
+    rm -f "$WINEPREFIX/drive_c/users/$USER/My Music"
+    rm -f "$WINEPREFIX/drive_c/users/$USER/My Pictures"
+    rm -f "$WINEPREFIX/drive_c/users/$USER/My Videos"
+    # create replacement directories if needed
+    mkdir -p "$WINEPREFIX/drive_c/users/$USER/Desktop"
+    mkdir -p "$WINEPREFIX/drive_c/users/$USER/My Documents"
+    mkdir -p "$WINEPREFIX/drive_c/users/$USER/My Music"
+    mkdir -p "$WINEPREFIX/drive_c/users/$USER/My Pictures"
+    mkdir -p "$WINEPREFIX/drive_c/users/$USER/My Videos"
+
+    # Disable unixfs
+    # Unfortunately, when you run with a different version of wine, wine will recreate this key.
+    # See http://bugs.winehq.org/show_bug.cgi?id=22450
+    $WINE regedit /d 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\Namespace\{9D20AAE8-0625-44B0-9CA7-71889C2254D9}'
 }
 
 unset_winver() {
@@ -3890,6 +3929,8 @@ do
     sound=nas|nas) set_sound_driver nas;;
     sound=oss|oss) set_sound_driver oss;;
     sound=disabled|sound=) set_sound_driver "";;
+    strictdrawordering=enabled) set_sdo enabled;;
+    strictdrawordering=disabled) set_sdo disabled;;
     version) print_version;;
     videomemorysize=512) set_videomemorysize 512;;
     videomemorysize=1024) set_videomemorysize 1024;;
@@ -3922,7 +3963,8 @@ do
     rm -rf "$WINETRICKS_TMP"/*
 done
 
-    # remove the temp directory
-    rm -rf "$WINETRICKS_TMP"
+# remove the temp directory
+rm -rf "$WINETRICKS_TMP"
 
+test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
 test "$WINETRICKS_QUIET" = "" && echo winetricks done. || true

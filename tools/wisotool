@@ -24,29 +24,53 @@ early_wine()
 case "$OS" in
  "Windows_NT")
     # Cheezy fix for getting rid of double slashes when running cygwin in wine
-    case $HOME in
+    case "$HOME" in
       /) HOME="" ;;
     esac
     WINE=""
-    WINEPREFIX=${WINEPREFIX:-$HOME/.wine}
+    WINEPREFIX="${WINEPREFIX:-$HOME/.wine}"
     DRIVE_C="C:/"
     XXXPATH=cygpath
     ;;
  *)
     WINE=${WINE:-wine}
-    WINEPREFIX=${WINEPREFIX:-$HOME/.wine}
+    WINEPREFIX="${WINEPREFIX:-$HOME/.wine}"
     DRIVE_C="$WINEPREFIX/dosdevices/c:"
     XXXPATH="early_wine winepath"
+    # FIXME: does id work on mac/solaris?
+    USERID=`id -u`
     ;;
 esac
 
+# You can add your own verb to wisotool by creating $WISOTOOL_VERBS/foo.verb
+WISOTOOL_VERBS="${WISOTOOL_VERBS:-$HOME/.wisotool/verbs}"
+
 # Internal variables; these locations are not too important
 WISOTOOL_CACHE="${WISOTOOL_CACHE:-$HOME/.wisotoolcache}"
-# Note: this won't work if WISOTOOL_CACHE isn't accesible via a drive letter mapping in wine.
+test -d "$WISOTOOL_CACHE" || WISOTOOL_CACHE="$HOME/.wisotool/cache"
 WISOTOOL_CACHE_WIN="`$XXXPATH -w $WISOTOOL_CACHE | tr '\012' ' ' | sed 's/ $//'`"
 WISOTOOL_TMP="$DRIVE_C"/wisotooltmp
 WISOTOOL_TMP_WIN='c:\wisotooltmp'
-mkdir -p $WISOTOOL_TMP
+
+# Clean up after failed runs, if needed
+rm -rf "$WISOTOOL_TMP"
+mkdir -p "$WISOTOOL_TMP"
+
+# Handle case where z: doesn't exist
+if test "$WISOTOOL_CACHE_WIN" = ""
+then
+    # WISOTOOL_CACHE isn't accessible via a drive letter mapping, so make one,
+    # but be sure to clean it up later.
+    for letter in y x w v u t s r q
+    do
+        if ! test -d "$WINEPREFIX"/dosdevices/${letter}:
+        then
+            WISOTOOL_CACHE_SYMLINK="$WINEPREFIX"/dosdevices/${letter}:
+            ln -sf "$WISOTOOL_CACHE" "$WISOTOOL_CACHE_SYMLINK"
+            break
+        fi
+    done
+fi
 
 USERNAME=${USERNAME:-$LOGNAME}
 
@@ -144,29 +168,11 @@ usage() {
     echo "Windows apps from them."
     echo ""
     echo "Options:"
-    echo " -q         quiet.  You must have already agreed to the EULAs."
+    echo " -q         quieter"
     echo " -v         verbose"
     echo " -V         display Version"
     echo "Packages:"
-# TODO: call verblist_get_descriptions instead of hardcoding list here
-    echo " 3dmark03      3D Mark 03 (Futuremark, 2003)"
-    echo " 3dmark05      3D Mark 05 (Futuremark, 2005)"
-    echo " 3dmark06      3D Mark 06 (Futuremark, 2006)"
-    echo " assassinscreed Assassins Creed (Ubisoft, 2008)"
-    echo " diablo2       Diablo II (Blizzard, 2000)"
-    echo " dragonage     Dragon Age: Origins (Bioware, 2009)"
-    echo " morrowind     The Elder Scrolls III: Morrowind (Bethesda, 2002)"
-    echo " pcmark04      PC Mark 04 (Futuremark, 2004)"
-    echo " pcmark05      PC Mark 05 (Futuremark, 2005)"
-    echo " plantsvszombies Plants vs. Zombies (PopCap Games, 2009)"
-    echo " re5bench      Resident Evil 5 Benchmark (Capcom, 2009)"
-    echo " quake3        Quake 3 (ID Software, 1999)"
-    echo " sims3         The Sims 3 (EA, 2009)"
-    echo " starcraft     Starcraft Battle Chest (Blizzard, 1998)"
-    echo " starcraft2    Starcraft II beta (Blizzard, 2010)"
-    echo " stfu          Starwars: The Force Unleashed (Aspyr, 2009)"
-    echo " unigine_heaven Unigen Heaven 2 Benchmark (Unigen, 2010)"
-    echo " wog           World of Goo demo (2D Boy, 2008)"
+    sort "$WISOTOOL_TMP"/menutext
     echo "Pseudopackages:"
     echo " load          Load a new iso"
     echo " load=KEY      Load a new iso (with given key; only works from commandline at moment)"
@@ -476,16 +482,17 @@ iso_mount()
         case "$SUDO" in
         gksudo)
           try $SUDO "mkdir -p $ISO_MOUNT_ROOT"
-          try $SUDO "mount -o ro,loop $my_img $ISO_MOUNT_ROOT"
+          try $SUDO "mount -o ro,loop,uid=$USERID,unhide $my_img $ISO_MOUNT_ROOT"
           ;;
         *)
           try $SUDO mkdir -p $ISO_MOUNT_ROOT
-          try $SUDO mount -o ro,loop "$my_img" $ISO_MOUNT_ROOT
+          try $SUDO mount -o ro,loop,uid=$USERID,unhide "$my_img" $ISO_MOUNT_ROOT
           ;;
         esac
         ISO_MOUNT_LETTER=i
         echo "Mounting as drive ${ISO_MOUNT_LETTER}:"
         # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
+        # FIXME: one of these gives a warning frequently, possibly on second run
         ln -sf "$my_img" "$WINEPREFIX/dosdevices/${ISO_MOUNT_LETTER}::"
         ln -sf "$ISO_MOUNT_ROOT" "$WINEPREFIX/dosdevices/${ISO_MOUNT_LETTER}:"
     fi
@@ -519,7 +526,7 @@ iso_umount()
 
 #----------------------------------------------------------------
 
-# Only needed so dd doesn't live on if user kills script
+# Executed if user kills script
 cleanup()
 {
   echo "Caught signal, cleaning up."
@@ -527,6 +534,8 @@ cleanup()
   "") ;;
   *) kill $pid ;;
   esac
+  # TODO: merge this with cleanup code at end of script
+  test "$WISOTOOL_CACHE_SYMLINK" && rm -f "$WISOTOOL_CACHE_SYMLINK"
   echo "Done cleanup, quitting."
   exit 1
 }
@@ -640,6 +649,8 @@ verblist_init()
 {
     # Must call this before first call to verblist_add
     file_map="case \$1 in "
+    # Clear menu
+    rm -f "$WISOTOOL_TMP"/menutext
 }
 
 verblist_finish()
@@ -648,7 +659,14 @@ verblist_finish()
     file_map="$file_map esac"
 }
 
-# Update list of known verbs and what file each uses
+# Add a verb's description to the menu
+menu_add() {
+    verbname=$1
+    description="$2"
+    printf " %-16s %s\n" $verbname "$description" >> "$WISOTOOL_TMP"/menutext
+}
+
+# Add a new verb
 verblist_add()
 {
     # Usage: verblist_add verbname "description" file1 file2 ...
@@ -656,10 +674,24 @@ verblist_add()
     shift
     description="$1"
     shift
+    menu_add $verbname "$description"
     for file
     do
        file_map="$file_map $file) echo $verbname;; "
     done
+}
+
+# Returns true if given verb is in the list
+verblist_is_legal_verb()
+{
+  verb=$1
+  awk '{print $1}' < "$WISOTOOL_TMP"/menutext > "$WISOTOOL_TMP"/verbs
+  if grep "^$verb$" "$WISOTOOL_TMP"/verbs > /dev/null
+  then
+      return 0
+  else
+      return 1
+  fi
 }
 
 # Given a file, output the verb it belongs to
@@ -671,7 +703,7 @@ map_file_to_verb()
 # Output a list of the verbs for which the needed files are in the cache
 list_available_verbs()
 {
-    find $WISOTOOL_CACHE/. -type f | sed 's,.*/,,' > /tmp/wfiles
+    find "$WISOTOOL_CACHE/." -type f | sed 's,.*/,,' > /tmp/wfiles
     for file in `cat /tmp/wfiles`
     do
         map_file_to_verb $file
@@ -681,16 +713,16 @@ list_available_verbs()
 # Move any/all *.iso still at top level into the proper subdirectory
 migrate_files()
 {
-    for file in $WISOTOOL_CACHE/*.iso
+    for file in "$WISOTOOL_CACHE"/*.iso
     do
         barefile=`basename $file`
         verb=`map_file_to_verb $barefile`
         if test "$verb" != ""
         then
-            mkdir -p $WISOTOOL_CACHE/$verb
+            mkdir -p "$WISOTOOL_CACHE"/$verb
             movee=`echo $file | sed 's/.iso$/.*/' `
             echo Moving $movee to $WISOTOOL_CACHE/$verb/
-            mv $movee $WISOTOOL_CACHE/$verb/
+            mv $movee "$WISOTOOL_CACHE"/$verb/
         fi
     done
 }
@@ -699,7 +731,81 @@ migrate_files()
 
 verblist_init
 
-# TODO: load any external verbs from $srcdir/wisotool.d/*.verb
+#----------------------------------------------------------------
+
+verblist_add 3dmark2000 "3DMark2000 (MadOnion.com, 2000)" 3dmark2000_v11_100308.exe
+
+load_3dmark2000() {
+    load_autohotkey
+
+    # http://www.futuremark.com/download/3dmark2000/
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE/3dmark2000_v11_100308.exe"
+    then
+        download $PACKAGE http://www.ocinside.de/download/3dmark2000_v11_100308.exe b0400d59cfd45d8c8893d3d4edc58b6285ee1502
+    fi
+
+    cd "$WISOTOOL_TMP"
+    mkdir $PACKAGE
+    cd $PACKAGE
+    try unzip "$WISOTOOL_CACHE/$PACKAGE"/3dmark2000_v11_100308.exe
+    ahk_do "
+        SetTitleMatchMode, 2
+        run Setup.exe
+        WinWait Welcome
+        ControlClick Button1  ; Next
+        WinWait License
+        ControlClick Button2  ; Yes
+        WinWaitClose ahk_class #32770 ; License
+        WinWait ahk_class #32770 ; Destination
+        ControlClick Button1  ; Next
+        WinWaitClose ahk_class #32770 ; Destination
+        WinWait ahk_class #32770 ; Start
+        ControlClick Button1  ; Next
+        WinWait Registration
+        ControlClick Button1  ; Next
+        WinWait Complete
+        ControlClick Button1  ; Unclick View Readme
+        ControlClick Button4  ; Finish
+    "
+}
+
+#----------------------------------------------------------------
+
+verblist_add 3dmark2001 "3DMark2001 (MadOnion.com, 2001)" 3dmark2000_v11_100308.exe
+
+load_3dmark2001() {
+    load_autohotkey
+
+    # http://www.futuremark.com/download/3dmark2001/
+    if ! test -f "$WISOTOOL_CACHE/$PACKAGE"/3dmark2001se_330_100308.exe
+    then
+        download $PACKAGE http://www.ocinside.de/download/3dmark2001se_330_100308.exe 643bacbcc1615bb4f46d3b045b1b8d78371a6b54
+    fi
+
+    cd "$WISOTOOL_CACHE/$PACKAGE"
+    ahk_do "
+        SetTitleMatchMode, 2
+        run 3dmark2001se_330_100308.exe
+        WinWait ahk_class #32770 ; welcome
+        MsgBox, 64, , clicking Next on welcome, 1
+        ControlClick Button2  ; Next
+        sleep 5000
+        WinWait ahk_class #32770 ; License
+        MsgBox, 64, , clicking Next on license, 1
+        ControlClick Button2  ; Next
+        WinWait ahk_class #32770 ; Destination
+        MsgBox, 64, , clicking Next on Destination, 1
+        ControlClick Button1  ; Next
+        WinWait ahk_class #32770 ; Start
+        MsgBox, 64, , clicking Next on Start, 1
+        ControlClick Button1  ; Next
+        WinWait,, Registration
+        ControlClick Button1  ; Next
+        WinWait,, Complete
+        ControlClick Button1  ; Unclick View Readme
+        ControlClick Button4  ; Finish
+    "
+}
 
 #----------------------------------------------------------------
 
@@ -711,7 +817,7 @@ load_3dmark03() {
     # http://www.futuremark.com/benchmarks/3dmark03/download/
     if ! test -f "$WISOTOOL_CACHE/$PACKAGE/3DMark03_v360_1901.exe"
     then
-        download $PACKAGE "http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark03_v360_1901.exe"
+        download $PACKAGE http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark03_v360_1901.exe 46a439101ddbbe3c9563b5e9651cb61b46ce0619
     fi
 
     cd "$WISOTOOL_CACHE/$PACKAGE"
@@ -756,7 +862,7 @@ load_3dmark05() {
     # http://www.futuremark.com/download/3dmark05/
     if ! test -f "$WISOTOOL_CACHE/$PACKAGE/3DMark05_v130_1901.exe"
     then
-        download $PACKAGE http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark05_v130_1901.exe
+        download $PACKAGE http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark05_v130_1901.exe 8ad6bc2917e22edf5fc95d1fa96cc82515093fb2
     fi
 
     cd "$WISOTOOL_CACHE/$PACKAGE"
@@ -793,7 +899,7 @@ load_3dmark06() {
     # http://www.futuremark.com/benchmarks/3dmark06/download/
     if ! test -f "$WISOTOOL_CACHE/$PACKAGE/3DMark06_v120_1901.exe"
     then
-        download $PACKAGE "http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark06_v120_1901.exe" 2e4a52d5b0f7caebd7b4407dfa9e258ac623b5dd
+        download $PACKAGE http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark06_v120_1901.exe 2e4a52d5b0f7caebd7b4407dfa9e258ac623b5dd
     fi
 
     cd "$WISOTOOL_CACHE/$PACKAGE"
@@ -863,7 +969,7 @@ load_assassinscreed() {
 #----------------------------------------------------------------
 
 # http://appdb.winehq.org/objectManager.php?sClass=version&iId=408
-verblist_add baldursgate2       "Baldur's Gate 2 - Shadows of Amn (Bioware, 2000)" \
+verblist_add baldursgate2       "Baldurs Gate 2 - Shadows of Amn (Bioware, 2000)" \
   cc9359dce1a7be6c64bb6f8e6dea6d14d4a5f716.iso \
   429872605dad10433c3c581a1c11eba4d0988c46.iso \
   a6d18fcd7d16ddafbda7aa028b117566b1e09d2a.iso \
@@ -1038,7 +1144,70 @@ load_dragonage() {
         exit 0
     "
     iso_umount
+    
+    if workaround_wine_bug 22383
+    then
+        try "$WINETRICKS" -q strictdrawordering=disabled
+    fi
 }
+
+ #----------------------------------------------------------------
+ 
+verblist_add gta_vc     "Grand Theft Auto: Vice City (Rockstar, 2003) " \
+  e98c2d323dd0494989a844442586dc2d48fba8f9.iso \
+  d31f5c35cc63d804a7ffdb212f550681b97ee5b3.iso
+
+load_gta_vc() {
+    load_autohotkey
+
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/e98c2d323dd0494989a844442586dc2d48fba8f9.iso
+    ahk_do "
+    SetTitleMatchMode, 2
+    Run, ${ISO_MOUNT_LETTER}:Setup.exe
+    winwait, Choose Setup Language
+    sleep 1000
+    Send {enter}
+    winwait, Grand Theft Auto Vice City, Welcome to the InstallShield Wizard
+    sleep 1000
+    Send {enter}
+    winwait, Grand Theft Auto Vice City, License Agreement
+    sleep 1000
+    Send !a
+    send {enter}
+    winwait, Grand Theft Auto Vice City, Customer Information
+    sleep 1000
+    controlclick, edit1
+    send $USERNAME
+    send {tab}
+    send company ; installer won't proceed without something here
+    send {enter}
+    winwait, Grand Theft Auto Vice City, Choose Destination Location
+    sleep 1000
+    controlclick, Button1
+    winwait, Grand Theft Auto Vice City, Select Components
+    sleep 1000
+    controlclick, Button2
+    winwait, Grand Theft Auto Vice City, Ready to Install the Program
+    sleep 1000
+    send {enter}
+    winwait, Setup Needs The Next Disk, Please insert disk 2
+    sleep 1000"
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/d31f5c35cc63d804a7ffdb212f550681b97ee5b3.iso
+    ahk_do "
+    sleep 1000
+    send {enter}
+    winwait, Grand Theft Auto Vice City, InstallShield Wizard Complete
+    sleep 1000
+    send {enter}
+    "
+    iso_umount
+    
+    if workaround_wine_bug 22414
+    then
+        try "$WINETRICKS" -q quartz
+    fi
+}
+
 
 #----------------------------------------------------------------
 
@@ -1153,7 +1322,7 @@ load_pcmark05() {
     # http://www.futuremark.com/download/pcmark05/
     if ! test -f "$WISOTOOL_CACHE/$PACKAGE/PCMark05_v120_1901.exe"
     then
-        download $PACKAGE http://www.bulletproofnerds.com/uploadedfiles/futuremark/PCMark05_v120_1901.exe
+        download $PACKAGE http://www.bulletproofnerds.com/uploadedfiles/futuremark/PCMark05_v120_1901.exe 8636fce0e4023cd59bcf7f3e1a027e233ee81193
     fi
 
     warn "Don't use mouse while this installer is running.  Sorry..."
@@ -1204,7 +1373,7 @@ load_passmark7() {
     # http://www.passmark.com/download/pt_download.htm
     if ! test -f "$WISOTOOL_CACHE/$PACKAGE/petst.exe"
     then
-        download $PACKAGE http://www.passmark.com/ftp/petst.exe
+        download $PACKAGE http://www.passmark.com/ftp/petst.exe 6d9db9c1bc53452cf7a2d3ad07a1195218095f8f
     fi
 
     cd "$WISOTOOL_CACHE/$PACKAGE"
@@ -1248,7 +1417,7 @@ load_re5bench() {
 
     if ! test -f "$WISOTOOL_CACHE/$PACKAGE/nzd_ResidentEvil5_Benchmark.exe"
     then
-        download $PACKAGE "http://download.nvidia.com/downloads/nZone/demos/nzd_ResidentEvil5_Benchmark.exe"
+        download $PACKAGE http://download.nvidia.com/downloads/nZone/demos/nzd_ResidentEvil5_Benchmark.exe 041492b9af138f67e7acf97fbd8e926dda59ab12
     fi
 
     cd "$WISOTOOL_CACHE/$PACKAGE"
@@ -1360,6 +1529,7 @@ load_sims3() {
     currentversion=$(head -n 1 skuversion.txt | awk '{print $3}' | tr -d '\r\n')
     # FIXME: Find a way of determining the newest version from ea.com. The below code works, but the xml is outdated, and returns 1.4.6.00002. For now, hardcode it.
     # newestversion=$(wget -O - http://na.llnet.eadownloads.ea.com/u/f/sims/sims3/patches/sims3_sku2_update_manifest.xml | grep NewVersion= | head -n1 | awk -F\" '{print $2}')
+    # FIXME: include a table of sha1sums so we can check the download
     newestversion=1.6.6.002001
     download sims3 http://na.llnet.eadownloads.ea.com/u/f/sims/sims3/patches/Sims3_${newestversion}_from_${currentversion}.exe
 
@@ -1588,6 +1758,20 @@ print_version() {
 
 #--------- Main program -----------------------------------------
 
+olddir=`pwd`
+srcdir=`dirname $0`
+srcdir=`cd $srcdir; /bin/pwd`
+
+# Load external verbs.  Filenames may not contain spaces.
+if cd "$WISOTOOL_VERBS"
+then
+    for file in `find . -type f -name '*.verb' 2>/dev/null` 
+    do
+       . $file
+    done
+fi
+cd "$olddir"
+
 verblist_finish
 
 # On Solaris, choose more modern commands (needed for id -u).
@@ -1638,9 +1822,6 @@ case $GUI in
 esac
 
 mkdir -p "$WISOTOOL_CACHE"
-olddir=`pwd`
-srcdir=`dirname $0`
-srcdir=`cd $srcdir; pwd`
 
 WINETRICKS="$srcdir/winetricks"
 if ! test -f "$WINETRICKS"
@@ -1648,9 +1829,6 @@ then
     WINETRICKS="$WISOTOOL_CACHE/winetricks"
     wget -o "$WINETRICKS" http://kegel.com/wine/winetricks
 fi
-
-# Clean up after failed runs, if needed
-rm -rf "$WISOTOOL_TMP"/*
 
 # The folder-name is localized!
 programfilesdir_win="`unset WINEDEBUG; WINEDLLOVERRIDES=mshtml= $WINE cmd.exe /c echo "%ProgramFiles%" | tr -d '\015'`"
@@ -1701,11 +1879,6 @@ do
     PACKAGE=$1
     case $1 in
     -q) WISOTOOL_QUIET="/q"
-        WISOTOOL_QUIET_T="/qt" # Microsoft Control Pad
-        WISOTOOL_UNIXQUIET="-q"
-        WISOTOOL_SILENT="/silent"
-        WISOTOOL_UNIXSILENT="-silent"
-        WISOTOOL_S="/S"                 # for NSIS installers
         WINEDEBUG=${WINEDEBUG:-"fixme-all"}
         export WINEDEBUG
         ;;
@@ -1716,29 +1889,13 @@ do
     migrate) migrate_files;;
     version) print_version;;
 
-# TODO: call verblist_handle_verb, or something like that, instead of hardcoding list here
-    3dmark03) load_3dmark03;;
-    3dmark05) load_3dmark05;;
-    3dmark06) load_3dmark06;;
-    assassinscreed) load_assassinscreed;;
-    baldursgate2) load_baldursgate2;;
-    diablo2) load_diablo2;;
-    dragonage) load_dragonage;;
-    morrowind|morrowind_goty) load_morrowind_goty;;
-    passmark7) load_passmark7;;
-    pcmark04) load_pcmark04;;
-    pcmark05) load_pcmark05;;
-    plantsvszombies) load_plantsvszombies;;
-    quake3) load_quake3;;
-    re5bench) load_re5bench;;
-    sims3) load_sims3;;
-    starcraft) load_starcraft;;
-    starcraft2) load_starcraft2;;
-    stfu) load_stfu;;
-    unigine_heaven) load_unigine_heaven;;
-    wog) load_wog;;
-
-    *) echo Unknown arg $1; usage ; exit 1;;
+    *) if verblist_is_legal_verb $1
+       then
+           load_$1
+       else
+           echo Unknown arg $1; usage ; exit 1;
+       fi
+       ;;
     esac
     # Provide a bit of feedback
     test "$WISOTOOL_QUIET" = "" && case $1 in
@@ -1759,7 +1916,7 @@ do
     rm -rf "$WISOTOOL_TMP"/* "$WISOTOOL_TMP/tmp.ahk"
 done
 
+test "$WISOTOOL_CACHE_SYMLINK" && rm -f "$WISOTOOL_CACHE_SYMLINK"
+
 # remove the temp directory
 rm -rf "$WISOTOOL_TMP"
-
-#test "$WISOTOOL_QUIET" = "" && echo wisotool done. || true
