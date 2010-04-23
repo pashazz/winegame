@@ -22,22 +22,33 @@ FORMS += mainwindow.ui \
     prefixdialog.ui 
 INCLUDEPATH += libwinegame
 RESOURCES += res.qrc
-LIBS += -L/usr/lib \
+LIBS += -L $$PREFIX/lib \
     -lwinestuff
 TRANSLATIONS += l10n/wg_ru.ts
 VERSION = 0.0.1
 
 # #################################################
 # Install information                            #
-# #################################################
-tools.path = /usr/local/bin
+# ################################################
+#PREFIX=$(DESTDIR)
+message ("WineGame version $$VERSION")
+isEmpty (PREFIX) {
+PREFIX=/usr
+message ("PREFIX is automatically set to /usr")
+}
+message ("Winegame packages is always in /usr/share/winegame")
+message ("Checking for fuseISO")
+
+system ("which fuseiso"):FUSEISO_BIN=FALSE # fuseiso check
+
+tools.path= $$PREFIX/bin
 tools.files = tools/*
 pkgs.path = /usr/share/winegame
 pkgs.files = packages/*
-target.path = /usr/local/bin
-desktop.path = /usr/share/applications
+target.path = $$PREFIX/bin
+desktop.path = $$PREFIX/share/applications
 desktop.files = desktop/winegame.desktop
-icon.path = /usr/share/pixmaps
+icon.path = $$PREFIX/share/pixmaps
 icon.files = desktop/winegame.png
 INSTALLS += target \
     pkgs \

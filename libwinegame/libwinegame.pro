@@ -14,6 +14,10 @@ HEADERS += libwinegame_global.h \
     linux.h \
     corelib.h \
     prefix.h
-target.path = /usr/lib/
+isEmpty (PREFIX)
+ {
+PREFIX=/usr
+}
+target.path = $$PREFIX/lib
 INSTALLS += target
 VERSION = 0.0.1
