@@ -4,10 +4,9 @@ case $1 in
 -c)
 make distclean
 rm l10n/*.qm
-rm moc_* ui_* libwinegame/moc_* libwinegame/ui_*
 cd libwinegame
 make distclean
-cd -
+cd ..
 exit 0;;
 #*)
 #echo "USAGE: $0 [-c or no options to install winegame]"
