@@ -10,3 +10,4 @@ r8:editor included
 r9:autopackages included
 r10:now engine in shared library. And autopackages removed.
 r11:all prefix working in shared library, all packages merged
+r12: RELASE RC1
