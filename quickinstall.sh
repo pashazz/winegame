@@ -1,4 +1,18 @@
 #!/bin/sh
+#release our translations
+case $1 in
+-c)
+make distclean
+rm l10n/*.qm
+make distclean
+exit 0;;
+#*)
+#echo "USAGE: $0 [-c or no options to install winegame]"
+#exit -1;;
+esac
+
+lrelease winegame.pro
+#go to winegame lib...
 cd libwinegame
 qmake
 make

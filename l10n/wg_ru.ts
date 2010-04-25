@@ -17,7 +17,7 @@
     </message>
     <message>
         <source>Don`t worry! WineGame clones your DVD into image. Wait ~5 mins</source>
-        <translation>Не беспокойтесь! WineGame копирует ваш CD/DVD в образ. Подождите несколько минут</translation>
+        <translation type="obsolete">Не беспокойтесь! WineGame копирует ваш CD/DVD в образ. Подождите несколько минут</translation>
     </message>
     <message>
         <source>Ready to install</source>
@@ -26,6 +26,14 @@
     <message>
         <source>Now we will install your game and all needed software.</source>
         <translation>Сейчас мы установим вашу игру и все необходимые программы.</translation>
+    </message>
+    <message>
+        <source>Don`t worry! WineGame clones your DVD into image. Wait ~5 mins.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -69,14 +77,6 @@
 <context>
     <name>IsoMaster</name>
     <message>
-        <source>fuseiso &quot;%1&quot; &quot;%2&quot;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>fusermount -u &quot;%1&quot;</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>Внимание</translation>
     </message>
@@ -108,10 +108,6 @@
         <translation>Выберите программу для установки</translation>
     </message>
     <message>
-        <source>1</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Double-click an item to run executable...</source>
         <translation>Двойной клик по приложению для запуска...</translation>
     </message>
@@ -125,22 +121,11 @@
     </message>
     <message>
         <source>It`s necessary that the application was installed from CD/DVD.&lt;br&gt;To do this , insert DVD with game into your drive,  run WineGame with your cd/dvd (for example, winegame /media/cdrom from console.</source>
-        <translation>Необходимо установить приложение с CD/DVD.&lt;br&gt;Чтобы сделать это, вставьте DVD с игрой в дисковод, и запустите WineGame так, чтобы он увидел его (DVD).&lt;br&gt;Например, запустив winegame /media/cdrom из консоли.</translation>
-    </message>
-</context>
-<context>
-    <name>Prefix</name>
-    <message>
-        <source>engine: setting wine binary to %1</source>
-        <translation></translation>
+        <translation type="obsolete">Необходимо установить приложение с CD/DVD.&lt;br&gt;Чтобы сделать это, вставьте DVD с игрой в дисковод, и запустите WineGame так, чтобы он увидел его (DVD).&lt;br&gt;Например, запустив winegame /media/cdrom из консоли.</translation>
     </message>
     <message>
-        <source>%1  &quot;%2&quot;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>engine: [prefix]: starting winetricks</source>
-        <translation></translation>
+        <source>It`s necessary that the application was installed from CD/DVD.&lt;br&gt;To do this , insert DVD witrg run WineGame with your cd/dvd (for example, winegame /media/cdrom from console.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -257,7 +242,7 @@ p, li { white-space: pre-wrap; }
     <name>QObject</name>
     <message>
         <source>WineGame</source>
-        <translation>WineGame</translation>
+        <translation type="obsolete">WineGame</translation>
     </message>
     <message>
         <source>Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!</source>
@@ -277,19 +262,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Question</source>
-        <translation>Вопрос</translation>
+        <translation type="obsolete">Вопрос</translation>
     </message>
     <message>
         <source>I see, that Wine did installed previously for this application (Directory %1 exists).&lt;br&gt;Would you like to install wine now?</source>
-        <translation>Видимо, Wine (программа для запуска Windows-приложений) была установлена ранее для этой программы (Папка %1 cуществует)&lt;br&gt;Хотите установить Wine (снова) сейчас?</translation>
-    </message>
-    <message>
-        <source>tar xvpf %1 -C %2</source>
-        <translation></translation>
+        <translation type="obsolete">Видимо, Wine (программа для запуска Windows-приложений) была установлена ранее для этой программы (Папка %1 cуществует)&lt;br&gt;Хотите установить Wine (снова) сейчас?</translation>
     </message>
     <message>
         <source>engine: Wine distribution %1 unpacked to %2</source>
-        <translation>engine: Дистрибутив Wine %1 распакован в %2</translation>
+        <translation type="obsolete">engine: Дистрибутив Wine %1 распакован в %2</translation>
     </message>
     <message>
         <source>This is not for Windows or Mac OSX</source>
@@ -305,7 +286,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Winetricks not found. Put it in /usr/bin/winetricks</source>
-        <translation>Winetricks не найдены. Положите их в /usr/bin/winetricks</translation>
+        <translation type="obsolete">Winetricks не найдены. Положите их в /usr/bin/winetricks</translation>
     </message>
     <message>
         <source>Incorrect commandline arguments</source>
@@ -321,7 +302,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used</source>
-        <translation>Введите размер памяти вашей видеокарты (в мегабайтах). Если вы нажмете Отмена, тогда будет использовано значение по умолчанию</translation>
+        <translation type="obsolete">Введите размер памяти вашей видеокарты (в мегабайтах). Если вы нажмете Отмена, тогда будет использовано значение по умолчанию</translation>
     </message>
     <message>
         <source>I am confused</source>
@@ -336,8 +317,8 @@ p, li { white-space: pre-wrap; }
         <translation>Не могу определить игровой диск, выходим</translation>
     </message>
     <message>
-        <source>env WINEPREFIX=&apos;%1&apos; &apos;%2&apos;  &apos;%3&apos;</source>
-        <translation></translation>
+        <source>Error mount/unmount image</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -360,114 +341,91 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error</source>
-        <translation>Ошибка</translation>
+        <translation type="obsolete">Ошибка</translation>
     </message>
     <message>
         <source>Wine installation not found.</source>
-        <translation>Wine не найден.</translation>
+        <translation type="obsolete">Wine не найден.</translation>
     </message>
     <message>
         <source>engine: setting Prefix: %1</source>
-        <translation>engine: устанавливаю префикс: %1</translation>
+        <translation type="obsolete">engine: устанавливаю префикс: %1</translation>
     </message>
     <message>
         <source>Windows  executables (*.exe)</source>
-        <translation>Исполняемые файлы Windows (*.exe)</translation>
+        <translation type="obsolete">Исполняемые файлы Windows (*.exe)</translation>
     </message>
     <message>
         <source>No EXE file found</source>
-        <translation>Не могу найти EXE файл</translation>
+        <translation type="obsolete">Не могу найти EXE файл</translation>
     </message>
     <message>
         <source>Operation cancelled: No EXE file selected</source>
-        <translation>Прерываю операцию: не выбран EXE файл</translation>
-    </message>
-    <message>
-        <source>rm -rf %1</source>
-        <translation></translation>
+        <translation type="obsolete">Прерываю операцию: не выбран EXE файл</translation>
     </message>
     <message>
         <source>engine: starting Windows program %1 with wine binary %2</source>
-        <translation>engine: запускаю Windows-программу %1 с бинарником wine %2</translation>
+        <translation type="obsolete">engine: запускаю Windows-программу %1 с бинарником wine %2</translation>
     </message>
     <message>
         <source>Question</source>
-        <translation>Вопрос</translation>
+        <translation type="obsolete">Вопрос</translation>
     </message>
     <message>
         <source>Would you like to install a new game?</source>
-        <translation>Хотите установить новую игру (еще)?</translation>
+        <translation type="obsolete">Хотите установить новую игру (еще)?</translation>
     </message>
     <message>
         <source>Downloading packages...</source>
-        <translation>Загрузка необходимых пакетов...</translation>
+        <translation type="obsolete">Загрузка необходимых пакетов...</translation>
     </message>
     <message>
         <source>Now we will install Microsoft components</source>
-        <translation>Сейчас мы будем устанавливать компоненты Microsoft</translation>
+        <translation type="obsolete">Сейчас мы будем устанавливать компоненты Microsoft</translation>
     </message>
     <message>
         <source>Don`t worry!</source>
-        <translation>Не беспокойтесь!</translation>
+        <translation type="obsolete">Не беспокойтесь!</translation>
     </message>
     <message>
         <source>Now WineGame will download some files, that will need for get your applicaton running</source>
-        <translation>Сейчас WineGame будет загружать файлы, которые необходимы для запуска вашего приложения</translation>
+        <translation type="obsolete">Сейчас WineGame будет загружать файлы, которые необходимы для запуска вашего приложения</translation>
     </message>
     <message>
         <source>Downloading Wine...</source>
-        <translation>Загрузка Wine...</translation>
+        <translation type="obsolete">Загрузка Wine...</translation>
     </message>
     <message>
         <source>Downloading %1</source>
-        <translation>Загружаю %1</translation>
+        <translation type="obsolete">Загружаю %1</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation type="obsolete">Отмена</translation>
     </message>
     <message>
         <source>Critical error</source>
-        <translation>Критическая ошибка</translation>
+        <translation type="obsolete">Критическая ошибка</translation>
     </message>
     <message>
         <source>Wine distribution not downloaded, so exit application.</source>
-        <translation>Дистрибутив Wine не загружен - выходим из приложения.</translation>
+        <translation type="obsolete">Дистрибутив Wine не загружен - выходим из приложения.</translation>
     </message>
     <message>
         <source>Network error</source>
-        <translation>Сетевая ошибка</translation>
+        <translation type="obsolete">Сетевая ошибка</translation>
     </message>
     <message>
         <source>Network error: %1. Exiting application</source>
-        <translation>Сетевая ошибка: %1. Выходим из приложения</translation>
+        <translation type="obsolete">Сетевая ошибка: %1. Выходим из приложения</translation>
     </message>
     <message>
         <source>Desktop</source>
         <translation type="obsolete">Рабочий стол</translation>
     </message>
     <message>
-        <source>Exec=%1
-</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Name=%1
-</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Comment=%1
-</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Icon=%1</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Warning</source>
-        <translation>Внимание</translation>
+        <translation type="obsolete">Внимание</translation>
     </message>
     <message>
         <source>Now WineGame will download required packages (from Microsoft site). Please establish your Internets</source>
@@ -475,35 +433,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Give a name for your application</source>
-        <translation>Дайте имя вашему приложению</translation>
+        <translation type="obsolete">Дайте имя вашему приложению</translation>
     </message>
     <message>
         <source>Give a short latin name for your application. &lt;br&gt; It will be installed in %1/Windows/APPLICATION NAME/drive_c</source>
-        <translation>Дайте короткое латинское имя вашему приложению.&lt;br&gt; Оно будет установлено в %1/Windows/ИМЯ ПРИЛОЖЕНИЯ/drive_c</translation>
+        <translation type="obsolete">Дайте короткое латинское имя вашему приложению.&lt;br&gt; Оно будет установлено в %1/Windows/ИМЯ ПРИЛОЖЕНИЯ/drive_c</translation>
     </message>
     <message>
         <source>No name specified</source>
-        <translation>Не указано имя</translation>
+        <translation type="obsolete">Не указано имя</translation>
     </message>
     <message>
         <source>Abort. Reason: No application name specified</source>
-        <translation>Прерывание: Причина: Не задано имя приложения</translation>
+        <translation type="obsolete">Прерывание: Причина: Не задано имя приложения</translation>
     </message>
     <message>
         <source>Application with this name is already installed.</source>
-        <translation>Приложение с этим именем уже установлено.</translation>
+        <translation type="obsolete">Приложение с этим именем уже установлено.</translation>
     </message>
     <message>
         <source> To force installation process, remove directory %1.</source>
-        <translation>Чтобы все равно установить программу, удалите папку %1.</translation>
+        <translation type="obsolete">Чтобы все равно установить программу, удалите папку %1.</translation>
     </message>
     <message>
         <source>I know about this game. &lt;br&gt;You can install it by clicking  it`s entry in &apos;Applications&apos; list</source>
-        <translation>Я знаю об этой игре. &lt;br&gt;Вы можете установить ее, нажав на ее запись в списке &quot;Приложения&quot;</translation>
-    </message>
-    <message>
-        <source>&quot;%1&quot;</source>
-        <translation></translation>
+        <translation type="obsolete">Я знаю об этой игре. &lt;br&gt;Вы можете установить ее, нажав на ее запись в списке &quot;Приложения&quot;</translation>
     </message>
 </context>
 </TS>
