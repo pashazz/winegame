@@ -14,7 +14,7 @@ HEADERS += libwinegame_global.h \
     linux.h \
     corelib.h \
     prefix.h
-isEmpty (PREFIX)
+isEmpty ($$PREFIX)
  {
 PREFIX=/usr
 }

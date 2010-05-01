@@ -50,7 +50,7 @@ corelib *core  = new corelib(this);
 core->showNotify(tr("Hello"), tr("Please connect to Internet!"));
 ui->lstGames->expandAll();
 
-//Обновляем вайны
+//Обновляем вайн
 core->updateWines();
 core->deleteLater();
 }
