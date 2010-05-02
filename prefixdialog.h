@@ -21,7 +21,7 @@
 
 #include <QDialog>
 #include <QFileDialog>
-#include "libwinegame/prefix.h"
+#include "prefix.h"
 
 namespace Ui {
     class PrefixDialog;
