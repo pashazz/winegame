@@ -1,6 +1,0 @@
-#!/bin/sh
-cd $WINEPREFIX
-wget  http://ftp.blizzard.com/pub/diablo2/patches/PC/D2Patch_113c.exe
-$WINE D2Patch_113c.exe
-cp $CDROOT/d2music.mpq "$WINEPREFIX/drive_c/Program Files/Diablo II"
-rm D2Patch_113c.exe

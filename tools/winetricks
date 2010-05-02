@@ -20,7 +20,7 @@
 #---- Constants -------------------------------------------------
 
 # Name of this version of winetricks (YYYYMMDD)
-VERSION=20100317
+VERSION=20100424
 
 early_wine()
 {
@@ -2326,8 +2326,8 @@ _EOF_
 
 load_mono26() {
     # Load Mono, have it handle all .net requests
-    download .  http://ftp.novell.com/pub/mono/archive/2.6.3/windows-installer/4/mono-2.6.3-gtksharp-2.12.10-win32-4.exe ed1e20181e3a0c0ca666d08604797495309ff587
-    try $WINE "$WINETRICKS_CACHE"/mono-2.6.3-gtksharp-2.12.10-win32-4.exe $WINETRICKS_SILENT
+    download .  http://ftp.novell.com/pub/mono/archive/2.6.4/windows-installer/3/mono-2.6.4-gtksharp-2.12.10-win32-3.exe 08be379d1fe34c9ae1d389e60647506950cb07ba
+    try $WINE "$WINETRICKS_CACHE"/mono-2.6.4-gtksharp-2.12.10-win32-3.exe $WINETRICKS_SILENT
 
     # FIXME: what should this be for mono 2.6?
     cat > "$WINETRICKS_TMP"/mono_2.0.reg <<_EOF_
@@ -3598,9 +3598,10 @@ load_wsh57() {
     download . http://download.microsoft.com/download/4/4/d/44de8a9e-630d-4c10-9f17-b9b34d3f6417/scripten.exe b15c6a834b7029e2dfed22127cf905b06857e6f5
 
     try_cabextract -d "$WINDIR"/system32 "$WINETRICKS_CACHE"/scripten.exe 
-    
+
     # Wine doesn't provide the other dll's (yet?)
     override_dlls native,builtin jscript.dll
+    try $WINE regsvr32 dispex.dll jscript.dll scrobj.dll scrrun.dll vbscript.dll wshcon.dll wshext.dll
 }
 
 #----------------------------------------------------------------

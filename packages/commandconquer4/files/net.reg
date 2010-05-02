@@ -1,0 +1,451 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1025]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1025\Microsoft .NET Framework Full v1.0.3705 (1025)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1028]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1028\Microsoft .NET Framework Full v1.0.3705 (1028)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1029]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1029\Microsoft .NET Framework Full v1.0.3705 (1029)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1030]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1030\Microsoft .NET Framework Full v1.0.3705 (1030)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1031]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1031\Microsoft .NET Framework Full v1.0.3705 (1031)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1032]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1032\Microsoft .NET Framework Full v1.0.3705 (1032)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1033]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1033\Microsoft .NET Framework Full v1.0.3705 (1033)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1035]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1035\Microsoft .NET Framework Full v1.0.3705 (1035)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1036]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1036\Microsoft .NET Framework Full v1.0.3705 (1036)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1037]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1037\Microsoft .NET Framework Full v1.0.3705 (1037)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1038]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1038\Microsoft .NET Framework Full v1.0.3705 (1038)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1040]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1040\Microsoft .NET Framework Full v1.0.3705 (1040)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1041]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1041\Microsoft .NET Framework Full v1.0.3705 (1041)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1042]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1042\Microsoft .NET Framework Full v1.0.3705 (1042)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1043]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1043\Microsoft .NET Framework Full v1.0.3705 (1043)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1044]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1044\Microsoft .NET Framework Full v1.0.3705 (1044)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1045]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1045\Microsoft .NET Framework Full v1.0.3705 (1045)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1046]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1046\Microsoft .NET Framework Full v1.0.3705 (1046)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1049]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1049\Microsoft .NET Framework Full v1.0.3705 (1049)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1053]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1053\Microsoft .NET Framework Full v1.0.3705 (1053)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1055]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\1055\Microsoft .NET Framework Full v1.0.3705 (1055)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\2052]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\2052\Microsoft .NET Framework Full v1.0.3705 (2052)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\2070]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\2070\Microsoft .NET Framework Full v1.0.3705 (2070)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\3076]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\3076\Microsoft .NET Framework Full v1.0.3705 (3076)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\3082]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Full\v1.0.3705\3082\Microsoft .NET Framework Full v1.0.3705 (3082)]
+"Install"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1025]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1028]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1029]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1030]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1031]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1032]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1033]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1035]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1036]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1037]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1038]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1040]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1041]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1042]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1043]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1044]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1045]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1046]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1049]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1053]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\1055]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\2052]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\2070]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\3076]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.0.3705\3082]
+"Install"=dword:00000001
+"SP"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.1.4322]
+"Install"=dword:00000001
+"MSI"=dword:00000001
+"SP"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v1.1.4322\1033]
+"Install"=dword:00000001
+"MSI"=dword:00000001
+"SP"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v2.0.50727]
+"Install"=dword:00000001
+"Version"="2.2.30729"
+"MSI"=dword:00000001
+"Increment"="3053"
+"SP"=dword:00000002
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v2.0.50727\1033]
+"Install"=dword:00000001
+"MSI"=dword:00000001
+"SP"=dword:00000002
+"Version"="2.2.30729"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0]
+"Install"=dword:00000001
+"Increment"="01"
+"Version"="3.2.30729"
+"SP"=dword:00000002
+"MSI"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\1033]
+"Install"=dword:00000001
+"SP"=dword:00000002
+"MSI"=dword:00000001
+"Version"="3.2.30729"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\Servicing]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\Servicing\Windows Workflow Foundation]
+"Install"=dword:00000001
+"SPName"="SP2"
+"SP"=dword:00000002
+"MSI"=dword:00000001
+"SPIndex"=dword:00000000
+"Hotfix"=""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\Setup]
+"Version"="3.2.30729"
+"InstallSuccess"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\Setup\Windows Communication Foundation]
+"ReferenceInstallPath"="c:\\Program Files\\Reference Assemblies\\Microsoft\\Framework\\v3.0\\"
+"Version"="3.0.4506.2152"
+"InstallSuccess"=dword:00000001
+"RuntimeInstallPath"="c:\\WINDOWS\\Microsoft.NET\\Framework\\v3.0\\Windows Communication Foundation\\"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\Setup\Windows Presentation Foundation]
+@="Windows Presentation Foundation"
+"InstallSuccess"=dword:00000001
+"ProductVersion"="3.0.6920.1427"
+"InstallRoot"="c:\\WINDOWS\\Microsoft.NET\\Framework\\v3.0\\WPF\\"
+"Version"="3.0.6920.1427"
+"WPFReferenceAssembliesPathx86"="c:\\Program Files\\Reference Assemblies\\Microsoft\\Framework\\v3.0\\"
+"WPFNonReferenceAssembliesPathx86"="c:\\WINDOWS\\Microsoft.NET\\Framework\\v3.0\\WPF\\"
+"WPFCommonAssembliesPathx86"="c:\\WINDOWS\\system32\\"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\Setup\Windows Workflow Foundation]
+"ProductVersion"="3.0.0.0"
+"InstallDir"="c:\\Program Files\\Reference Assemblies\\Microsoft\\Framework\\v3.0\\"
+"FileVersion"="3.0.4203.2152"
+@="Windows Workflow Foundation"
+"MajorBuildNum"="4203"
+"InstallSuccess"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5]
+"Install"=dword:00000001
+"MSI"=dword:00000001
+"SP"=dword:00000001
+"Version"="3.5.30729.01"
+"InstallPath"="c:\\WINDOWS\\Microsoft.NET\\Framework\\v3.5\\"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5\1033]
+"Install"=dword:00000001
+"MSI"=dword:00000001
+"SP"=dword:00000001
+"Version"="3.5.30729.01"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1025)]
+"ProductLanguage"="1025"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1028)]
+"ProductLanguage"="1028"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1029)]
+"ProductLanguage"="1029"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1030)]
+"ProductLanguage"="1030"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1031)]
+"ProductLanguage"="1031"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1032)]
+"ProductLanguage"="1032"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1033)]
+"ProductLanguage"="1033"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1035)]
+"ProductLanguage"="1035"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1036)]
+"ProductLanguage"="1036"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1037)]
+"ProductLanguage"="1037"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1038)]
+"ProductLanguage"="1038"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1040)]
+"ProductLanguage"="1040"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1041)]
+"ProductLanguage"="1041"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1042)]
+"ProductLanguage"="1042"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1043)]
+"ProductLanguage"="1043"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1044)]
+"ProductLanguage"="1044"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1045)]
+"ProductLanguage"="1045"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1046)]
+"ProductLanguage"="1046"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1049)]
+"ProductLanguage"="1049"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1053)]
+"ProductLanguage"="1053"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (1055)]
+"ProductLanguage"="1055"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (2052)]
+"ProductLanguage"="2052"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (2070)]
+"ProductLanguage"="2070"
+"Version"="v1.0.3705"
+"Package"="Full"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (3076)]
+"Package"="Full"
+"Version"="v1.0.3705"
+"ProductLanguage"="3076"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\Product\Microsoft .NET Framework Full v1.0.3705 (3082)]
+"Package"="Full"
+"Version"="v1.0.3705"
+"ProductLanguage"="3082"
+

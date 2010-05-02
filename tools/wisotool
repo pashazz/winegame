@@ -46,6 +46,9 @@ esac
 WISOTOOL_VERBS="${WISOTOOL_VERBS:-$HOME/.wisotool/verbs}"
 mkdir -p "$WISOTOOL_VERBS"
 
+# Postinstall scripts, if any, go here
+WISOTOOL_POST="${WISOTOOL_POST:-$HOME/.wisotool/postinstall}"
+
 # Internal variables; these locations are not too important
 WISOTOOL_CACHE="${WISOTOOL_CACHE:-$HOME/.wisotoolcache}"
 test -d "$WISOTOOL_CACHE" || WISOTOOL_CACHE="$HOME/.wisotool/cache"
@@ -172,7 +175,7 @@ usage() {
     echo " -v         verbose"
     echo " -V         display Version"
     echo "Packages:"
-    sort "$WISOTOOL_VERBS"/menutext
+    sort "$WISOTOOL_TMP"/menutext
     echo "Pseudopackages:"
     echo " load          Load a disc into the iso cache"
     echo " load=KEY      Load a disc with given key; only works from commandline at moment"
@@ -348,6 +351,11 @@ download() {
     fi
     cache="$WISOTOOL_CACHE/$1"
     mkdir -p "$cache"
+    if test ! -s "$cache/$file" && test -f "$cache/$file"
+    then
+        # zero size - bad download?
+        rm "$cache/$file"
+    fi
     if test ! -f "$cache/$file"
     then
         cd "$cache"
@@ -377,6 +385,11 @@ download() {
             case `file $file` in
             *gzip*) mv $file $file.gz; gunzip < $file.gz > $file;;
             esac
+        esac
+
+        # On cygwin, .exe's must be marked +x
+        case $file in
+        *.exe) chmod +x $file ;;
         esac
 
         cd "$olddir"
@@ -546,6 +559,11 @@ cleanup()
 }
 
 load_iso() {
+   method=$1
+   key="$2"
+
+   die_if_user_not_dirowner "$WISOTOOL_CACHE"
+
    # Detect raw device
    dev=/dev/null
    for dev in /dev/cdrom /dev/sr0
@@ -565,7 +583,21 @@ load_iso() {
 
    # Copy disc to .iso file, display progress every 5 seconds
    # Use conv=noerror,sync to replace unreadable blocks with zeroes
-   dd if=/dev/sr0 of="$WISOTOOL_CACHE"/temp.iso bs=2048 conv=noerror,sync & pid=$!
+   case $method in
+   dd) 
+     dd if=$dev of="$WISOTOOL_CACHE"/temp.iso bs=2048 conv=noerror,sync &
+     pid=$!
+     ;;
+   ddrescue) 
+     if test `which ddrescue` = ""
+     then
+         die "Please install ddrescue first."
+     fi
+     ddrescue -v -b 2048 $dev "$WISOTOOL_CACHE"/temp.iso &
+     pid=$!
+     ;;
+   esac
+
    # Since we're running dd in the background, register a handler to kill it if user presses ^C
    trap cleanup 1 2 3 6
    while ps -p $pid > /dev/null 2>&1
@@ -581,10 +613,10 @@ load_iso() {
    echo "Sha1sum of iso is $sum"
    
    mv "$WISOTOOL_CACHE"/temp.iso "$WISOTOOL_CACHE"/$sum.iso
-   if test "$1" != ""
+   if test "$key" != ""
    then
        # FIXME: in gui, prompt user for key if load= was chosen?
-       echo "$1" > "$WISOTOOL_CACHE"/$sum.txt
+       echo "$key" > "$WISOTOOL_CACHE"/$sum.txt
    fi
 
    # Note: if you haven't written the verb for this disc yet,
@@ -653,9 +685,9 @@ load_autohotkey()
 verblist_init()
 {
     # Must call this before first call to verblist_add
-    file_map="case \$1 in "
+    file_map="case \"\$1\" in "
     # Clear menu
-    rm -f "$WISOTOOL_VERBS"/menutext
+    rm -f "$WISOTOOL_TMP"/menutext
 }
 
 verblist_finish()
@@ -668,7 +700,7 @@ verblist_finish()
 menu_add() {
     verbname=$1
     description="$2"
-    printf " %-16s %s\n" $verbname "$description" >> "$WISOTOOL_VERBS"/menutext
+    printf " %-16s %s\n" $verbname "$description" >> "$WISOTOOL_TMP"/menutext
 }
 
 # Add a new verb
@@ -677,14 +709,17 @@ verblist_add()
     # Usage: verblist_add verbname "description" file1 file2 ...
     verbname=$1
     description="$2"
+    case "$description" in
+    *\'*) die "bug in call to verblist_add($verbname $description): you can't use apostrophes in game descriptions, it breaks the zenity menu.  Please remove." ;;
+    esac
     shift
     shift
     present=''
     test $verbname != 'help' && present=' [loaded]'
     for file
     do
-       file_map="$file_map $file) echo $verbname;; "
-       if ! test -f "$WISOTOOL_CACHE"/$verbname/$file
+       file_map="$file_map \"$file\") echo $verbname;; "
+       if ! test -f "$WISOTOOL_CACHE/$verbname/$file"
        then
            present=''
        fi
@@ -696,7 +731,7 @@ verblist_add()
 verblist_is_legal_verb()
 {
   verb=$1
-  awk '{print $1}' < "$WISOTOOL_VERBS"/menutext > "$WISOTOOL_TMP"/verbs
+  awk '{print $1}' < "$WISOTOOL_TMP"/menutext > "$WISOTOOL_TMP"/verbs
   if grep "^$verb$" "$WISOTOOL_TMP"/verbs > /dev/null
   then
       return 0
@@ -714,10 +749,11 @@ map_file_to_verb()
 # Output a list of the verbs for which the needed files are in the cache
 list_available_verbs()
 {
-    find "$WISOTOOL_CACHE/." -type f | sed 's,.*/,,' > /tmp/wfiles
-    for file in `cat /tmp/wfiles`
+    # Find files in cache, output pathnames without top level directory.
+    # Use "while read" rather than "for", since we have some filenames with spaces.
+    (cd "$WISOTOOL_CACHE"; find . -type f) | sed 's,^./[^/]*/,,' | while read file
     do
-        map_file_to_verb $file
+        map_file_to_verb "$file"
     done | sort -u
 }
 
@@ -766,10 +802,10 @@ load_3dmark2000() {
         ControlClick Button1  ; Next
         WinWait License
         ControlClick Button2  ; Yes
-        WinWaitClose ahk_class #32770 ; License
+        ;WinWaitClose ahk_class #32770 ; License
         WinWait ahk_class #32770 ; Destination
         ControlClick Button1  ; Next
-        WinWaitClose ahk_class #32770 ; Destination
+        ;WinWaitClose ahk_class #32770 ; Destination
         WinWait ahk_class #32770 ; Start
         ControlClick Button1  ; Next
         WinWait Registration
@@ -778,6 +814,13 @@ load_3dmark2000() {
         ControlClick Button1  ; Unclick View Readme
         ControlClick Button4  ; Finish
     "
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\MadOnion.com\3DMark2000"
+REM possible wine cmd bug: "3dmark2000" aborts, but ".\3dmark2000" works
+.\3DMark2000
+__EOF__
+
 }
 
 #----------------------------------------------------------------
@@ -798,17 +841,13 @@ load_3dmark2001() {
         SetTitleMatchMode, 2
         run 3dmark2001se_330_100308.exe
         WinWait ahk_class #32770 ; welcome
-        MsgBox, 64, , clicking Next on welcome, 1
         ControlClick Button2  ; Next
         sleep 5000
         WinWait ahk_class #32770 ; License
-        MsgBox, 64, , clicking Next on license, 1
         ControlClick Button2  ; Next
         WinWait ahk_class #32770 ; Destination
-        MsgBox, 64, , clicking Next on Destination, 1
         ControlClick Button1  ; Next
         WinWait ahk_class #32770 ; Start
-        MsgBox, 64, , clicking Next on Start, 1
         ControlClick Button1  ; Next
         WinWait,, Registration
         ControlClick Button1  ; Next
@@ -861,6 +900,10 @@ load_3dmark03() {
         Send {Tab}
         Send {Enter}
     "
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\Futuremark\3DMark03"
+3DMark03
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -894,10 +937,16 @@ load_3dmark05() {
         ControlClick Button1 ; Uncheck view readme
         ControlClick Button3 ; Finish
     "
+    ARGS=""
     if workaround_wine_bug 22392
     then
         warn "You must run the app with the -nosysteminfo option to avoid a crash on startup"
+        ARGS="-nosysteminfo"
     fi
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\Futuremark\3DMark05"
+3DMark05 $ARGS
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -934,17 +983,31 @@ load_3dmark06() {
         WinWait, ahk_class #32770, Complete
         ControlClick Button1 ; Uncheck view readme
         ControlClick Button3 ; Finish
+        WinWaitClose, ahk_class #32770, Complete
     "
+
+    if workaround_wine_bug 9210
+    then
+        warn "You may need to apply the patch in http://bugs.winehq.org/show_bug.cgi?id=9210 to fix pCaps->MaxPointSize, or the benchmark will warn that shader model 2.0 is not present, and refuse to run."
+    fi
 
     if workaround_wine_bug 22393
     then
         # "Demo" button doesn't work without this
         sh "$WINETRICKS" -q d3dx9_28 d3dx9_36
     fi
+
+    ARGS=""
     if workaround_wine_bug 22392
     then
         warn "You must run the app with the -nosysteminfo option to avoid a crash on startup"
+        ARGS="-nosysteminfo"
     fi
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\Futuremark\3DMark06"
+3DMark06 $ARGS
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -983,6 +1046,13 @@ load_assassinscreed() {
         send {Enter}
     "
     iso_umount
+
+    # Should run AssassinsCreed_Launcher.exe, but that fails on Wine
+    # Should give option to run AssassinsCreed_Dx10.exe, but that fails on Wine
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\Ubisoft\Assassin's Creed"
+AssassinsCreed_Dx9.exe
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -1000,21 +1070,21 @@ load_baldursgate2() {
     # Possible wine bug: cd is still in use, even if wine eject is used. Workaround it by
     # copying all the cd's to a directory, and running the installer from there.
     # You still need the first CD mounted at the end, however...
-    if test ! -d "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+    if test ! -d "$WISOTOOL_TMP"/$PACKAGE/tempcd
     then
-        try mkdir -p "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+        try mkdir -p "$WISOTOOL_TMP"/$PACKAGE/tempcd
         iso_mount "$WISOTOOL_CACHE"/$PACKAGE/cc9359dce1a7be6c64bb6f8e6dea6d14d4a5f716.iso
         sleep 5s
-        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_TMP"/$PACKAGE/tempcd
         iso_mount "$WISOTOOL_CACHE"/$PACKAGE/429872605dad10433c3c581a1c11eba4d0988c46.iso
         sleep 5s
-        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_TMP"/$PACKAGE/tempcd
         iso_mount "$WISOTOOL_CACHE"/$PACKAGE/a6d18fcd7d16ddafbda7aa028b117566b1e09d2a.iso
         sleep 5s
-        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_TMP"/$PACKAGE/tempcd
         iso_mount "$WISOTOOL_CACHE"/$PACKAGE/94ed41768949c89a1a6479305f00a9cee1d2dcd5.iso
         sleep 5s
-        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+        try cp -r "$ISO_MOUNT_ROOT"/* "$WISOTOOL_TMP"/$PACKAGE/tempcd
     fi
     
     # Will perform a full install, so no cd's needed
@@ -1022,7 +1092,7 @@ load_baldursgate2() {
     
     ahk_do "
         SetTitleMatchMode, 2
-        run "$WISOTOOL_CACHE"/$PACKAGE/tempcd/setup.exe
+        run "$WISOTOOL_TMP"/$PACKAGE/tempcd/setup.exe
         winwait, Baldur's Gate, Welcome to the Baldur's Gate
         sleep 1000
         ControlClick, Button1, Baldur's Gate, Welcome to the Baldur's Gate
@@ -1057,15 +1127,15 @@ load_baldursgate2() {
         sleep 1000
         ControlClick, Button4, Baldur's Gate, Setup has finished installing
         "
-    try chmod +w -R "$WISOTOOL_CACHE"/$PACKAGE/tempcd
-    try rm -rf "$WISOTOOL_CACHE"/$PACKAGE/tempcd
+    try chmod +w -R "$WISOTOOL_TMP"/$PACKAGE/tempcd
+    try rm -rf "$WISOTOOL_TMP"/$PACKAGE/tempcd
 
     # Install latest patch
     download baldursgate2 http://downloads.bioware.com/baldursgate2/Baldur%27sGateII-ShadowsofAmnPatchENGLISH.exe 4706c0dc1e282bae14946c87a38e2781f89ebdc4
     # AHK doesn't like its name...
-    try cp -f "$WISOTOOL_CACHE/baldursgate2/Baldur%27sGateII-ShadowsofAmnPatchENGLISH.exe" "$WISOTOOL_CACHE/baldursgate2/baldurs_gate_2_patch.exe"
+    try cp -f "$WISOTOOL_CACHE/baldursgate2/Baldur%27sGateII-ShadowsofAmnPatchENGLISH.exe" "$WISOTOOL_TMP/baldurs_gate_2_patch.exe"
 
-    cd $WISOTOOL_CACHE/baldursgate2
+    cd "$WISOTOOL_TMP"
     ahk_do "
         SetTitleMatchMode, 2
         run, baldurs_gate_2_patch.exe
@@ -1077,7 +1147,7 @@ load_baldursgate2() {
         ControlClick Button4, InstallShield Wizard, InstallShield Wizard Complete
         exit"
     cd -
-    try rm "$WISOTOOL_CACHE/baldursgate2/baldurs_gate_2_patch.exe"
+    try rm "$WISOTOOL_TMP/baldurs_gate_2_patch.exe"
     
     if workaround_wine_bug 22482
     then
@@ -1088,6 +1158,11 @@ load_baldursgate2() {
     if workaround_wine_bug 22493
     then
         warn "Enabling 3d acceleration in BGConfig.exe will improve performance."
+    fi
+
+    if workaround_wine_bug 22511
+    then
+        warn "Until wine bug 22511 is fixed, you should use a virtual desktop, or baldur's gate will only take up part of your screen in full screen mode."
     fi
 }
 
@@ -1101,10 +1176,16 @@ load_bioshock() {
     load_autohotkey
     
     # Bioshock needs MSVCP80.dll to run, which Wine doesn't have yet.
-    sh "$WINETRICKS" -q vcrun2005sp1
+    if workaround_wine_bug 22501
+    then
+        sh "$WINETRICKS" -q vcrun2005
+    fi
     
     # Will perform a full install, so no cd's needed
     iso_mount "$WISOTOOL_CACHE"/$PACKAGE/deaf00ebee6e73aecf38f704c3f516008a68d888.iso
+    
+    # Don't trim the hyphen's "-", the installer won't proceed without them.
+    BIOSHOCK_KEY=`cat "$WISOTOOL_CACHE"/$PACKAGE/deaf00ebee6e73aecf38f704c3f516008a68d888.txt`
     
     # FIXME: fails unless the real DVD is in the drive. Fails on the iso.
     ahk_do "
@@ -1132,7 +1213,44 @@ load_bioshock() {
         ControlClick, Button6, BioShock - InstallShield Wizard, The InstallShield Wizard has successfully installed BioShock
         sleep 1000
         ControlClick, Button4, BioShock - InstallShield Wizard, The InstallShield Wizard has successfully installed BioShock
+        winwait, Welcome, &Next
+        Sleep 1000
+        ControlClick, Button2, Welcome, &Next
+        winwait, Enter your serial number, &Activate
+        Sleep 1000
+        ControlClick, Edit1, Enter your serial number, &Activate
+        send {Raw}$BIOSHOCK_KEY
+        Sleep 1000
+        ControlClick, Button1, Enter your serial number, &Activate
+        winwait, Activation Successful
+        Sleep 1000
+        Controlclick, Button3, Activation Successful
         "
+    # According to the AppDB, 1.1 may have problems with Wine. For now, don't run it.
+    # FIXME: Test and if there's a Wine bug, file one/put this in an if workaround_wine_bug().
+    #
+    #download $PACKAGE http://downloads.2kgames.com/bioshock/patch/Bioshock_Version_11_Patch_Worldwide_Retail.zip
+    #cd $WISOTOOL_TMP
+    #unzip "$WISOTOOL_CACHE/$PACKAGE/Bioshock_Version_11_Patch_Worldwide_Retail.zip"
+    #ahk_do "
+    #    run Bioshock Version 1.1 Patch Worldwide Retail.exe
+    #    winwait, BioShock 1.1 Patch, This patch is to be applied ONLY to the Uncensored Retail Version of BioShock
+    #    sleep 1000
+    #    ControlClick, Button1, BioShock 1.1 Patch, This patch is to be applied ONLY to the Uncensored Retail Version of BioShock
+    #    winwait, Location Confirmation, Is located at
+    #    sleep 1000
+    #    ControlClick, Button1, Location Confirmation, Is located at
+    #    winwait, License Agreement, Please read the following license agreement carefully.
+    #    sleep 1000
+    #    ControlClick, Button1, License Agreement, Please read the following license agreement carefully.
+    #    winwait, BioShock Patched Successfully!, BioShock patched to version 1.1 successfully!
+    #    sleep 1000
+    #    ControlClick, Button1, BioShock Patched Successfully!, BioShock patched to version 1.1 successfully!
+    #    "
+    if workaround_wine_bug 6971
+    then
+        sh "$WINETRICKS" -q mwo=force
+    fi
 }
 
 #----------------------------------------------------------------
@@ -1205,6 +1323,11 @@ load_diablo2() {
     killall "Game.exe"
 
     warn "When starting the game, be patient, wait until the menu appears.  The game seems to hang if it looses focus, see bug 14456, you may need to set winecfg to virtual desktop."
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\Diablo II"
+"Diablo II.exe"
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -1252,6 +1375,11 @@ load_dragonage() {
     then
         try "$WINETRICKS" -q strictdrawordering=disabled
     fi
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\Dragon Age"
+bin_ship\daorigins.exe
+__EOF__
 }
 
  #----------------------------------------------------------------
@@ -1311,6 +1439,75 @@ load_gta_vc() {
     fi
 }
 
+ #----------------------------------------------------------------
+ 
+verblist_add half_life_goty     "Half Life: Game of the Year Edition (Sierra, 2000) " \
+  dc32c16bca6c19f14e3501e3be3e4a157ddbee20.iso
+
+load_half_life_goty() {
+    load_autohotkey
+
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/dc32c16bca6c19f14e3501e3be3e4a157ddbee20.iso
+    
+    ahk_do "
+    SetTitleMatchMode, 2
+    Run, ${ISO_MOUNT_LETTER}:Setup.exe
+    winwait, System Test, Did you hear the sound file?
+    sleep 1000
+    ControlClick, Button6, System Test, Did you hear the sound file?
+    winwait, Welcome, Welcome to the Half-Life Setup program.  This program will install Half-Life on your computer.
+    sleep 1000
+    ControlClick, Button1, Welcome, Welcome to the Half-Life Setup program.  This program will install Half-Life on your computer.
+    winwait, Software License Agreement, Please read the following License Agreement.  Press the PAGE DOWN key to see the rest of the agreement.
+    sleep 1000
+    ControlClick, Button2, Software License Agreement, Please read the following License Agreement.  Press the PAGE DOWN key to see the rest of the agreement.
+    winwait, Choose Destination Location, Setup will install Half-Life in the following folder.
+    sleep 1000
+    ControlClick, Button1, Choose Destination Location, Setup will install Half-Life in the following folder.
+    winwait, Install, Setup has placed the Sierra Utilities in your Start Menu.
+    sleep 1000
+    ControlClick, Button1, Install, Setup has placed the Sierra Utilities in your Start Menu.
+    winwait, Install, Setup has determined that there may be updates to your product available.
+    sleep 1000
+    ControlClick, Button7, Install, Setup has determined that there may be updates to your product available.
+    winwait, Install, Please Register Now!
+    sleep 1000
+    ControlClick, Button1, Install, Please Register Now!
+    winwait, Choose Method of Registration, Please choose a registration method
+    sleep 1000
+    ControlClick, Button8, Choose Method of Registration, Please choose a registration method
+    winwait, Select Components, Please ensure you are running the latest drivers appropriate for your hardware
+    sleep 1000
+    ControlClick, Button11, Select Components, Please ensure you are running the latest drivers appropriate for your hardware
+    winwait, Setup Complete, Setup has finished installing Half-Life on your computer.
+    sleep 1000
+    ControlClick, Button1, Setup Complete, Setup has finished installing Half-Life on your computer.
+    Sleep 1000
+    ControlClick, Button4, Setup Complete, Setup has finished installing Half-Life on your computer.
+    "
+    
+    # The key is put in on first run:
+    HALF_LIFE_GOTY_KEY=`cat "$WISOTOOL_CACHE"/$PACKAGE/dc32c16bca6c19f14e3501e3be3e4a157ddbee20.txt`
+    cd $DRIVE_C/SIERRA/Half-Life
+    
+    # Forcefully closing the process later will screw up the screen resolution, so store the user's current resolution so we can restore it later:
+    current_res=`xrandr -q | awk -F'current' -F',' 'NR==1 {gsub("( |current)","");print $2}'`
+
+    # FIXME: Not sure how reliable the ahk_class designation is...
+    ahk_do "
+    Run, hl.exe
+    winwait, ahk_class #32770
+    sleep 1000
+    ControlClick, Edit1, ahk_class #32770
+    Send {RAW}$HALF_LIFE_GOTY_KEY
+    sleep 1000
+    ControlClick, Button1, ahk_class #32770
+    sleep 5000
+    ; I tried closing it the nice way, with either PostMessage or Win_close, but neither worked
+    process, close, hl.exe
+    "
+    xrandr -s $current_res
+}
 
 #----------------------------------------------------------------
 
@@ -1319,6 +1516,63 @@ verblist_add help     "How to use this tool"
 load_help() {
     warn "If the game is not marked with {download} or {loaded} in the menu, you have to insert its disc and give the 'load' command before you can choose that game in the menu.  If the game has multiple discs, you have to do this for each disc."
     warn "If the game has an install key, you have to enter that when loading the first disc.  (You have to do that from the commandline, e.g. sh wisotool load=XXXX-YYYY-ZZZZ.)"
+}
+
+#----------------------------------------------------------------
+
+verblist_add lswcs "Lego Star Wars Complete Saga (Lucasarts, 2009)" dc5db10e2ad2892ba40015d3856d1d29dc55893a.iso
+
+load_lswcs() {
+    load_autohotkey
+
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/dc5db10e2ad2892ba40015d3856d1d29dc55893a.iso
+    ahk_do "
+        run ${ISO_MOUNT_LETTER}:setup.exe
+        SetTitleMatchMode, 2
+        winwait, Choose Setup Language
+        send {Enter}
+        winwait, LEGO, License Agreement
+	send a{Enter}
+        winwait, LEGO, method
+        ControlClick Easy Installation
+        sleep 1000
+        winwaitclose, LEGO
+    "
+    # Installer crashes at end (http://bugs.winehq.org/show_bug.cgi?id=22529) but this doesn't seem to hurt.
+    # Wait for all processes to exit, else unmount will fail
+    # FIXME: use right wineserver
+    wineserver -w
+    iso_umount
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\\LucasArts\\LEGO Star Wars - The Complete Saga"
+LEGOStarWarsSaga.exe
+__EOF__
+
+    warn "This game is copy-protected, and requires the real disc in a real drive to run."
+}
+
+#----------------------------------------------------------------
+
+# Note: may require load_harder.  Result may vary in length and checksum.
+
+verblist_add manhole     "The Manhole Masterpiece Edition (Cyan, 1994)" \
+  39aea1267c2b2b22a7d5c1e9f86ea1f4461457e3.iso
+
+load_manhole() {
+    cd $WISOTOOL_TMP
+
+    load_autohotkey
+
+    iso_mount "$WISOTOOL_CACHE"/$PACKAGE/39aea1267c2b2b22a7d5c1e9f86ea1f4461457e3.iso
+    mkdir -p "$DRIVE_C"/manhole
+    try cp -r "$ISO_MOUNT_ROOT"/* "$DRIVE_C"/manhole
+    iso_umount
+
+    if workaround_wine_bug 22502
+    then
+        warn "Run with wine-1.0 to avoid crash on startup.  Also cancel when prompted to install Quicktime."
+    fi
 }
 
 #----------------------------------------------------------------
@@ -1422,6 +1676,11 @@ load_pcmark04() {
     then
         warn "You may need to apply the patch from bug 22402 to avoid a crash in the tumbling blocks test."
     fi
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\Futuremark\PCMark04"
+PCMark04
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -1473,6 +1732,11 @@ load_pcmark05() {
         Send {Tab}
         Send {Enter}
     "
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\Futuremark\PCMark05"
+PCMark05
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -1519,6 +1783,11 @@ load_plantsvszombies() {
         send {Space}{Enter}
         ControlClick, x309 y278, Plants vs. Zombies Installation Complete!,,,, Pos
     "
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\PopCap Games\Plants vs. Zombies"
+PlantsVsZombies
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -1556,6 +1825,13 @@ load_re5bench() {
     then
         try sh "$WINETRICKS" -q wmp9
     fi
+
+    # Should run launcher.exe, but that requires .net and doesn't run on Wine
+    # Should give choice of running RE5DX10.EXE, but that requires dx10, which doesn't work on Wine yet
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\CAPCOM\RESIDENT EVIL 5 Benchmark Version"
+RE5DX9.EXE
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -1655,6 +1931,11 @@ load_sims3() {
     "
 
     # FIXME: apply next patch, too
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\CAPCOM\RESIDENT EVIL 5 Benchmark Version"
+RE5DX9.EXE
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -1701,7 +1982,7 @@ load_starcraft() {
 
 #----------------------------------------------------------------
 
-verblist_add starcraft2    "Starcraft II beta (Blizzard, 2010)" 
+verblist_add starcraft2    "Starcraft II beta (Blizzard, 2010)" "StarCraft II Beta enUS 13891 Installer/Installer.exe"
 
 load_starcraft2() {
     load_autohotkey
@@ -1739,6 +2020,11 @@ load_starcraft2() {
         winwait, StarCraft II v, update was successful
         winclose
     "
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\StarCraft II Beta"
+"StarCraft II.exe"
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -1797,6 +2083,17 @@ load_stfu() {
         winwait, Patch, Finish
         send {Enter}
     "
+
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\StarCraft II Beta"
+"StarCraft II.exe"
+__EOF__
+
+    # Should start SWTFU Launcher.exe, but that doesn't run in Wine?
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\Aspyr\Star Wars The Force Unleashed"
+SWTFU.exe
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -1833,6 +2130,14 @@ load_unigine_heaven() {
         WinWait ahk_class MsiDialogCloseClass, Completed
         ControlClick Button1 ; Finish
     "
+
+    # Should start Heaven.exe, but that doesn't run in Wine
+    # Should give option to run Heaven_gl.bat (even works in Wine)
+    # or the dx10 or dx11 versions (doesn't).
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\Unigine\Heaven"
+cmd /c Heaven_d3d9.bat
+__EOF__
 }
 
 #----------------------------------------------------------------
@@ -1866,6 +2171,158 @@ load_wog() {
 	ControlClick, Make me dirty right now, World of Goo Setup, Thank you
 	send {Enter}
         "
+    cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__ 
+cd "$programfilesdir_x86_win\WorldOfGooDemo"
+WorldOfGoo.exe
+__EOF__
+}
+
+#----------------------------------------------------------------
+
+# Generic GOG.com installer
+# Usage: game_id game_title [other_files [reader_control [run_command [download_id]]]]
+# game_id
+#     Used for main installer name and download url.
+# game_title
+#     Used for AutoHotKey and installation path in bat script.
+# other_files
+#     Extra installer files, in one string, space-separated.
+# reader_control
+#     If set, the control id of the configuration pannel checkbox controling
+#     Adobe Reader installation.
+#     Some games don't have it, some games do with different ids.
+# run_command
+#     Used for bat script, relative to installation path.
+# download_id
+#     For games which download url doesn't match their game_id
+_load_gog()
+{
+    # TODO: support SHA1 checks ? (installer verifies files)
+    # TODO: finish download support (it is done, but wasn't quite working for everyone, so not merged)
+    load_autohotkey
+
+    game_id="$1"
+    game_title="$2"
+    other_files="$3"
+    reader_control="$4"
+    run_command="$5"
+    download_id="$6"
+
+    installer_path="$WISOTOOL_CACHE/$PACKAGE"
+    installer="setup_$game_id.exe"
+    cookie="$auth_path/cookie.txt"
+
+    file_id=0
+    for file in $installer $other_files
+    do
+        file_path="$installer_path/$file"
+        if ! test -s "$file_path"
+        then
+            die "Please download $file to $installer_path"
+        fi
+        file_id=`expr $file_id + 1`
+    done
+
+    cd "$installer_path"
+    ahk_do "
+        run $installer
+        WinWait, Setup - $game_title, Start installation
+        ControlGet, checkbox_state, Checked,, TCheckBox1 ; EULA
+        if (checkbox_state != 1) {
+            ControlClick, TCheckBox1
+        }
+        if (\"$reader_control\") {
+            ControlClick, TMCoPShadowButton1 ; Options
+            Loop, 10
+            {
+                ControlGet, visible, Visible,, $reader_control
+                if (visible)
+                {
+                    break
+                }
+                Sleep, 1000
+            }
+            ControlGet, checkbox_state, Checked,, $reader_control ; Unckeck Adobe/Foxit Reader
+            if (checkbox_state != 0) {
+                ControlClick, $reader_control
+            }
+        }
+        ControlClick, TMCoPShadowButton2 ; Start Installation
+        WinWait, Setup - $game_title, Exit Installer
+        ControlClick, TMCoPShadowButton1 ; Exit Installer
+        "
+
+    if [ "$run_command"x != ""x ]
+    then
+        cat > "$DRIVE_C/run-$PACKAGE.bat" <<__EOF__
+cd "$programfilesdir_x86_win\GOG.com\\$game_title"
+$run_command
+__EOF__
+    fi
+}
+
+verblist_add dukenukem3d_gog "Duke Nukem 3D (GOG.com)" setup_duke3d.exe
+
+load_dukenukem3d_gog()
+{
+    _load_gog "duke3d" "Duke Nukem 3D" "" "TsCheckBox2" "DOSBOX\dosbox.exe -conf dosboxDuke3D.conf -noconsole -c \"exit\"" "duke_nukem_3d_atomic_edition"
+}
+
+verblist_add dukenukemmp_gog "Duke Nukem Manhattan Project (GOG.com)" setup_duke_nukem_manhattan_project.exe
+
+load_dukenukemmp_gog()
+{
+    _load_gog "duke_nukem_manhattan_project" "Duke Nukem - Manhattan Project" "" "TsCheckBox2" "DukeNukemMP.exe"
+}
+
+verblist_add ut2004_gog "Unreal Tournament 2004 (GOG.com)" setup_ut2004.exe
+
+load_ut2004_gog()
+{
+    _load_gog "ut2004" "Unreal Tournament 2004" "setup_ut2004-1.bin setup_ut2004-2.bin" "TsCheckBox2" "system\ut2004.exe"
+}
+
+verblist_add abes_oddysee_gog "Abes Oddysee (GOG.com)" AbeWin.exe setup_abes_oddysee.exe
+
+load_abes_oddysee_gog()
+{
+    _load_gog "abes_oddysee" "Abe's Oddysee" "" "TsCheckBox2" "AbeWin.exe"
+}
+
+verblist_add abes_exoddus_gog "Abes Exoddus (GOG.com)" Exoddus.exe setup_abes_exodus.exe
+
+load_abes_exoddus_gog()
+{
+    _load_gog "abes_exoddus" "Abe's Exoddus" "" "TsCheckBox2" "Exoddus.exe"
+}
+
+verblist_add beyond_good_and_evil_gog "Beyond Good and Evil (GOG.com)" setup_beyond_good_and_evil.exe
+
+load_beyond_good_and_evil_gog()
+{
+    _load_gog "beyond_good_and_evil" "Beyond Good and Evil" "" "TsCheckBox2" "gogwrap.exe GOGBEYONDGOODANDEVIL"
+}
+
+verblist_add far_cry_gog "Far Cry (GOG.com)" setup_far_cry.exe setup_far_cry-1.bin setup_far_cry-2.bin
+
+load_far_cry_gog()
+{
+    _load_gog "far_cry" "Far Cry" "setup_far_cry-1.bin setup_far_cry-2.bin" "TsCheckBox2" "Bin32\FarCry.exe"
+}
+
+verblist_add descent_1_2_gog "Descent and Descent 2 (GOG.com)" setup_descent_1_2.exe
+
+load_descent_1_2_gog()
+{
+    # XXX: this installs 2 games, how should bat script be ?
+    _load_gog "descent_1_2" "Descent and Descent 2" "" "TsCheckBox5" ""
+}
+
+verblist_add evil_genius_gog "Evil Genius (GOG.com)" setup_evil_genius.exe
+
+load_evil_genius_gog()
+{
+    _load_gog "evil_genius" "Evil Genius" "" "TsCheckBox2" "ReleaseExe\EvilGeniusExeStub-Release.exe"
 }
 
 #----------------------------------------------------------------
@@ -1921,7 +2378,6 @@ case "$OS" in
   # Prevent running with wrong user id.
   # It's bad to create files as the wrong user!
   die_if_user_not_dirowner "$WINEPREFIX"
-  die_if_user_not_dirowner "$WISOTOOL_CACHE"
 
   if [ ! -x "`which "$WINE" 2>/dev/null`" ]
   then
@@ -1945,7 +2401,7 @@ WINETRICKS="$srcdir/winetricks"
 if ! test -f "$WINETRICKS"
 then
     WINETRICKS="$WISOTOOL_CACHE/winetricks"
-    wget -o "$WINETRICKS" http://kegel.com/wine/winetricks
+    download . http://kegel.com/wine/winetricks
 fi
 
 # The folder-name is localized!
@@ -2002,8 +2458,9 @@ do
         ;;
     -v) set -x;;
     ls) list_available_verbs;;
-    load) load_iso;;
-    load=*) key="`echo $1 | sed 's/load=//'`"; load_iso "$key";;
+    load) load_iso dd;;
+    load_harder) load_iso ddrescue;;
+    load=*) key="`echo $1 | sed 's/load=//'`"; load_iso dd "$key";;
     migrate) migrate_files;;
     version) print_version;;
 
@@ -2025,13 +2482,10 @@ do
 
     # User-specific postinstall hook.  
     # Source it so the script can call download() if needed.
-    if [ -f "$WISOTOOL_CACHE"/$PACKAGE/$PACKAGE-postinstall.sh ]
+    if [ -f "$WISOTOOL_POST"/$PACKAGE/$PACKAGE-postinstall.sh ]
     then
-        ( . "$WISOTOOL_CACHE"/$PACKAGE/$PACKAGE-postinstall.sh )
+        ( . "$WISOTOOL_POST"/$PACKAGE/$PACKAGE-postinstall.sh )
     fi
-
-    # cleanup
-    rm -rf "$WISOTOOL_TMP"/* "$WISOTOOL_TMP/tmp.ahk"
 done
 
 test "$WISOTOOL_CACHE_SYMLINK" && rm -f "$WISOTOOL_CACHE_SYMLINK"

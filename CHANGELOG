@@ -10,4 +10,6 @@ r8:editor included
 r9:autopackages included
 r10:now engine in shared library. And autopackages removed.
 r11:all prefix working in shared library, all packages merged
-r12: RELASE RC1
+r12:RELASE RC1
+r13:ebuilds added, debs added
+r14:bioshock added, silent hill 3 added
