@@ -1,0 +1,38 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Blizzard Entertainment\Warcraft III]
+"Gfx OpenGL"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Blizzard Entertainment\Warcraft III\Video]
+"reswidth"=dword:00000280
+"resheight"=dword:000001e0
+"colordepth"=dword:00000010
+"adapter"=dword:00000000
+"refreshrate"=dword:0000003c
+"gamma"=dword:0000001e
+"modeldetail"=dword:00000000
+"animquality"=dword:00000000
+"texquality"=dword:00000000
+"miplevel"=dword:00000001
+"texcolordepth"=dword:00000010
+"particles"=dword:00000000
+"lights"=dword:00000000
+"lockfb"=dword:00000001
+"unitshadows"=dword:00000000
+"occlusion"=dword:00000000
+
+[HKEY_CURRENT_USER\Software\Blizzard Entertainment\Warcraft III\Sound]
+"provider"=dword:00000001
+"positional"=dword:00000000
+"environmental"=dword:00000000
+"music"=dword:00000000
+"musicvolume"=dword:00000041
+"sfx"=dword:00000000
+"sfxvolume"=dword:00000064
+"ambient"=dword:00000000
+"movement"=dword:00000000
+"unit"=dword:00000000
+"subtitles"=dword:00000000
+"nomidi"=dword:00000000
+"softwaremidi"=dword:00000001
+"nosoundwarn"=dword:00000001

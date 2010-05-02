@@ -109,6 +109,7 @@ program = wPrefix->standardExe();
 QProcessEnvironment myEnv = QProcessEnvironment::systemEnvironment();
 qDebug() << tr("engine: setting Prefix: %1").arg(prefix);
 myEnv.insert("FILESDIR", workdir + "/files");
+qDebug() << "Setting Files:" << workdir + "/files";
 myEnv.insert("WINEPREFIX", prefix);
 myEnv.insert("WINE", wineBinary);
 myEnv.insert("CDROOT", this->diskpath);
@@ -187,6 +188,8 @@ if (result == QMessageBox::No)
 
 void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
 {
+    if (pkgs.trimmed().isEmpty())
+        return;
     corelib::showNotify(tr("Downloading packages..."), tr("Now we will install Microsoft components"));
     QProcess p (this);
   p.setProcessEnvironment(env);
