@@ -1,0 +1,21 @@
+Source: libwinegame
+Priority: optional
+Maintainer: Pavel Zinin (Pashazz`s GnuPG key) <PZinin@gmail.com>
+Build-Depends: debhelper (>= 7), libqt4-dev (>= 4.6.0), qt4-dev-tools(>= 4.6.0)
+Standards-Version: 3.8.3
+Section: libs
+Homepage: http://winegame.googlecode.com
+
+Package: libwinegame0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: WineStuff (libwinegame) library
+  WineStuff (also known as libwinegame) is a library, that used in WineGame application. WineStuff allows installing windows applications into wine prefixes. It is a WineGame engine.
+
+Package: libwinegame-dev
+Section: libdevel
+Architecture: all
+Depends: libwinegame0 (= ${binary:Version})
+Description: WineStuff (libwinegame) library - development files
+  WineStuff (also known as libwinegame) is a library, that used in WineGame application. WineStuff allows installing windows applications into wine prefixes. It is a WineGame engine.

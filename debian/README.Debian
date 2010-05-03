@@ -1,0 +1,6 @@
+winegame for Debian
+-------------------
+
+Uses patch for fixing .pro file (to compile with system headers). 
+
+ -- Pavel Zinin (Pashazz`s GPG key) <PZinin@gmail.com>  Sun, 02 May 2010 17:29:09 +0400

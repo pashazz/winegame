@@ -1,0 +1,13 @@
+Source: winegame
+Section: otherosfs
+Priority: optional
+Maintainer: Pavel Zinin (Pashazz`s GnuPG key) <PZinin@gmail.com>
+Build-Depends: dpatch, debhelper (>= 7), libqt4-dev (>= 4.6.0), qt4-dev-tools (>=4.6.0), libwinegame-dev
+Standards-Version: 3.8.3
+Homepage: http://winegame.googlecode.com
+
+Package: winegame
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, wine, fuseiso
+Description: WineGame is a small application for installing Windows games
+ WineGame can install different Windows applications into Wine environment. For example, Photoshop CS4, FIFA 10, FIFA Manager 10.
