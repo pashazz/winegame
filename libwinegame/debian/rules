@@ -49,9 +49,9 @@ install: build
 	dh_installdirs
 	
 		#install headers manually
-	mkdir -p $(CURDIR)/debian/tmp/usr/include
+	mkdir -p $(CURDIR)/debian/tmp/usr/include/
                #Where to put headers???
-	cp $(CURDIR)/*.h $(CURDIR)/debian/tmp/usr/include
+	cp $(CURDIR)/*.h $(CURDIR)/debian/tmp/usr/include/
 	
 	$(MAKE) INSTALL_ROOT=$(CURDIR)/debian/tmp install
 
