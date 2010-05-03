@@ -9,7 +9,7 @@ Homepage: http://winegame.googlecode.com
 Package: libwinegame0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, cabextract, wine
 Description: WineStuff (libwinegame) library
   WineStuff (also known as libwinegame) is a library, that used in WineGame application. WineStuff allows installing windows applications into wine prefixes. It is a WineGame engine.
 

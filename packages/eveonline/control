@@ -1,0 +1,5 @@
+[wine]
+components="corefonts d3dx9"
+memory=true
+[application]
+prefix=eveonline

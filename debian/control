@@ -8,6 +8,6 @@ Homepage: http://winegame.googlecode.com
 
 Package: winegame
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, wine, fuseiso
+Depends: ${shlibs:Depends}, ${misc:Depends}, fuseiso
 Description: WineGame is a small application for installing Windows games
  WineGame can install different Windows applications into Wine environment. For example, Photoshop CS4, FIFA 10, FIFA Manager 10.
