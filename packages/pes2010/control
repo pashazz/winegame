@@ -1,0 +1,5 @@
+[wine]
+components="d3dx9 multisampling=enabled win98 psm=on vsm-hard"
+memory=true
+[application]
+prefix=pes2010
