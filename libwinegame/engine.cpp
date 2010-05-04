@@ -121,18 +121,16 @@ if (!program.isEmpty())
 {
     //получаем иконку
     QString icon;
-    if (cdMode)
-    {
-    QSettings stg (diskpath+ "/autorun.inf", QSettings::IniFormat, this);
-    stg.beginGroup("autorun");
-     icon = diskpath + QDir::separator() + stg.value("Icon").toString();
-    qDebug() << "engine: ico file detected" << icon;
-}
-    else
-    {
+
         if (QFile::exists(workdir+"/icon"))
         icon = workdir+"/icon";
-    }
+		else if (cdMode)
+	   { //Если мы не нашли иконку в пакете WineGame, ищем ее в AutoRun (а раньше было наоборот)
+				QSettings stg (diskpath+ "/autorun.inf", QSettings::IniFormat, this);
+				stg.beginGroup("autorun");
+				 icon = diskpath + QDir::separator() + stg.value("Icon").toString();
+				qDebug() << "engine: ico file detected" << icon;
+			}
     this->iconPath = icon;
     doDesktop(s.value("application/prefix").toString());
 }
