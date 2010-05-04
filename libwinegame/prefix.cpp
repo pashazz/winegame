@@ -25,6 +25,10 @@ Prefix::Prefix(QObject *parent, QString workdir) :
 {
 _prefix = s->value("application/prefix").toString();
 _path = QDir::homePath() + winepath + QDir::separator() + _prefix;
+//Если _path не существует, создаем его.
+QDir dir (_path);
+if (!dir.exists())
+    dir.mkpath(dir.path());
 //Настраиваем QProcessEnvironment
 env = QProcessEnvironment::systemEnvironment();
 env.insert("WINEDEBUG", "-all");
@@ -150,4 +154,67 @@ QIcon Prefix::icon()
 bool Prefix::isPreset()
 {
     return s->value("wine/preset").toBool();
+}
+
+
+void Prefix::checkWineDistr()
+{
+   /// проверяет дистрибутив Wine для префикса. Если проверка не удается, загружает дистрибутив заново.
+    //Если у нас системный Wine, то и делать неча.
+if (s->value("wine/distr").isNull())
+    return;
+    QFile file (_path + QDir::separator() + ".wine");
+    QTextStream stream (&file);
+    if (!file.exists())
+    {
+        //Загружаем Wine
+        QString wineUrl = downloadWine();
+        //записываем Wine в .wine
+		file.open(QIODevice::WriteOnly | QIODevice::Text);
+        stream << wineUrl;
+        qDebug() << "Prefix: writing wine into" << file.fileName();
+        file.close();
+
+    }
+    else
+    {
+        //Открываем файл для чтения
+		file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QString installedWine = stream.readAll().trimmed();
+		file.close();
+        if (installedWine != s->value("wine/distr").toString())
+        {
+			file.open(QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text);
+			stream << s->value("wine/distr").toString();
+			file.close();
+        }
+
+
+    }
+}
+
+QString Prefix::downloadWine() {
+    QString wineBinary;
+    if (!s->value("wine/distr").toString().isEmpty())
+    {
+        QString distr = s->value("wine/distr").toString();
+    //здесь запускаем процесс закачки и распаковки данного дистрибутива Wine
+		QString destination = QDir::homePath() + winepath + QString("/wines/") + prefixName();
+        QDir dir (QDir::homePath() + winepath + "/wines");
+        if (!dir.exists())
+            dir.mkdir(dir.path());
+          qDebug() << "WINE IS DOWNLOADING FROM" << distr << "to" <<TMP;
+		  corelib * core = new corelib(this);
+		QString distrname =   core->downloadWine(distr);
+            qDebug() << "WINE IS UNPACKING TO " << destination << "FROM" << distrname;
+			core->unpackWine(distrname, destination);
+        qDebug() << "wine distribution is" << distr;
+		return distr;
+   }
+    else
+    {
+wineBinary = wine();
+    }
+    //если wineBinary все еще не установлен
+return "";
 }

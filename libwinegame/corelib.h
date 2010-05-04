@@ -39,8 +39,8 @@ public:
      static void showNotify (QString, QString);
      static bool checkPrefixName (QString);
 
-     void updateWines ();
-     QString downloadWine(QString url);
+	 //void updateWines ();
+	  QString downloadWine(QString url);
 
 private slots:
      void error (QNetworkReply::NetworkError);

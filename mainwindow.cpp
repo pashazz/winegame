@@ -51,7 +51,6 @@ core->showNotify(tr("Hello"), tr("Please connect to Internet!"));
 ui->lstGames->expandAll();
 
 //Обновляем вайн
-core->updateWines();
 core->deleteLater();
 }
 

@@ -57,54 +57,11 @@ if (!s.value("application/container").toString().isEmpty())
     core->unpackWine(TMP + QDir::separator() + container, prefix);
 }
 
-//найдем переменную WINEDISTR для развертывания Wine (если есть)
-if (!s.value("wine/distr").toString().isEmpty())
-{
-    QString distr = s.value("wine/distr").toString();
-//здесь запускаем процесс закачки и распаковки данного дистрибутива Wine
-    QString destination = QDir::homePath() + winepath + "/wines/" + prefixName;
-    QDir dir (QDir::homePath() + winepath + "/wines");
-    if (!dir.exists())
-        dir.mkdir(dir.path());
-//а может быть Wine уже распакован, м
-//теперь устанавливаем переменную wineBinary
-wineBinary = destination + "/usr/bin/wine"; //дададада
-qDebug() << "engine: setting wine binary to " << wineBinary;
-if (!QFile::exists(wineBinary))
-{
-    qDebug() << "WINE IS DOWNLOADING FROM" << distr << "to" <<TMP;
-        QString distrname =   core->downloadWine(distr);
-        qDebug() << "WINE IS UNPACKING TO " << destination << "FROM" << distrname;
-    core->unpackWine(distrname, destination);
-    qDebug() << "wine distribution is" << distr;
-    //Записываем вайн в .distr
-    /*
-    QFile file (prefix + "/.distr");
-    file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
-    QTextStream s (&file);
-    s << distr;
-    file.close();
-    */
-}
-//выходим из условия
-
-}
-else
-{
-    //запускаем процесс which wine
-    wineBinary =  core->whichBin("wine");
-            qDebug() << "engine: setting wine binary to " << wineBinary; // да я знаю, что можно было обойтись одной строкой
-
-}
-//если wineBinary все еще не установлен
-if (wineBinary.isEmpty())
-{
-    QMessageBox::warning(0, tr("Error"), tr("Wine installation not found."));
-    qDebug() << "engine: exiting";
-    return;
-}
+//проверяем дистрибутив Wine
+wPrefix->checkWineDistr();
  name = wPrefix->name();
 note = wPrefix->note();
+wineBinary = wPrefix->wine();
 program = wPrefix->standardExe();
 QProcessEnvironment myEnv = QProcessEnvironment::systemEnvironment();
 qDebug() << tr("engine: setting Prefix: %1").arg(prefix);

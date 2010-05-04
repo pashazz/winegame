@@ -46,6 +46,7 @@ public:
   void runProgram (QString exe);
   void lauchWinetricks(QStringList args);
   void removePrefix ();
+  void checkWineDistr();
 public slots:
   void lauch_c();
 
@@ -58,5 +59,6 @@ QString _path;
 QString _workdir;
   QSettings *s;
 QProcessEnvironment env;
+QString downloadWine ();
 };
 #endif // PREFIX_H

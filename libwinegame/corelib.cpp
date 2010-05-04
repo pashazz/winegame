@@ -36,6 +36,11 @@ void corelib::init()
 {
     if (!QFile::exists(QDir::homePath() + config))
     {
+		if (!QFile::exists(whichBin("wine")))
+		{
+			qDebug() << "FATAL!!!! Wine not found, I WILL QUIT!";
+			qApp->exit(-4);
+		}
         int mem = 0;
          mem= QInputDialog::getInt(0, QObject::tr("WineGame"), QObject::tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
             if (mem == 0)
@@ -112,66 +117,6 @@ progress->deleteLater();
 return wineFileName;
 }
 
-void corelib::updateWines() //Обновляет все вайны, если значение переменной distr известно
-{
-    /*
-    QDir dir (gamepath);
-    foreach (QFileInfo appInfo, dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
-    {
-        //Создаем QSettings
-        QSettings s (appInfo.absoluteFilePath() + CTRL , QSettings::IniFormat, this);
-   QString wineDistr = s.value("wine/distr", "").toString();
-   QString prefix = s.value("application/prefix", "").toString();
-   if (prefix.isEmpty())
-       continue;
-   if (wineDistr.isEmpty() && dir.exists(QDir::homePath() + winepath + "/wines/" + prefix))
-   {
-       QProcess::startDetached("rm -rf " + QDir::homePath() + winepath + "/wines/" + prefix); /// Qt не имеет функции удаления непустых директорий
-       continue;
-   }
-   qDebug() << "Wine is need download;";
-   QDir prefixDir (QDir::homePath() + winepath + QDir::separator() + prefix);
-   qDebug() << prefixDir.path() << "is prefix`s dir";
-   if (!prefixDir.exists())
-          continue;
-      if (!wineDistr.isEmpty())
-   {
-          qDebug() << "winedistr is" << wineDistr;
-       //Проверяем содержимое файла .distr в папке префикса
-       QFile file (QDir::homePath() + winepath  + QDir::separator() + prefix + "/.distr");
-       if (!file.exists())
-       {
-          
-           QString wineFile =  downloadWine(wineDistr);
-           unpackWine(wineFile, QDir::homePath() + winepath + "/wines/" + prefix);
-           QTextStream stream  (&file);
-           file.open(QIODevice::WriteOnly | QIODevice::Text);
-           stream << wineDistr;
-           file.close();
-       }
-       else
-       {
-           //читаем содержимое file, сравниваем с .distr, если не совпадает, грузим новый вайн, удаляя старый
-           QTextStream stream  (&file);
-           file.open(QIODevice::ReadOnly | QIODevice::Text);
-           QString downloadedDistr = stream.readAll().trimmed();
-           file.close();
-           if (downloadedDistr != wineDistr)
-           {
-               qDebug() << "distr value in  control and .distr not equals, so downloading wine";
-               QString wineFile =  downloadWine(wineDistr);
-               unpackWine(wineFile, QDir::homePath() + winepath + "/wines/" + prefix);
-               //переписываем file
-               file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
-               stream << wineDistr;
-               file.close();
-           }
-       }
-
-    }
-}
-*/
-}
 
 void corelib::error(QNetworkReply::NetworkError error)
 {
