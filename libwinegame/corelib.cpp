@@ -45,7 +45,38 @@ void corelib::init()
 	}
 initconf();
 //Init our DB.
-//TODO: INITDB
+QDir dir (wineDir());
+if (!dir.exists())
+  dir.mkdir(dir.path());
+if (!QFile::exists(wineDir() + "/installed.db"))
+{
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+	db.setDatabaseName(wineDir() + "/installed.db");
+	if (!db.open()){
+		QMessageBox::critical(0, tr("Database error"), tr("Failed to create database for storing installed applications. See errors on console"));
+		qDebug() << "DB: error: " << db.lastError().text();
+		qApp->exit(-24);
+}
+	QSqlQuery q (db);
+	q.prepare("CREATE TABLE Apps (id INTEGER PRIMARY KEY, prefix TEXT, wineprefix TEXT, wine TEXT)");
+  if (!q.exec())
+	{
+	  QMessageBox::critical(0, tr("Database error"), tr("Failed to create table for storing installed applications. See errors on console"));
+	  qDebug() << "DB: Query error " << q.lastError().text();
+	  qApp->exit (-24);
+  }
+
+}
+else
+{
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+	db.setDatabaseName(wineDir() + "/installed.db");
+	if (!db.open()){
+		QMessageBox::critical(0, tr("Database error"), tr("Failed to open database for storing installed applications. See errors on console"));
+		qDebug() << "DB: error: " << db.lastError().text();
+		qApp->exit(-24);
+}
+}
 }
 
 void corelib::unpackWine (QString distr, QString destination)
@@ -168,7 +199,7 @@ bool corelib::checkPrefixName(QString prefix)
  return true;
 }
 
-void corelib::runSingleExe(QString exe)
+void corelib::runSingleExe(QStringList exe)
 {
 	QString wineprefix = QProcessEnvironment::systemEnvironment().value("WINEPREFIX");
 	if (wineprefix.isEmpty())
@@ -176,6 +207,23 @@ void corelib::runSingleExe(QString exe)
 		qDebug() << "winegame: Wineprefix not set, exiting.";
 		return;
 	}
+	// Выбираем бинарник Wine по данному WINEPREFIX
+	QSqlQuery q(db);
+	q.prepare("SELECT wine FROM Apps WHERE wineprefix=:pr");
+	q.bindValue(":pr", wineprefix);
+	q.exec();
+	q.first();
+	QString wine =q.value(0).toString();
+	if (wine.isEmpty())
+	{
+	  qDebug() << "Wine from WineGame not found, use default";
+		wine = whichBin("wine");
+	}
+	QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+	env.insert("WINEDEBUG", "-all");
+ QProcess proc (this);
+ proc.start(wine, exe);
+ proc.waitForFinished(-1);
 }
 
 void corelib::initconf()
@@ -227,4 +275,22 @@ void corelib::setVideoMemory(int memory)
 QString corelib::videoMemory()
 {
 	return settings->value("VideoMemory").toString();
+}
+
+QString corelib::autorun(QString diskRoot)
+{
+	QStringList autorunNames;
+	autorunNames.append("autorun.inf");
+	autorunNames.append("Autorun.inf");
+	autorunNames.append("AUTORUN.INF");
+	autorunNames.append("AutoRun.inf");
+ QDir dir (diskRoot);
+ foreach (QString fileName,  dir.entryList(QDir::Files | QDir::Readable))
+ {
+	 if (autorunNames.contains(fileName, Qt::CaseSensitive))
+	 {
+		 return diskRoot + QDir::separator() + fileName;
+	 }
+ }
+ return "";
 }

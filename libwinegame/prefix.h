@@ -45,7 +45,9 @@ public:
   void runProgram (QString exe);
   void lauchWinetricks(QStringList args);
   void removePrefix ();
+  void installFirstApplication ();
   void checkWineDistr();
+  bool hasDBEntry ();
 public slots:
   void lauch_c();
 
@@ -60,5 +62,9 @@ QString _workdir;
 QProcessEnvironment env;
 QString downloadWine ();
 corelib *core;
+
+QSqlDatabase db;
+
+protected:
 };
 #endif // PREFIX_H

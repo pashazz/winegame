@@ -23,18 +23,14 @@ using namespace QtConcurrent;
 Prefix::Prefix(QObject *parent, QString workdir) :
 		QObject(parent), _workdir (workdir),  s (new QSettings (_workdir + "/control", QSettings::IniFormat, this)), core (new corelib(parent))
 {
+	db = QSqlDatabase::database();
 _prefix = s->value("application/prefix").toString();
 _path = core->wineDir() + QDir::separator() + _prefix;
-qDebug() << "Create Prefix object, PATH" << _path;
-//Если _path не существует, создаем его.
-QDir dir (_path);
-if (!dir.exists())
-    dir.mkpath(dir.path());
 //Настраиваем QProcessEnvironment
 env = QProcessEnvironment::systemEnvironment();
 env.insert("WINEDEBUG", "-all");
 env.insert("WINEPREFIX", _path);
-env.insert("WINE", wine());
+//env.insert("WINE", wine());
 }
 
 void rp(QString path, QProcessEnvironment env)
@@ -55,20 +51,34 @@ QFuture <void> fProc = run(rp, tr("%1  \"%2\"").arg(wine()).arg(exe),  this->env
 void Prefix::removePrefix()
 {
     rp("rm -rf " + this->_path, QProcessEnvironment::systemEnvironment());
+	QSqlQuery q(db);
+	q.prepare("DELETE FROM Apps WHERE prefix=:pr");
+	q.bindValue(":pr", _prefix);
+	if (!q.exec())
+		qDebug() << "WARNING: Unable to execute query to delete Prefix";
 }
 QString Prefix::wine()
 {
-    s->beginGroup("wine");
-    QString distr = s->value("distr").toString();
-    s->endGroup();
-    if (distr.isEmpty())
-       {
-        return corelib::whichBin("wine");
-    }
-       else
-       {
-		   return core->wineDir()+ "/wines/" + _prefix + "/usr/bin/wine";
-       }
+/// новый метод для получения wine из БД.
+/// DO NOT USE IT BEFORE CALLING installFirstApplication (in first)
+	QSqlQuery q (db);
+	q.prepare("SELECT wine FROM Apps WHERE prefix=:prefix");
+	q.bindValue(":prefix", _prefix);
+	if (!q.exec())
+	  {
+		QMessageBox::critical(0, tr("Database error"), tr("Failed to fetch wine"));
+		return core->whichBin("wine");
+			}
+q.first();
+QString wine  = q.value(0).toString();
+if (wine.trimmed().isEmpty())
+{
+//	qDebug << "Can not get a wine, use system";
+  wine = core->whichBin("wine");
+}
+qDebug() << "Wine got:" << wine;
+env.insert("WINE", wine); //hack
+return wine;
 }
 
 void Prefix::lauch_c()
@@ -218,4 +228,50 @@ wineBinary = wine();
     }
     //если wineBinary все еще не установлен
 return "";
+}
+
+void Prefix::installFirstApplication()
+{
+	/// Проверяем Wine, загружаем его если надо, маркируем приложение как установленное и передаем управление движку'
+	// Данная процедура не нужна, если мы используем презет; тут все дефолтно.
+	if (s->value("application/prefix").isNull())
+		return; //skip this step.
+QDir dir (_path);
+if (!dir.exists())
+	dir.mkpath(dir.path());
+	checkWineDistr();
+	//Db Working
+	QSqlQuery q (db);
+	q.prepare("INSERT INTO Apps (prefix, wineprefix, wine) VALUES (:prefix, :wineprefix, :wine)");
+	q.bindValue(":prefix", _prefix );
+	q.bindValue(":wineprefix", _path);
+	QString wine;
+	s->beginGroup("wine");
+	QString distr = s->value("distr").toString();
+	s->endGroup();
+	if (distr.isEmpty())
+	   {
+		wine = corelib::whichBin("wine");
+	}
+	   else
+	   {
+		   wine = core->wineDir()+ "/wines/" + _prefix + "/usr/bin/wine";
+	   }
+	   q.bindValue(":wine", wine);
+	   if (!q.exec())
+	   {
+		   QMessageBox::critical(0, tr("Database error"), tr("Failed to execute query for application. See errors on console"));
+		   qDebug() << "DB: Query error " << q.lastError().text();
+		   qApp->exit (-24);
+	   }
+}
+
+bool Prefix::hasDBEntry()
+{
+	QSqlQuery q (db);
+
+	q.prepare("SELECT * FROM Apps WHERE prefix=:pr");
+	q.bindValue(":pr", _prefix);
+	q.exec();
+	return q.first();
 }

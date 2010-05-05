@@ -81,17 +81,6 @@ if (dlg->exec() == QDialog::Accepted)
 {
     Prefix *prefix = new Prefix (this, gamefolder);
     QDir prdir (prefix->prefixPath());
-/*    if (isAuto)
-    {
-        //Передаем управление системе автопакетов
-        qDebug() << "loading autopackage";
-      AutoPackage apkg;
-      apkg.setWorkingDirectory(gamefolder);
-      apkg.load();
-        return;
-    }
-    qDebug() << "not an autopackage";
-    */
 
     if (prdir.exists())
     {
@@ -100,9 +89,9 @@ if (dlg->exec() == QDialog::Accepted)
           */
             if (prefix->prefixName() == "fifa10") {goto dialog;}
         //Может быть, нам стоит запустить AutoRun?
-        if (QFile::exists(cdroot + "/autorun.inf"))
-        {
-            QSettings stg (cdroot + "/autorun.inf", QSettings::IniFormat, this);
+		if (!core->autorun(cdroot).isEmpty())
+		{
+			QSettings stg (core->autorun(cdroot), QSettings::IniFormat, this);
             stg.beginGroup("autorun");
             QString myExe = cdroot + QDir::separator() + stg.value("open").toString();
              QString myWine = prefix->wine();

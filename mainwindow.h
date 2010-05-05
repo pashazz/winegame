@@ -39,7 +39,7 @@ private:
 QString diskpath;
 bool cdMode;
 corelib *core;
-
+QSqlDatabase db;
 void saveGeom();
     void buildList();
     void lauchEngine(QString pkgpath);

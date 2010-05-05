@@ -75,7 +75,7 @@
     <value type="QString">CONFIG_PROTECT=/usr/share/X11/xkb /usr/share/config</value>
     <value type="QString">CONFIG_PROTECT_MASK=/etc/gentoo-release /etc/sandbox.d /etc/fonts/fonts.conf /etc/terminfo /etc/ca-certificates.conf /etc/revdep-rebuild</value>
     <value type="QString">CVS_RSH=ssh</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-XLnjW0bdGW,guid=6253021bea2646a02b90dbc60000002f</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-bHG79xNZsD,guid=2c72642d66f7ae18f8aefd5a00000051</value>
     <value type="QString">DESKTOP_SESSION=default</value>
     <value type="QString">DISPLAY=:0.0</value>
     <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
@@ -93,7 +93,6 @@
     <value type="QString">KDE_SESSION_UID=1000</value>
     <value type="QString">KDE_SESSION_VERSION=4</value>
     <value type="QString">LANG=ru_RU.UTF-8</value>
-    <value type="QString">LANGUAGE=</value>
     <value type="QString">LESS=-R -M --shift 5</value>
     <value type="QString">LESSOPEN=|lesspipe.sh %s</value>
     <value type="QString">LIBGL_DRIVERS_PATH=/usr/lib64/dri:/usr/lib32/dri</value>
@@ -107,11 +106,11 @@
     <value type="QString">QT_PLUGIN_PATH=/home/pasha/.kde4/lib64/kde4/plugins/:/usr/lib64/kde4/plugins/</value>
     <value type="QString">R_HOME=/usr/lib64/R</value>
     <value type="QString">SANE_CONFIG_DIR=/etc/sane.d</value>
-    <value type="QString">SESSION_MANAGER=local/pashazz:@/tmp/.ICE-unix/17482,unix/pashazz:/tmp/.ICE-unix/17482</value>
+    <value type="QString">SESSION_MANAGER=local/pashazz:@/tmp/.ICE-unix/17510,unix/pashazz:/tmp/.ICE-unix/17510</value>
     <value type="QString">SHELL=/bin/zsh</value>
     <value type="QString">SHLVL=1</value>
-    <value type="QString">SSH_AGENT_PID=17396</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-ivWxp17395/agent.17395</value>
+    <value type="QString">SSH_AGENT_PID=17423</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-xgFND17422/agent.17422</value>
     <value type="QString">STRIGI_PLUGIN_PATH=/usr/lib64/strigi:</value>
     <value type="QString">USB_DEVFS_PATH=/dev/bus/usb</value>
     <value type="QString">USER=pasha</value>
@@ -120,7 +119,7 @@
     <value type="QString">XCURSOR_THEME=Oxygen_Black</value>
     <value type="QString">XDG_CONFIG_DIRS=/etc/xdg</value>
     <value type="QString">XDG_DATA_DIRS=/usr/share:/usr/local/share:/usr/share</value>
-    <value type="QString">XDG_SESSION_COOKIE=d6466f416073e84a380d925300000035-1272970884.340881-1110611533</value>
+    <value type="QString">XDG_SESSION_COOKIE=d6466f416073e84a380d925300000035-1273076923.50524-349262256</value>
     <value type="QString">XDM_MANAGED=method=classic</value>
     <value type="QString">_=/usr/lib64/kde4/libexec/start_kdeinit_wrapper</value>
    </valuelist>
@@ -132,7 +131,7 @@
     <value type="QString">CONFIG+=debug</value>
    </valuelist>
    <value key="abstractProcess.command" type="QString">/usr/bin/qmake</value>
-   <value key="abstractProcess.enabled" type="bool">false</value>
+   <value key="abstractProcess.enabled" type="bool">true</value>
    <value key="abstractProcess.workingDirectory" type="QString">/home/pasha/work/winegame/libwinegame</value>
   </valuemap>
  </data>
@@ -144,7 +143,7 @@
     <value type="QString">CONFIG_PROTECT=/usr/share/X11/xkb /usr/share/config</value>
     <value type="QString">CONFIG_PROTECT_MASK=/etc/gentoo-release /etc/sandbox.d /etc/fonts/fonts.conf /etc/terminfo /etc/ca-certificates.conf /etc/revdep-rebuild</value>
     <value type="QString">CVS_RSH=ssh</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-XLnjW0bdGW,guid=6253021bea2646a02b90dbc60000002f</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-bHG79xNZsD,guid=2c72642d66f7ae18f8aefd5a00000051</value>
     <value type="QString">DESKTOP_SESSION=default</value>
     <value type="QString">DISPLAY=:0.0</value>
     <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
@@ -162,7 +161,6 @@
     <value type="QString">KDE_SESSION_UID=1000</value>
     <value type="QString">KDE_SESSION_VERSION=4</value>
     <value type="QString">LANG=ru_RU.UTF-8</value>
-    <value type="QString">LANGUAGE=</value>
     <value type="QString">LESS=-R -M --shift 5</value>
     <value type="QString">LESSOPEN=|lesspipe.sh %s</value>
     <value type="QString">LIBGL_DRIVERS_PATH=/usr/lib64/dri:/usr/lib32/dri</value>
@@ -176,11 +174,11 @@
     <value type="QString">QT_PLUGIN_PATH=/home/pasha/.kde4/lib64/kde4/plugins/:/usr/lib64/kde4/plugins/</value>
     <value type="QString">R_HOME=/usr/lib64/R</value>
     <value type="QString">SANE_CONFIG_DIR=/etc/sane.d</value>
-    <value type="QString">SESSION_MANAGER=local/pashazz:@/tmp/.ICE-unix/17482,unix/pashazz:/tmp/.ICE-unix/17482</value>
+    <value type="QString">SESSION_MANAGER=local/pashazz:@/tmp/.ICE-unix/17510,unix/pashazz:/tmp/.ICE-unix/17510</value>
     <value type="QString">SHELL=/bin/zsh</value>
     <value type="QString">SHLVL=1</value>
-    <value type="QString">SSH_AGENT_PID=17396</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-ivWxp17395/agent.17395</value>
+    <value type="QString">SSH_AGENT_PID=17423</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-xgFND17422/agent.17422</value>
     <value type="QString">STRIGI_PLUGIN_PATH=/usr/lib64/strigi:</value>
     <value type="QString">USB_DEVFS_PATH=/dev/bus/usb</value>
     <value type="QString">USER=pasha</value>
@@ -189,7 +187,7 @@
     <value type="QString">XCURSOR_THEME=Oxygen_Black</value>
     <value type="QString">XDG_CONFIG_DIRS=/etc/xdg</value>
     <value type="QString">XDG_DATA_DIRS=/usr/share:/usr/local/share:/usr/share</value>
-    <value type="QString">XDG_SESSION_COOKIE=d6466f416073e84a380d925300000035-1272970884.340881-1110611533</value>
+    <value type="QString">XDG_SESSION_COOKIE=d6466f416073e84a380d925300000035-1273076923.50524-349262256</value>
     <value type="QString">XDM_MANAGED=method=classic</value>
     <value type="QString">_=/usr/lib64/kde4/libexec/start_kdeinit_wrapper</value>
    </valuelist>

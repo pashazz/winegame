@@ -42,16 +42,13 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
         else
             cdMode = false;
     }
-    //показываем в статусбаре пть к диску
+    //показываем в статусбаре путь к диску
     QLabel * cdlab = new QLabel (diskpath);
    statusBar()->addWidget(cdlab);
 buildList();
 corelib *core  = new corelib(this);
 core->showNotify(tr("Hello"), tr("Please connect to Internet!"));
-ui->lstGames->expandAll();
-
-//Обновляем вайн
-core->deleteLater();
+db = QSqlDatabase::database();
 }
 
 MainWindow::~MainWindow()
@@ -80,33 +77,40 @@ void MainWindow::on_buttonBox_rejected()
 void MainWindow::buildList()
 {
 	QDir wdir (core->packageDir());
-    QStringList taboo;
-    //поддержка пресетов
-    taboo << "presets";
+	ui->lstGames->clear();
 
     //а тут мы создаем родительский node
     QTreeWidgetItem *par = new QTreeWidgetItem (ui->lstGames);
     par->setIcon(0, QIcon(":/desktop/winegame.png"));
     par->setText(0, tr("Applications"));
-    QTreeWidgetItem *presetpar = new QTreeWidgetItem (ui->lstGames);
+	QTreeWidgetItem  *installed = new QTreeWidgetItem(par);
+	installed->setText(0, tr("Installed applications"));
+	installed->setIcon(0, QIcon(":/desktop/winegame.png"));
+	QTreeWidgetItem *presetpar = new QTreeWidgetItem (ui->lstGames);
       presetpar->setIcon(0, QIcon(":/desktop/winegame.png"));
        presetpar->setText(0, tr("Pre-Sets (Templates)"));
     foreach (QString entry, wdir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
     {
-        if (taboo.contains(entry))
-            continue;
         Prefix myPrefix (this, core->packageDir() + QDir::separator() + entry);
         QTreeWidgetItem *it = new QTreeWidgetItem (0);
                 it->setData(0, Qt::UserRole, core->packageDir() + QDir::separator() + entry);
         it->setText(0,  myPrefix.name());
-        //загружаем icon как значок игры (если есть)
+			   //загружаем icon как значок игры (если есть)
         it->setIcon(0, myPrefix.icon());
+		//Force adding to installed, if so.
         if (myPrefix.isPreset())
             presetpar->addChild(it);
-        else
+		else if (myPrefix.hasDBEntry())
+			installed->addChild(it);
+		else
             par->addChild(it);
         myPrefix.deleteLater();
         }
+	 if (installed->childCount() <= 0)
+	{
+		par->removeChild(installed);
+	}
+	ui->lstGames->expandAll();
     }
 
 
@@ -136,7 +140,11 @@ void MainWindow::on_buttonBox_accepted()
     if (ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString().isEmpty())
         return;
    if (!ui->lstGames->selectedItems().isEmpty()) {
-         lauchEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
+	   {
+	   lauchEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
+		buildList();
+	}
+
     }
 
     else
@@ -155,30 +163,7 @@ void MainWindow::saveGeom()
 
 void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
-    if (item->data(0, 64).toBool())
-        return;
-    //Запуск приложения по EXEPATH
-    if (item->data(column, Qt::UserRole).toString().isEmpty())
-        return;
-
-    QString workdir = item->data(column, Qt::UserRole).toString();
-    Prefix  *prefix = new Prefix (this, workdir);
-    QString exe = prefix->standardExe();
-    if (!exe.isEmpty())
-    {
-    QString wineprefix = prefix->prefixPath();
-     QString wine = prefix->wine();
-    //QtConcurrent
-    qDebug() << "MainWindow: starting EXE:" << wine << exe;
-    QProcess p (this);
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert("WINEPREFIX", wineprefix);
-    env.insert("WINEDEBUG", "-all");
-    p.setProcessEnvironment(env);
-    p.start(wine, QStringList(exe));
-    p.waitForFinished(-1);
-}
-prefix->deleteLater();
+	/// TODO: нужно реализовать установку новых приложений в текущий префикс (здесь)
 }
 
 void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)

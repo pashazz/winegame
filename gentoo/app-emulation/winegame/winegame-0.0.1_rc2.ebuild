@@ -17,7 +17,8 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 DEPEND="=dev-libs/libwinegame-${PV}
-	 sys-fs/fuseiso"
+	 sys-fs/fuseiso
+	 app-arch/cabextract"
 
 PATCHES=( 
 "${FILESDIR}/fixpro.patch"

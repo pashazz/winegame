@@ -45,7 +45,7 @@ public:
  static void makefix (QString prefix); //исправляет запуск WineBrowser
  static QString getExeWorkingDirectory(QString exe);
 private:
-static  QString getVariableValue (QString value, const QStringList &vars);
+QString initMyWindows(); //возвращаем имя префикса, с которым создается объект Prefix
 bool cdMode;
 corelib *core;
 QString diskpath;

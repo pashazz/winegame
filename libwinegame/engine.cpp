@@ -37,18 +37,19 @@ void engine::lauch(QString workdir, bool msg)
    Prefix *wPrefix = new Prefix (this, workdir);
 
     QString prefixName = myPrefixName(); //собственно имя префикса
+	if (prefixName.isEmpty())
+	{
+		QMessageBox::critical(0, tr("Critical error"), tr("No suitable prefix set"));
+		return;
+	}
 	prefix = core->wineDir() + QDir::separator() + prefixName; //путь к префиксу
-  if (prefixName.isEmpty())
-  {
-      QMessageBox::critical(0, tr("Critical error"), tr("No suitable prefix set"));
-      return;
-  }
   QString exe = getRunnableExe();
   if (exe.isEmpty())
   {
          QMessageBox::warning(0, tr("No EXE file found"), tr("Operation cancelled: No EXE file selected"));
             return;
      }
+  wPrefix->installFirstApplication();
 //ищем контейнер префикса
 if (!s.value("application/container").toString().isEmpty())
 {
@@ -57,7 +58,6 @@ if (!s.value("application/container").toString().isEmpty())
 }
 
 //проверяем дистрибутив Wine
-wPrefix->checkWineDistr();
  name = wPrefix->name();
 note = wPrefix->note();
 wineBinary = wPrefix->wine();
@@ -65,7 +65,6 @@ program = wPrefix->standardExe();
 QProcessEnvironment myEnv = QProcessEnvironment::systemEnvironment();
 qDebug() << tr("engine: setting Prefix: %1").arg(prefix);
 myEnv.insert("FILESDIR", workdir + "/files");
-qDebug() << "Setting Files:" << workdir + "/files";
 myEnv.insert("WINEPREFIX", prefix);
 myEnv.insert("WINE", wineBinary);
 myEnv.insert("CDROOT", this->diskpath);
@@ -118,7 +117,7 @@ if (!program.isEmpty())
         icon = workdir+"/icon";
 		else if (cdMode)
 	   { //Если мы не нашли иконку в пакете WineGame, ищем ее в AutoRun (а раньше было наоборот)
-				QSettings stg (diskpath+ "/autorun.inf", QSettings::IniFormat, this);
+				QSettings stg (core->autorun(diskpath), QSettings::IniFormat, this);
 				stg.beginGroup("autorun");
 				 icon = diskpath + QDir::separator() + stg.value("Icon").toString();
 				qDebug() << "engine: ico file detected" << icon;
@@ -244,18 +243,12 @@ void engine::makecdlink()
 
 QString engine::getRunnableExe()
 {
-    QSettings stg (controlFile, QSettings::IniFormat, this);
     //Для начала посмотрим application/setup
     QString exe;
-    if (QFile::exists(diskpath + QDir::separator() + stg.value("application/setup", "noexe").toString()) )
-    {
-        exe = diskpath + QDir::separator() + stg.value("application/setup").toString();
-        return exe;
-    }
     //Теперь просмотрим AutoRun
-    if (QFile::exists(diskpath + "/autorun.inf"))
+	if (!core->autorun(diskpath).isEmpty())
     {
-        QSettings autorun(diskpath + "/autorun.inf", QSettings::IniFormat, this);
+		QSettings autorun(core->autorun(diskpath), QSettings::IniFormat, this);
         autorun.beginGroup("autorun");
         exe = diskpath + QDir::separator() + autorun.value("open").toString();
         if (QFile::exists(exe))

@@ -38,23 +38,25 @@ int main(int argc, char *argv[])
       //Set some refspecs
       a.setApplicationName("WineGame");
       a.setApplicationVersion("0.0.1");
-      a.setOrganizationName("Pashazz");
-      a.setOrganizationDomain("org");
+	  a.setOrganizationName("Pashazz");
+	  a.setOrganizationDomain("org");
+	  corelib *core =  new corelib (0);
+	  core->init();
 	  //Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
 	  if (a.arguments().length() > 2)
 	  {
 		  if (a.arguments().at(1) == "-r")
 		  {
-			  QString exe = a.arguments().at(2);
+			  QStringList exe = a.arguments();
+			  exe.removeFirst();
+			  exe.removeOne("-r");
+			  core->runSingleExe(exe);
+			  qApp->quit();
 		  }
 	  }
-  corelib *core =  new corelib (0);
 
  //проверяем главную папочку  WineGame
-core->init();
-QDir dir (core->wineDir());
-if (!dir.exists())
-  dir.mkdir(dir.path());
+
 if (a.arguments().length() > 1) {
     QFileInfo info (a.arguments().at(1));
     if (!info.exists())

@@ -38,13 +38,13 @@ public:
      static void unpackWine(QString distr, QString destination);
      static void showNotify (QString, QString);
      static bool checkPrefixName (QString);
-	 static void runSingleExe (QString exe) ;
+	  void runSingleExe (QStringList exe) ;
 	 /// Блок настроек
 	 QString wineDir ();
 	 QString packageDir ();
 	 QString mountDir ();
 	 QString videoMemory ();
-
+	 static QString autorun (QString diskRoot);
 	 void setWineDir (QString dir);
 	 void setPackageDir (QString dir);
 	 void setMountDir (QString dir);

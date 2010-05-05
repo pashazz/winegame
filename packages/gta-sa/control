@@ -1,0 +1,6 @@
+[wine]
+components="pcm=off"
+memory=true
+[application]
+setup=setup.exe
+prefix=gta-sa

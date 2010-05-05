@@ -47,9 +47,10 @@ QPixmap GameDialog::getIcoFromDisc()
 {
 if (qApp->arguments().length() > 1)
     {
-    if (QFile::exists(qApp->arguments().at(1) + "/autorun.inf"))
+	QString droot = qApp->arguments().at(1);
+	if (QFile::exists (corelib::autorun(droot)))
     {
-    QSettings stg (qApp->arguments().at(1) + "/autorun.inf", QSettings::IniFormat, this);
+		QSettings stg (corelib::autorun(droot),  QSettings::IniFormat, this);
     stg.beginGroup("autorun");
     QString icon = qApp->arguments().at(1) + QDir::separator() + stg.value("Icon").toString();
     qDebug() << "engine: ico file detected" << icon;
