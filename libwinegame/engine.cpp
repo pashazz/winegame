@@ -18,7 +18,6 @@
 
 #include "engine.h"
 #include "prefix.h"
-#include "enginefunc.h"
 #include <QtDebug>
 #include <QPushButton>
 #include <QInputDialog>
@@ -30,15 +29,15 @@ core = new corelib (this);
 }
 void engine::lauch(QString workdir, bool msg)
 {
-    QSettings s (workdir + CTRL,  QSettings::IniFormat, this);
-    if (QFile::exists(workdir + CTRL))
-        controlFile = workdir + CTRL;
+	QSettings s (workdir + "/control",  QSettings::IniFormat, this);
+	if (QFile::exists(workdir + "/control"))
+		controlFile = workdir + "/control";
     else
         return;
    Prefix *wPrefix = new Prefix (this, workdir);
 
     QString prefixName = myPrefixName(); //собственно имя префикса
-    prefix = QDir::homePath() + winepath + QDir::separator() + prefixName; //путь к префиксу
+	prefix = core->wineDir() + QDir::separator() + prefixName; //путь к префиксу
   if (prefixName.isEmpty())
   {
       QMessageBox::critical(0, tr("Critical error"), tr("No suitable prefix set"));
@@ -54,7 +53,7 @@ void engine::lauch(QString workdir, bool msg)
 if (!s.value("application/container").toString().isEmpty())
 {
     QString container = core->downloadWine(s.value("application/container").toString());
-    core->unpackWine(TMP + QDir::separator() + container, prefix);
+	core->unpackWine(QDir::tempPath() + QDir::separator() + container, prefix);
 }
 
 //проверяем дистрибутив Wine
@@ -106,14 +105,7 @@ makefix(prefix);
 /// http://bugs.winehq.org/show_bug.cgi?id=22069 (wine bug - working with desktop files)
 if (s.value("wine/memory", false).toBool())
 {
-    //получаем видеопамять.
-    QSettings stg (QDir::homePath() + config, QSettings::IniFormat, this);
-   //для совместимости, берем значение в int (а вдруг там нам не int подсунули, или <= 0
-    QString mem = stg.value("VideoMemory", -1).toString();
-    if (mem.toInt() > 0)
-    {
-        setMemory(mem);
-    }
+ setMemory(core->videoMemory());
 }
 
 program = s.value("application/exepath").toString();
@@ -180,12 +172,13 @@ void engine::doDesktop(QString workname)
 }
 void engine::setMemory(QString mem)
 {
+QTemporaryFile f (this);
     QStringList args;
     args << "regedit";
-    args << reg;
-    QFile f (reg);
+	args << f.fileName();
+
     QTextStream stream (&f);
-    f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate);
+	f.open();
     stream << "\n";
     stream << "REGEDIT4\n";
     stream << "[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]";
@@ -244,7 +237,7 @@ void engine::makecdlink()
     {
         //Значит, мы имеем дело с файлом .iso/.mdf/.nrg
         QFile::link(qApp->arguments().at(1), prefix + "/dosdevices/d::");
-        QFile::link(QDir::homePath() + MOUNT_DIR,  prefix + "/dosdevices/d:");
+		QFile::link(core->mountDir(),  prefix + "/dosdevices/d:");
     }
 
 }
@@ -290,10 +283,10 @@ QString engine::myPrefixName ()
            }
            //проверим, есть ли такой префикс уже.
            QDir dir;
-           dir.setPath(QDir::homePath() + winepath + QDir::separator() + myPrefix);
+		   dir.setPath(core->wineDir() + QDir::separator() + myPrefix);
            if (dir.exists()){
 
-               QMessageBox::warning(0, tr("Application with this name is already installed."), tr("To force installation process, remove directory %1.").arg(QDir::homePath() + winepath +QDir::separator() + myPrefix));
+			   QMessageBox::warning(0, tr("Application with this name is already installed."), tr("To force installation process, remove directory %1.").arg(core->wineDir() +QDir::separator() + myPrefix));
                //я знаю, это плохо
                goto dialog;
            }

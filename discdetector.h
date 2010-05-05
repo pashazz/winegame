@@ -20,15 +20,13 @@
 #define DISCDETECTOR_H
 
 #include <QObject>
-#include "linux.h"
 #include "engine.h"
 #include "gamedialog.h"
-#include "autopackage.h"
 class DiscDetector : public QObject
 {
 Q_OBJECT
 public:
-    explicit DiscDetector(QObject *parent = 0);
+	explicit DiscDetector(corelib *lib);
  bool  tryDetect (QString path);
  QString getGame () {return gamefolder;}
  void lauchApp (); //call only even tryDetect is TRUE!!!!!!!!
@@ -39,6 +37,7 @@ public slots:
 private:
  QString gamefolder;
  QString cdroot;
+ corelib *core;
 };
 
 #endif // DISCDETECTOR_H

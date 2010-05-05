@@ -20,13 +20,12 @@
 #ifndef ISOMASTER_H
 #define ISOMASTER_H
 
-#include <QtCore>
-
+#include "corelib.h"
 class IsoMaster : public QObject
 {
 Q_OBJECT
 public:
-    explicit IsoMaster(QObject *parent, QString imageFile);
+	explicit IsoMaster(corelib *lib, QString imageFile);
     bool lauchApp ();
 signals:
 
@@ -34,7 +33,7 @@ public slots:
 
 private:
     QString mount, umount;
-    QString mountpoint;
+	corelib *core;
 };
 
 #endif // ISOMASTER_H

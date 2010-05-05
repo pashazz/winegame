@@ -33,7 +33,6 @@
 #include <QDesktopServices>
 
 #include "corelib.h"
-#include "linux.h"
 #include "libwinegame_global.h"
 class WINESTUFFSHARED_EXPORT  engine : public QObject
 {
@@ -45,8 +44,6 @@ public:
  void setDiskpath (QString path){diskpath = path;}
  static void makefix (QString prefix); //исправляет запуск WineBrowser
  static QString getExeWorkingDirectory(QString exe);
-
-
 private:
 static  QString getVariableValue (QString value, const QStringList &vars);
 bool cdMode;

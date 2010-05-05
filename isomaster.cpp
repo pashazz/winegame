@@ -19,17 +19,16 @@
 
 #include "isomaster.h"
 #include "discdetector.h"
-IsoMaster::IsoMaster(QObject *parent, QString imageFile) : //просто конструктор
-    QObject(parent)
+IsoMaster::IsoMaster(corelib *lib, QString imageFile) : //просто конструктор
+	QObject(lib), core (lib)
 {
 
-    mountpoint = QDir::homePath() + MOUNT_DIR;
-    QDir dir (mountpoint);
+	QDir dir (core->mountDir());
     if (!dir.exists())
         dir.mkdir(dir.path());
 
-    mount = QString("fuseiso \"%1\" \"%2\"").arg(imageFile).arg(mountpoint);
-    umount = QString("fusermount -u \"%1\"").arg(mountpoint);
+	mount = QString("fuseiso \"%1\" \"%2\"").arg(imageFile).arg(core->mountDir());
+	umount = QString("fusermount -u \"%1\"").arg(core->mountDir());
 
 }
 bool IsoMaster::lauchApp()
@@ -40,8 +39,8 @@ bool IsoMaster::lauchApp()
     p.waitForFinished(-1);
     if (p.exitCode() != 0)
         return false;
-    DiscDetector det (this);
-    if (det.tryDetect(mountpoint))
+	DiscDetector det (core);
+	if (det.tryDetect(core->mountDir()))
     {
         det.lauchApp();
       p.start(umount);

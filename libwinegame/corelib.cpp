@@ -18,10 +18,14 @@
 
 
 #include "corelib.h"
+#include "prefix.h"
 //The core of WineGame. Commonly used func.
 corelib::corelib(QObject *parent)
     :QObject(parent)
 {
+	//Init Settings object
+	QString config = QDir::homePath() + "/.config/winegame.conf";
+	settings = new QSettings (config, QSettings::IniFormat, this);
 }
 
 QString corelib::whichBin(QString bin) {
@@ -34,22 +38,14 @@ QString corelib::whichBin(QString bin) {
 }
 void corelib::init()
 {
-    if (!QFile::exists(QDir::homePath() + config))
-    {
-		if (!QFile::exists(whichBin("wine")))
-		{
-			qDebug() << "FATAL!!!! Wine not found, I WILL QUIT!";
-			qApp->exit(-4);
-		}
-        int mem = 0;
-         mem= QInputDialog::getInt(0, QObject::tr("WineGame"), QObject::tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
-            if (mem == 0)
-                mem = 128;
-            QSettings stg (QDir::homePath() + config, QSettings::IniFormat, 0);
-            stg.setValue("VideoMemory", mem);
-            stg.sync();
-    }
-
+	if (!QFile::exists(whichBin("wine")))
+	{
+		qDebug() << "FATAL!!!! Wine not found, I WILL QUIT!";
+		qApp->exit(-4);
+	}
+initconf();
+//Init our DB.
+//TODO: INITDB
 }
 
 void corelib::unpackWine (QString distr, QString destination)
@@ -57,13 +53,6 @@ void corelib::unpackWine (QString distr, QString destination)
      QDir dir (destination);
      if (!dir.exists())
          dir.mkdir(dir.path());
-/*     else
-     {
-         int result = QMessageBox::question(0, QObject::tr("Question"), QObject::tr("I see, that Wine did installed previously for this application (Directory %1 exists).<br>Would you like to install wine now?").arg(destination), QMessageBox::Yes, QMessageBox::No);
-         if (result == QMessageBox::No)
-             return;
-
-     } */
  QProcess *proc = new QProcess (0); //не забываем удалять
  proc->setWorkingDirectory(destination);
  QString unpackLine =  QObject::tr ("tar xvpf %1 -C %2").arg(distr).arg(destination);
@@ -76,7 +65,7 @@ QString corelib::downloadWine(QString url) //TODO: проверка на оши�
 {
     QUrl myurl = QUrl(url);
     QFileInfo inf (myurl.path());
-    QString wineFileName =TMP + QDir::separator() +  inf.fileName();
+	QString wineFileName =QDir::tempPath() + QDir::separator() +  inf.fileName();
     //проверяем, есть ли у нас данный файл
     if (QFile::exists(wineFileName))
         return wineFileName;
@@ -177,4 +166,65 @@ bool corelib::checkPrefixName(QString prefix)
  if (prefix == "wines") //зарезервировано для вайнов
      return false;
  return true;
+}
+
+void corelib::runSingleExe(QString exe)
+{
+	QString wineprefix = QProcessEnvironment::systemEnvironment().value("WINEPREFIX");
+	if (wineprefix.isEmpty())
+	{
+		qDebug() << "winegame: Wineprefix not set, exiting.";
+		return;
+	}
+}
+
+void corelib::initconf()
+{
+	//Init our configuration.
+	if (QFile::exists(QDir::homePath() + "/.config/winegame.conf"))
+		return;
+	qDebug() << "winegame: Init configuration";
+
+	int mem = 0;
+	 mem= QInputDialog::getInt(0, QObject::tr("WineGame"), QObject::tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
+		if (mem == 0)
+			mem = 128;
+		setVideoMemory(mem);
+		setWineDir(QDir::homePath() + "/Windows");
+		setMountDir(QDir::homePath() + "/game");
+		setPackageDir("/usr/share/winegame");
+}
+
+QString corelib::wineDir() {
+	return settings->value("WineDir").toString();
+}
+QString corelib::packageDir() {
+	return settings->value("PackageDir").toString();
+}
+QString corelib::mountDir() {
+	return settings->value("MountDir").toString();
+}
+void corelib::setWineDir(QString dir)
+{
+	settings->setValue("WineDir", dir);
+	settings->sync();
+}
+void corelib::setPackageDir(QString dir)
+{
+	settings->setValue("PackageDir", dir);
+	settings->sync();
+}
+void corelib::setMountDir(QString dir)
+{
+	settings->setValue("MountDir", dir);
+	settings->sync();
+}
+void corelib::setVideoMemory(int memory)
+{
+	settings->setValue("VideoMemory", memory);
+	settings->sync();
+}
+QString corelib::videoMemory()
+{
+	return settings->value("VideoMemory").toString();
 }

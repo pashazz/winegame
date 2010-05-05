@@ -17,17 +17,17 @@
 */
 #include "prefixdialog.h"
 #include "discdetector.h"
-DiscDetector::DiscDetector(QObject *parent) :
-    QObject(parent)
+DiscDetector::DiscDetector(corelib *lib) :
+	QObject(core), core(lib)
 {
 }
 bool DiscDetector::tryDetect(QString path)
 {
     /// path - путь к корню CD/DVD
     cdroot = path;
-    // для начала просмотрим все папочки в gamepath
+    // для начала просмотрим все папочки в core->packageDir()
     qDebug() << tr("DDT: [scan] scanning dir %1").arg(path);
-    QDir dir (gamepath);
+    QDir dir (core->packageDir());
     foreach (QString dirName, dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs))
     {
         QDir myDir (dir.path() + QDir::separator() + dirName + "/cdrom.d");
@@ -62,7 +62,7 @@ bool DiscDetector::tryDetect(QString path)
                 }
         if (i == disclist.count())
         {
-            gamefolder = gamepath + QDir::separator() + dirName;
+            gamefolder = core->packageDir() + QDir::separator() + dirName;
             //Смотрим, мб. нам попался автопакет. Если так, ставим автоматический режим в детекторе дисков.
             return true;
         }

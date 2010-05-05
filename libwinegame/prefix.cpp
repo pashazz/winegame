@@ -21,10 +21,11 @@
 
 using namespace QtConcurrent;
 Prefix::Prefix(QObject *parent, QString workdir) :
-        QObject(parent), _workdir (workdir),  s (new QSettings (_workdir + CTRL, QSettings::IniFormat, this))
+		QObject(parent), _workdir (workdir),  s (new QSettings (_workdir + "/control", QSettings::IniFormat, this)), core (new corelib(parent))
 {
 _prefix = s->value("application/prefix").toString();
-_path = QDir::homePath() + winepath + QDir::separator() + _prefix;
+_path = core->wineDir() + QDir::separator() + _prefix;
+qDebug() << "Create Prefix object, PATH" << _path;
 //Если _path не существует, создаем его.
 QDir dir (_path);
 if (!dir.exists())
@@ -66,7 +67,7 @@ QString Prefix::wine()
     }
        else
        {
-           return QDir::homePath() + winepath + "/wines/" + _prefix + "/usr/bin/wine";
+		   return core->wineDir()+ "/wines/" + _prefix + "/usr/bin/wine";
        }
 }
 
@@ -199,11 +200,11 @@ QString Prefix::downloadWine() {
     {
         QString distr = s->value("wine/distr").toString();
     //здесь запускаем процесс закачки и распаковки данного дистрибутива Wine
-		QString destination = QDir::homePath() + winepath + QString("/wines/") + prefixName();
-        QDir dir (QDir::homePath() + winepath + "/wines");
+		QString destination = core->wineDir()+ QString("/wines/") + prefixName();
+		QDir dir (core->wineDir()+ "/wines");
         if (!dir.exists())
             dir.mkdir(dir.path());
-          qDebug() << "WINE IS DOWNLOADING FROM" << distr << "to" <<TMP;
+		qDebug() << "WINE IS DOWNLOADING FROM" << distr << "to" <<QDir::tempPath();
 		  corelib * core = new corelib(this);
 		QString distrname =   core->downloadWine(distr);
             qDebug() << "WINE IS UNPACKING TO " << destination << "FROM" << distrname;

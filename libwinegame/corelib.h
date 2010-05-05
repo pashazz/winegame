@@ -26,7 +26,7 @@
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QtNetwork>
-#include "linux.h"
+#include <QtSql>
 #include "libwinegame_global.h"
 class  WINESTUFFSHARED_EXPORT corelib : public QObject
 {
@@ -34,10 +34,21 @@ class  WINESTUFFSHARED_EXPORT corelib : public QObject
 public:
     corelib(QObject *parent);
      static QString whichBin (QString bin);
-     static void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
+	  void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
      static void unpackWine(QString distr, QString destination);
      static void showNotify (QString, QString);
      static bool checkPrefixName (QString);
+	 static void runSingleExe (QString exe) ;
+	 /// Блок настроек
+	 QString wineDir ();
+	 QString packageDir ();
+	 QString mountDir ();
+	 QString videoMemory ();
+
+	 void setWineDir (QString dir);
+	 void setPackageDir (QString dir);
+	 void setMountDir (QString dir);
+	 void setVideoMemory (int memory);
 
 	 //void updateWines ();
 	  QString downloadWine(QString url);
@@ -49,6 +60,12 @@ private slots:
 
 private:
     QProgressDialog *progress;
+	QSettings *settings;
+	QSqlDatabase db;
+
+
+protected:
+  void initconf ();
 
 };
 

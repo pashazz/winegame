@@ -18,7 +18,6 @@
 
 
 #include "mainwindow.h"
-#include "linux.h"
 #include "discdetector.h"
 #include "isomaster.h"
 #include "QDir"
@@ -35,18 +34,27 @@ int main(int argc, char *argv[])
     //set Linux console encoding to UTF-8
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
      QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-      QDir dir (QDir::homePath() + QDir::separator() + winepath);
 
       //Set some refspecs
       a.setApplicationName("WineGame");
       a.setApplicationVersion("0.0.1");
       a.setOrganizationName("Pashazz");
       a.setOrganizationDomain("org");
+	  //Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
+	  if (a.arguments().length() > 2)
+	  {
+		  if (a.arguments().at(1) == "-r")
+		  {
+			  QString exe = a.arguments().at(2);
+		  }
+	  }
+  corelib *core =  new corelib (0);
+
+ //проверяем главную папочку  WineGame
+core->init();
+QDir dir (core->wineDir());
 if (!dir.exists())
-    dir.mkdir(dir.path()); //проверяем главную папочку  WineGame
-
-corelib::init();
-
+  dir.mkdir(dir.path());
 if (a.arguments().length() > 1) {
     QFileInfo info (a.arguments().at(1));
     if (!info.exists())
@@ -62,7 +70,7 @@ if (a.arguments().length() > 1) {
             QMessageBox::critical(0, QObject::tr("I am confused"), QObject::tr ("This disc is not Windows Software disc, exiting"));
             return -2;
         }
-        DiscDetector det;
+		DiscDetector det (core);
         if (det.tryDetect(info.absoluteFilePath()))
         {
             det.lauchApp();
@@ -89,13 +97,11 @@ if (a.arguments().length() > 1) {
             return -5;
         }
         //Чистим за собой
-        QDir dir (QDir::homePath() + MOUNT_DIR);
-        dir.remove(dir.path());
         return 0;
     }
 
 }
-    MainWindow w;
+	MainWindow w(core);
     w.show();
     return a.exec();
 

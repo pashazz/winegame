@@ -28,9 +28,9 @@ GameDialog::GameDialog(QWidget *parent, QString path) :
     ui->setupUi(this);
     //setting the UI
     if (qApp->arguments().length() > 1)
-        ui->lblIcon->setPixmap(getIcoFromDisc());
-    else
-        ui->lblIcon->setPixmap(QPixmap(path + "/icon"));
+		  ui->lblIcon->setPixmap(QPixmap(path + "/icon"));
+	else
+	   ui->lblIcon->setPixmap(getIcoFromDisc());
 
 
     ui->lblIcon->setText("");

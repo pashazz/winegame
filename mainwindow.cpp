@@ -17,13 +17,13 @@
 */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(corelib *lib, QWidget *parent) :
+	QMainWindow(parent),
+	ui(new Ui::MainWindow),
+	core (lib)
 {
     ui->setupUi(this);
-
-    QFile f (QDir::homePath() + "/.config/winegame.geom");
+	 QFile f (QDir::homePath() + "/.config/winegame.geom");
     if (f.open(QIODevice::ReadOnly))
     {
     restoreGeometry(f.readAll());
@@ -79,7 +79,7 @@ void MainWindow::on_buttonBox_rejected()
 
 void MainWindow::buildList()
 {
-    QDir wdir (gamepath);
+	QDir wdir (core->packageDir());
     QStringList taboo;
     //поддержка пресетов
     taboo << "presets";
@@ -95,11 +95,9 @@ void MainWindow::buildList()
     {
         if (taboo.contains(entry))
             continue;
-        Prefix myPrefix (this, gamepath + QDir::separator() + entry);
+        Prefix myPrefix (this, core->packageDir() + QDir::separator() + entry);
         QTreeWidgetItem *it = new QTreeWidgetItem (0);
-                it->setData(0, Qt::UserRole, gamepath + QDir::separator() + entry);
-        if (AutoPackage::isAutoPackage(gamepath + QDir::separator() + entry))
-            it->setData(0, 63, true); //ролью 63 мы определяем, что это автопакет.
+                it->setData(0, Qt::UserRole, core->packageDir() + QDir::separator() + entry);
         it->setText(0,  myPrefix.name());
         //загружаем icon как значок игры (если есть)
         it->setIcon(0, myPrefix.icon());
@@ -125,12 +123,6 @@ if (dir.exists())
   dlg->exec();
   return;
     }
-}
-if  (AutoPackage::isAutoPackage(pkgpath))
-{
-    //это автопакет, значит он предназначен для установки с CD/DVD
-    QMessageBox::warning(this, tr("Warning"), tr("It`s necessary that the application was installed from CD/DVD.<br>To do this , insert DVD witrg run WineGame with your cd/dvd (for example, winegame /media/cdrom from console."));
-    return;
 }
 engine *eng = new engine (this);
    eng->setDiskpath(diskpath);

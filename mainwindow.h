@@ -20,10 +20,8 @@
 #define MAINWINDOW_H
 
 #include <QtGui>
-#include "linux.h"
 #include "engine.h"
 #include "prefixdialog.h"
-#include "autopackage.h" //для проверки на автопакет
 namespace Ui {
     class MainWindow;
 }
@@ -31,7 +29,7 @@ namespace Ui {
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
-    MainWindow(QWidget *parent = 0);
+	MainWindow(corelib *lib, QWidget *parent = 0);
     ~MainWindow();
 
 protected:
@@ -40,7 +38,7 @@ private:
     Ui::MainWindow *ui;
 QString diskpath;
 bool cdMode;
-
+corelib *core;
 
 void saveGeom();
     void buildList();

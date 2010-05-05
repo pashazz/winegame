@@ -3,21 +3,20 @@
 # -------------------------------------------------
 TARGET = winegame
 TEMPLATE = app
-QT += network
+QT += network \
+    sql
 SOURCES += main.cpp \
     mainwindow.cpp \
     discdetector.cpp \
     gamedialog.cpp \
     prefixdialog.cpp \
     isomaster.cpp \
-    autopackage.cpp \
     diskdialog.cpp
 HEADERS += mainwindow.h \
     discdetector.h \
     gamedialog.h \
     prefixdialog.h \
     isomaster.h \
-    autopackage.h \
     diskdialog.h
 FORMS += mainwindow.ui \
     gamedialog.ui \

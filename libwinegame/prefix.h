@@ -24,7 +24,6 @@
 #include <QDesktopServices>
 #include <QIcon>
 #include "libwinegame_global.h"
-#include "linux.h"
 #include "corelib.h"
 
  class WINESTUFFSHARED_EXPORT  Prefix : public QObject
@@ -60,5 +59,6 @@ QString _workdir;
   QSettings *s;
 QProcessEnvironment env;
 QString downloadWine ();
+corelib *core;
 };
 #endif // PREFIX_H
