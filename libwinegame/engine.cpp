@@ -106,25 +106,6 @@ if (s.value("wine/memory", false).toBool())
 {
  setMemory(core->videoMemory());
 }
-
-program = s.value("application/exepath").toString();
-if (!program.isEmpty())
-{
-    //получаем иконку
-    QString icon;
-
-        if (QFile::exists(workdir+"/icon"))
-        icon = workdir+"/icon";
-		else if (cdMode)
-	   { //Если мы не нашли иконку в пакете WineGame, ищем ее в AutoRun (а раньше было наоборот)
-				QSettings stg (core->autorun(diskpath), QSettings::IniFormat, this);
-				stg.beginGroup("autorun");
-				 icon = diskpath + QDir::separator() + stg.value("Icon").toString();
-				qDebug() << "engine: ico file detected" << icon;
-			}
-    this->iconPath = icon;
-    doDesktop(s.value("application/prefix").toString());
-}
 if (msg) {
 int result = QMessageBox::question(0, tr("Question"), tr("Would you like to install a new game?"), QMessageBox::Yes, QMessageBox::No);
 if (result == QMessageBox::No)
@@ -143,32 +124,6 @@ void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
     p.waitForFinished(-1);
 }
 
-
-void engine::doDesktop(QString workname)
-     {
-    /// эта функция - надеюсь, временная. Используется с переменной EXEPATH из control. Все из-за бага Wine: http://bugs.winehq.org/show_bug.cgi?id=17055
-    // проголосуйте за исправление этого бага, пожалуйста. Тогда я удалю эту ф-цию к черту.
-    QString desktopFile =QDesktopServices::storageLocation(QDesktopServices::DesktopLocation) + QDir::separator()+ workname + ".desktop"; //создаем ярлык на десктопе
-    qDebug() << "debug: writing to" << desktopFile;
-
-   QFile file (desktopFile);
-   file.open(QIODevice::WriteOnly | QIODevice::Truncate);
-   QTextStream stream (&file);
-   stream <<  "[Desktop Entry]\n";
-    QString exec = QObject::tr("env WINEPREFIX='%1' '%2'  '%3'").arg(prefix).arg(wineBinary).arg(program);
-    stream << tr("Exec=%1\n").arg(exec);
-    stream << tr("Name=%1\n").arg(name);
-    stream << tr("Comment=%1\n").arg(note);
-    stream << "Type=Application\n";
-    stream << "Terminal=false\n";
-       QFile iconFile (iconPath);
-    QFileInfo info (iconFile);
-    if (iconFile.exists()) {
-    iconFile.copy(QDir::homePath() + "/.local/share/icons/" + info.fileName());
-    stream << tr("Icon=%1").arg(QDir::homePath() + "/.local/share/icons/" + info.fileName());
-}
- file.close();
-}
 void engine::setMemory(QString mem)
 {
 QTemporaryFile f (this);
@@ -243,7 +198,6 @@ void engine::makecdlink()
 
 QString engine::getRunnableExe()
 {
-    //Для начала посмотрим application/setup
     QString exe;
     //Теперь просмотрим AutoRun
 	if (!core->autorun(diskpath).isEmpty())

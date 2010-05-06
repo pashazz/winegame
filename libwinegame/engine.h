@@ -57,7 +57,6 @@ QString name;
 QString note;
 QString iconPath;
 QString program;
- void doDesktop(QString);
  void setMemory (QString);
  void makecdlink();
  QString controlFile;

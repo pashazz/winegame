@@ -76,7 +76,6 @@ if (wine.trimmed().isEmpty())
 //	qDebug << "Can not get a wine, use system";
   wine = core->whichBin("wine");
 }
-qDebug() << "Wine got:" << wine;
 env.insert("WINE", wine); //hack
 return wine;
 }
@@ -176,7 +175,8 @@ if (s->value("wine/distr").isNull())
     return;
     QFile file (_path + QDir::separator() + ".wine");
     QTextStream stream (&file);
-    if (!file.exists())
+
+	if ((!file.exists()) || (!QFile::exists(wine())))
     {
         //Загружаем Wine
         QString wineUrl = downloadWine();

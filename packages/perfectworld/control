@@ -1,0 +1,5 @@
+[application]
+prefix="perfectworld"
+[wine]
+components="corefonts tahoma gecko d3dx9 psm=on ddr=opengl vsm-hard"
+memory=true

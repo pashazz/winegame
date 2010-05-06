@@ -1,0 +1,6 @@
+[application]
+prefix="sourceengine"
+[wine]
+distr="http://winegame.googlecode.com/files/wine-sourceengine.tar.bz2"
+components="psm=on vsm-hard"
+memory=true

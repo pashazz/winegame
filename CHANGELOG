@@ -12,4 +12,7 @@ r10:now engine in shared library. And autopackages removed.
 r11:all prefix working in shared library, all packages merged
 r12:RELASE RC1
 r13:ebuilds added, debs added
-r14:bioshock added, silent hill 3 added
+r14:bioshock added, silent hill 3 added, RELEASE RC2
+r15:CS:S added, GTA3,SA added.Using QSQLITE & QtSql to store installed apps
+r16:Perfect World added
+r17:RELEASE RC3
