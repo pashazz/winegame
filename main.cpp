@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	  a.setOrganizationDomain("org");
 	  if (!QSqlDatabase::drivers().contains("QSQLITE"))
 	  {
-		  QMessageBox::critical(0, tr("Initialization error"), tr("Qt`s SQLite module not found"));
+		  QMessageBox::critical(0, QObject::tr("Initialization error"), QObject::tr("Qt`s SQLite module not found"));
 		  return -5;
 	  }
 		  corelib *core =  new corelib (0);

@@ -18,7 +18,7 @@
 #include "prefixdialog.h"
 #include "discdetector.h"
 DiscDetector::DiscDetector(corelib *lib) :
-	QObject(core), core(lib)
+	QObject(0), core(lib)
 {
 }
 bool DiscDetector::tryDetect(QString path)
