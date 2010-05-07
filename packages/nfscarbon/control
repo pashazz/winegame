@@ -1,0 +1,6 @@
+[application]
+prefix="nfscarbon"
+[wine]
+distr="http://winegame.googlecode.com/files/wine-nfs.tar.bz2"
+components="d3dx9 dinput8 ddr=opengl psm=on vsm-hard"
+memory=true
