@@ -40,7 +40,12 @@ int main(int argc, char *argv[])
       a.setApplicationVersion("0.0.1");
 	  a.setOrganizationName("Pashazz");
 	  a.setOrganizationDomain("org");
-	  corelib *core =  new corelib (0);
+	  if (!QSqlDatabase::drivers().contains("QSQLITE"))
+	  {
+		  QMessageBox::critical(0, tr("Initialization error"), tr("Qt`s SQLite module not found"));
+		  return -5;
+	  }
+		  corelib *core =  new corelib (0);
 	  core->init();
 	  //Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
 	  if (a.arguments().length() > 2)

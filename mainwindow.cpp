@@ -137,10 +137,11 @@ engine *eng = new engine (this);
 
 void MainWindow::on_buttonBox_accepted()
 {
-    if (ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString().isEmpty())
-        return;
+
    if (!ui->lstGames->selectedItems().isEmpty()) {
 	   {
+		   if (ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString().isEmpty())
+			   return;
 	   lauchEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
 		buildList();
 	}
