@@ -4,3 +4,4 @@ prefix=starcraft2
 [wine]
 components="fontfix fontsmooth-rgb gdiplus gecko vcrun2008 vcrun2005 allfonts d3dx9 win7 sound=alsa"
 memory=true
+distr="http://winegame.googlecode.com/files/wine-sc2-1.1.43.tar.bz2"
