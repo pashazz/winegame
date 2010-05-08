@@ -17,12 +17,12 @@
 */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "about.h"
 MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
 	core (lib)
 {
-	qDebug() << core->mountDir();
     ui->setupUi(this);
 	 QFile f (QDir::homePath() + "/.config/winegame.geom");
     if (f.open(QIODevice::ReadOnly))
@@ -47,7 +47,6 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
     QLabel * cdlab = new QLabel (diskpath);
    statusBar()->addWidget(cdlab);
 buildList();
-corelib *core  = new corelib(this);
 core->showNotify(tr("Hello"), tr("Please connect to Internet!"));
 db = QSqlDatabase::database();
 }
@@ -102,7 +101,10 @@ void MainWindow::buildList()
         if (myPrefix.isPreset())
             presetpar->addChild(it);
 		else if (myPrefix.hasDBEntry())
+		{
+			myPrefix.checkWineDistr();
 			installed->addChild(it);
+		}
 		else
             par->addChild(it);
         myPrefix.deleteLater();
@@ -185,3 +187,25 @@ void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
     prefix->deleteLater();
 }
 
+
+void MainWindow::on_action_Settings_triggered()
+{
+	SettingsDialog *dlg = new SettingsDialog (this);
+	dlg->exec();
+}
+
+void MainWindow::on_action_Quit_triggered()
+{
+	qApp->quit();
+}
+
+void MainWindow::on_actionAbout_Qt_triggered()
+{
+	qApp->aboutQt();
+}
+
+void MainWindow::on_action_About_triggered()
+{
+	About *a = new About (this);
+	a->exec();
+}

@@ -5,4 +5,3 @@ memory=true
 [application]
 setup="EASetup.exe"
 prefix="fifa10"
-exepath="c:/program files/ea sports/fifa 10/fifa10.exe"

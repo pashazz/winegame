@@ -18,3 +18,4 @@ isEmpty ($$PREFIX)
 target.path = $$PREFIX/lib
 INSTALLS += target
 VERSION = 0.0.1
+FORMS += 

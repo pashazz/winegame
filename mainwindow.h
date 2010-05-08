@@ -22,6 +22,7 @@
 #include <QtGui>
 #include "engine.h"
 #include "prefixdialog.h"
+#include "settingsdialog.h"
 namespace Ui {
     class MainWindow;
 }
@@ -44,7 +45,11 @@ void saveGeom();
     void buildList();
     void lauchEngine(QString pkgpath);
 private slots:
-    void on_lstGames_itemClicked(QTreeWidgetItem* item, int column);
+	void on_action_About_triggered();
+ void on_actionAbout_Qt_triggered();
+ void on_action_Quit_triggered();
+ void on_action_Settings_triggered();
+	void on_lstGames_itemClicked(QTreeWidgetItem* item, int column);
     void on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column);
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();

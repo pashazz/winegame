@@ -44,6 +44,7 @@ void engine::lauch(QString workdir, bool msg)
 	}
 	prefix = core->wineDir() + QDir::separator() + prefixName; //путь к префиксу
   QString exe = getRunnableExe();
+  qDebug() << "EXE FOR RUN" << exe;
   if (exe.isEmpty())
   {
          QMessageBox::warning(0, tr("No EXE file found"), tr("Operation cancelled: No EXE file selected"));
@@ -99,13 +100,8 @@ if (QFile::exists(workdir + "/postinst"))
 proc->start("\"" + workdir + "/postinst\"");
 proc->waitForFinished(-1);
 makefix(prefix);
-
 }
-/// http://bugs.winehq.org/show_bug.cgi?id=22069 (wine bug - working with desktop files)
-if (s.value("wine/memory", false).toBool())
-{
- setMemory(core->videoMemory());
-}
+wPrefix->setMemory();
 if (msg) {
 int result = QMessageBox::question(0, tr("Question"), tr("Would you like to install a new game?"), QMessageBox::Yes, QMessageBox::No);
 if (result == QMessageBox::No)
@@ -124,31 +120,6 @@ void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
     p.waitForFinished(-1);
 }
 
-void engine::setMemory(QString mem)
-{
-QTemporaryFile f (this);
-    QStringList args;
-    args << "regedit";
-	args << f.fileName();
-
-    QTextStream stream (&f);
-	f.open();
-    stream << "\n";
-    stream << "REGEDIT4\n";
-    stream << "[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]";
-    stream << "\n";
-    stream << "\"VideoMemorySize\"=";
-    stream << tr("\"%1\"").arg(mem);
-    stream << "\n";
-    f.close();
-QProcess p (this);
-QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-env.insert("WINEPREFIX", prefix);
-p.setProcessEnvironment(env);
-p.start(wineBinary, args);
-p.waitForFinished(-1);
-f.remove();
-}
 
 void engine::makefix(QString prefix)
 {
@@ -199,22 +170,27 @@ void engine::makecdlink()
 QString engine::getRunnableExe()
 {
     QString exe;
+	if (cdMode) {
 	//force application/setup
 	QSettings stg (controlFile, QSettings::IniFormat, this);
 	exe = diskpath + QDir::separator() +  stg.value("application/setup").toString();
 	if (QFile::exists(exe) && (!exe.isEmpty()))
 		return exe;
-   //Теперь просмотрим AutoRun
+    //Теперь просмотрим AutoRun
+	qDebug() << core->autorun(diskpath);
 	if (!core->autorun(diskpath).isEmpty())
     {
 		QSettings autorun(core->autorun(diskpath), QSettings::IniFormat, this);
         autorun.beginGroup("autorun");
-        exe = diskpath + QDir::separator() + autorun.value("open").toString();
-        if (QFile::exists(exe))
+		if (!autorun.value("open").isNull())
+			exe = diskpath + QDir::separator() + autorun.value("open").toString();
+		qDebug() << exe;
+		if (QFile::exists(exe) && (!exe.isEmpty()))
             return exe;
         else
             exe = ""; //дальше поехали
     }
+}
     //А теперь спросим EXE у пользователя.
 	exe = QFileDialog::getOpenFileName(0,  tr("Select EXE file"), QDir::homePath(), tr("Windows executables (*.exe)"));
     return exe;

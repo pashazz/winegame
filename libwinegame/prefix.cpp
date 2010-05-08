@@ -25,7 +25,7 @@ Prefix::Prefix(QObject *parent, QString workdir) :
 {
 	db = QSqlDatabase::database();
 _prefix = s->value("application/prefix").toString();
-_path = core->wineDir() + QDir::separator() + _prefix;
+getPrefixPath();
 //Настраиваем QProcessEnvironment
 env = QProcessEnvironment::systemEnvironment();
 env.insert("WINEDEBUG", "-all");
@@ -35,9 +35,14 @@ env.insert("WINEPREFIX", _path);
 
 void rp(QString path, QProcessEnvironment env)
 {
-    QProcess *p = new QProcess (0);
+	QProcess *p = new QProcess (0);
+	QFileInfo file (path);
+	if (file.exists())
+		p->setWorkingDirectory(file.absolutePath());
+	else
+		p->setWorkingDirectory(env.value("WINEPREFIX"));
     p->setProcessEnvironment(env);
-    p->start(path);
+	p->start(path);
     p->waitForFinished(-1);
     delete p;
 }
@@ -275,3 +280,54 @@ bool Prefix::hasDBEntry()
 	q.exec();
 	return q.first();
 }
+
+void Prefix::setMemory()
+{
+	if (!s->value("wine/memory").toBool())
+		return;
+QTemporaryFile f (this);
+
+
+	QTextStream stream (&f);
+	f.open();
+	stream << "\n";
+	stream << "REGEDIT4\n";
+	stream << "[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]";
+	stream << "\n";
+	stream << "\"VideoMemorySize\"=";
+	stream << tr("\"%1\"").arg(core->videoMemory());
+	stream << "\n";
+	f.close();
+QProcess p (this);
+QStringList args;
+args << "regedit";
+args << f.fileName();
+p.setProcessEnvironment(env);
+p.start(wine(), args);
+p.waitForFinished(-1);
+f.remove();
+}
+
+void Prefix::getPrefixPath()
+{
+	if (isPreset() || _prefix.trimmed().isEmpty())
+		return;
+
+	if (hasDBEntry())
+	{
+		//пытаемся получить инфу из бд.
+		QSqlQuery q(db);
+		q.prepare("SELECT wineprefix FROM Apps WHERE prefix=:prefix");
+		q.bindValue(":prefix", _prefix);
+		if (q.exec())
+		{
+			q.first();
+			_path=q.value(0).toString();
+			if (!_path.isEmpty())
+				return;
+		}
+	}
+		//ничего у нас не получилось, используем старый fallback-метод
+		_path = core->wineDir() + QDir::separator() + _prefix;
+	}
+

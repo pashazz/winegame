@@ -31,7 +31,7 @@
 Q_OBJECT
 public:
     explicit Prefix(QObject *parent, QString workdir);
-    QString prefixPath () {return _path;}
+	QString prefixPath () {return _path;}
     QString prefixName () {return _prefix;}
     QString wine();
     QString standardExe();
@@ -44,6 +44,7 @@ public:
   //Запуск программы в данном Prefix
   void runProgram (QString exe);
   void lauchWinetricks(QStringList args);
+  void setMemory();
   void removePrefix ();
   void installFirstApplication ();
   void checkWineDistr();
@@ -62,7 +63,7 @@ QString _workdir;
 QProcessEnvironment env;
 QString downloadWine ();
 corelib *core;
-
+void getPrefixPath();
 QSqlDatabase db;
 
 protected:

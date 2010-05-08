@@ -2,18 +2,38 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
+    <name>About</name>
+    <message>
+        <source>About WineGame</source>
+        <translation>О WineGame</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;WineGame version 0.0.1-git.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;(c) Pavel Zinin, 2010, GPLv3.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://winegame.googlecode.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;http://winegame.googlecode.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; text-decoration: underline; color:#0057ae;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://winegame.googlecode.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;Icons (c) Matthias Exhumed (&lt;/span&gt;&lt;/a&gt;&lt;a href=&quot;http://3xhumed.deviantart.com/)&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;http://3xhumed.deviantart.com/)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>AutoPackage</name>
     <message>
         <source>Insert CD-KEY for this game</source>
-        <translation>Введите ключ (CD-KEY) для этой игры</translation>
+        <translation type="obsolete">Введите ключ (CD-KEY) для этой игры</translation>
     </message>
     <message>
         <source>Please, enter CD-KEY and click OK</source>
-        <translation>Пожалуйста, введите ключ и нажмите ОК</translation>
+        <translation type="obsolete">Пожалуйста, введите ключ и нажмите ОК</translation>
     </message>
     <message>
         <source>Starting disc clone</source>
-        <translation>Начинаю копирование диска</translation>
+        <translation type="obsolete">Начинаю копирование диска</translation>
     </message>
     <message>
         <source>Don`t worry! WineGame clones your DVD into image. Wait ~5 mins</source>
@@ -21,19 +41,11 @@
     </message>
     <message>
         <source>Ready to install</source>
-        <translation>Готов к установке</translation>
+        <translation type="obsolete">Готов к установке</translation>
     </message>
     <message>
         <source>Now we will install your game and all needed software.</source>
-        <translation>Сейчас мы установим вашу игру и все необходимые программы.</translation>
-    </message>
-    <message>
-        <source>Don`t worry! WineGame clones your DVD into image. Wait ~5 mins.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Сейчас мы установим вашу игру и все необходимые программы.</translation>
     </message>
 </context>
 <context>
@@ -49,6 +61,13 @@
     <message>
         <source>DDT: [warning] unable to open file %1: error %2</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>DiskDialog</name>
+    <message>
+        <source>Select application type</source>
+        <translation>Выберите тип приложения</translation>
     </message>
 </context>
 <context>
@@ -78,11 +97,11 @@
     <name>IsoMaster</name>
     <message>
         <source>Warning</source>
-        <translation>Внимание</translation>
+        <translation type="obsolete">Внимание</translation>
     </message>
     <message>
         <source>I can not get Windows application from this image</source>
-        <translation>Не могу определить Windows-приложение на этом образе диска</translation>
+        <translation type="obsolete">Не могу определить Windows-приложение на этом образе диска</translation>
     </message>
 </context>
 <context>
@@ -109,7 +128,7 @@
     </message>
     <message>
         <source>Double-click an item to run executable...</source>
-        <translation>Двойной клик по приложению для запуска...</translation>
+        <translation type="obsolete">Двойной клик по приложению для запуска...</translation>
     </message>
     <message>
         <source>Applications</source>
@@ -124,8 +143,56 @@
         <translation type="obsolete">Необходимо установить приложение с CD/DVD.&lt;br&gt;Чтобы сделать это, вставьте DVD с игрой в дисковод, и запустите WineGame так, чтобы он увидел его (DVD).&lt;br&gt;Например, запустив winegame /media/cdrom из консоли.</translation>
     </message>
     <message>
-        <source>It`s necessary that the application was installed from CD/DVD.&lt;br&gt;To do this , insert DVD witrg run WineGame with your cd/dvd (for example, winegame /media/cdrom from console.</source>
-        <translation type="unfinished"></translation>
+        <source>To install new application in existing virtual windows (&quot;Installed&quot; list), just double-click on it.</source>
+        <translation>Чтобы установить программу в существующую виртуальную Windows, просто нажмите на нее в списке.</translation>
+    </message>
+    <message>
+        <source>Installed applications</source>
+        <translation>Установленные приложения</translation>
+    </message>
+    <message>
+        <source>ÐÑÐ±ÐµÑÐ¸ÑÐµ EXE ÑÐ°Ð¹Ð»</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Windows executables (*.exe)</source>
+        <translation>Исполняемые файлы Windows (*.exe)</translation>
+    </message>
+    <message>
+        <source>&amp;File</source>
+        <translation>&amp;Файл</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation>&amp;Помощь</translation>
+    </message>
+    <message>
+        <source>&amp;Settings</source>
+        <translation>&amp;Настройки</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation>&amp;Выход</translation>
+    </message>
+    <message>
+        <source>Quits the application</source>
+        <translation>Выход из приложения</translation>
+    </message>
+    <message>
+        <source>Ctrl+Q</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>About &amp;Qt</source>
+        <translation>О &amp;Qt</translation>
+    </message>
+    <message>
+        <source>&amp;About</source>
+        <translation>&amp;О программе</translation>
     </message>
 </context>
 <context>
@@ -250,7 +317,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Click &amp;quot;&lt;span style=&quot; font-weight:600;&quot;&gt;Administration&lt;/span&gt;&amp;quot;, if you want to delete this Windows with your app, or back up it.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Click &lt;span style=&quot; font-weight:600;&quot;&gt;buttons right&lt;/span&gt; to run your Linux file manager with drive C, or run EXE in this virtual&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -343,11 +410,58 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to detect game disc, exiting</source>
-        <translation>Не могу определить игровой диск, выходим</translation>
+        <translation type="obsolete">Не могу определить игровой диск, выходим</translation>
     </message>
     <message>
         <source>Error mount/unmount image</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка монтирования образа</translation>
+    </message>
+    <message>
+        <source>Initialization error</source>
+        <translation>Ошибка инициализации</translation>
+    </message>
+    <message>
+        <source>Qt`s SQLite module not found</source>
+        <translation>Модуль SQLite для Qt не найден</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsDialog</name>
+    <message>
+        <source>Settings</source>
+        <translation>Настройки</translation>
+    </message>
+    <message>
+        <source>Directory for storing WineGame packages:</source>
+        <translation>Папка с пакетами WineGame:</translation>
+    </message>
+    <message>
+        <source>Directory for storing all virtual systems and files:</source>
+        <translation>Папка для виртуальных систем (префиксов) и файлов:</translation>
+    </message>
+    <message>
+        <source>Video memory size:</source>
+        <translation>Размер видеопамяти:</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation>Обзор</translation>
+    </message>
+    <message>
+        <source>Directory for mounting ISO files</source>
+        <translation>Папка, куда монтируются ISO файлы</translation>
+    </message>
+    <message>
+        <source>Select Winegame Packages directory</source>
+        <translation>Выберите папку с пакетами Winegame</translation>
+    </message>
+    <message>
+        <source>Select Winegame Windows storage directory</source>
+        <translation>Выберите папку для хранения виртуальных систем (Windows) winegame</translation>
+    </message>
+    <message>
+        <source>Select Winegame directory for mounting ISOs</source>
+        <translation>Выберите папку для монтирования ISO</translation>
     </message>
 </context>
 <context>

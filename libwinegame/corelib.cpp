@@ -271,6 +271,19 @@ void corelib::setVideoMemory(int memory)
 {
 	settings->setValue("VideoMemory", memory);
 	settings->sync();
+	//Sync all videomemory entries
+	QDir dir (packageDir());
+	foreach (QFileInfo info, dir.entryInfoList(QDir::Dirs | QDir::Readable))
+	{
+		//construct prefix obj
+		Prefix *prefix = new Prefix (this, info.absoluteFilePath());
+		if (prefix->hasDBEntry())
+		{
+			prefix->checkWineDistr();
+			prefix->setMemory();
+		}
+	}
+
 }
 QString corelib::videoMemory()
 {
