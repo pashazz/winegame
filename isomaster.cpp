@@ -20,7 +20,7 @@
 #include "isomaster.h"
 #include "discdetector.h"
 IsoMaster::IsoMaster(corelib *lib, QString imageFile) : //просто конструктор
-	QObject(lib), core (lib)
+	QObject(0), core (lib)
 {
 
 	QDir dir (core->mountDir());
@@ -49,9 +49,11 @@ bool IsoMaster::lauchApp()
     }
     else
     {
-        QMessageBox::critical(0, tr("Warning"), tr("I can not get Windows application from this image"));
-        //TODO: сделать небольшой диалог, чтобы юзер выбирал из списка пресетов
-    }
+//        QMessageBox::critical(0, tr("Warning"), tr("I can not get Windows application from this image"));
+		DiskDialog *dlg = new DiskDialog (0, core, core->mountDir());
+		//run diskdialog and exit
+		dlg->exec();
+		  }
     p.start(umount);
  p.waitForFinished(-1);
  return true;

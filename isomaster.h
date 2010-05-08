@@ -21,6 +21,7 @@
 #define ISOMASTER_H
 
 #include "corelib.h"
+#include "diskdialog.h"
 class IsoMaster : public QObject
 {
 Q_OBJECT

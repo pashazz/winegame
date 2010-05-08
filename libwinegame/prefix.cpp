@@ -20,7 +20,7 @@
 #include "prefix.h"
 
 using namespace QtConcurrent;
-Prefix::Prefix(QObject *parent, QString workdir) :
+refix::Prefix(QObject *parent, QString workdir) :
 		QObject(parent), _workdir (workdir),  s (new QSettings (_workdir + "/control", QSettings::IniFormat, this)), core (new corelib(parent))
 {
 	db = QSqlDatabase::database();

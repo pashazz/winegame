@@ -19,6 +19,7 @@
 
 #include "mainwindow.h"
 #include "discdetector.h"
+#include "diskdialog.h"
 #include "isomaster.h"
 #include "QDir"
 int main(int argc, char *argv[])
@@ -72,7 +73,7 @@ if (a.arguments().length() > 1) {
 
     if (info.isDir()) //запускаем детектор диска
     {
-        if (!QFile::exists(info.absoluteFilePath() + "/autorun.inf") && (!QFile::exists(info.absoluteFilePath() + "/Setup.exe"/*блядь, это все EA Games кривые*/)))
+        if (!QFile::exists(core->autorun(info.absoluteFilePath())) && (!QFile::exists(info.absoluteFilePath() + "/Setup.exe"/*блядь, это все EA Games кривые*/)))
         {
             QMessageBox::critical(0, QObject::tr("I am confused"), QObject::tr ("This disc is not Windows Software disc, exiting"));
             return -2;
@@ -85,16 +86,17 @@ if (a.arguments().length() > 1) {
         }
         else
         {
-            qDebug() << "engine: failed detect.";
-            QMessageBox::warning(0, QObject::tr("Error"), QObject::tr("Failed to detect game disc, exiting"));
-        return -2;
+	 DiskDialog *dlg = new DiskDialog (0, core,  a.arguments().at(1));
+	 //run diskdialog and exit
+	 dlg->exec();
+	return 0;
     }
     }
     else if (info.isFile())
     {
         //запуск IsoMaster
 
-        IsoMaster m (0, info.absoluteFilePath());
+		IsoMaster m (core, info.absoluteFilePath());
         qDebug() << "iso: [master] - sending disk image file" << info.absoluteFilePath();
 
         bool res = m.lauchApp();

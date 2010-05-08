@@ -17,7 +17,7 @@
    <string>Install application</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="res.qrc">
+   <iconset>
     <normaloff>:/desktop/winegame.png</normaloff>:/desktop/winegame.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -46,7 +46,7 @@
     <item>
      <widget class="QLabel" name="lblNote">
       <property name="text">
-       <string>Double-click an item to run executable...</string>
+       <string>To install new application in existing virtual windows (&quot;Installed&quot; list), just double-click on it.</string>
       </property>
      </widget>
     </item>
@@ -62,8 +62,6 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

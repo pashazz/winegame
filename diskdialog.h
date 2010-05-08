@@ -20,7 +20,8 @@
 #ifndef DISKDIALOG_H
 #define DISKDIALOG_H
 
-#include <QDialog>
+#include "prefix.h"
+#include "engine.h"
 
 namespace Ui {
     class DiskDialog;
@@ -29,7 +30,7 @@ namespace Ui {
 class DiskDialog : public QDialog {
     Q_OBJECT
 public:
-    DiskDialog(QWidget *parent = 0);
+	DiskDialog(QWidget *parent, corelib *lib, QString cdroot);
     ~DiskDialog();
 
 protected:
@@ -37,6 +38,11 @@ protected:
 
 private:
     Ui::DiskDialog *ui;
+	void buildList();
+	corelib *core;
+QString path;
+private slots:
+	void on_buttonBox_accepted();
 };
 
 #endif // DISKDIALOG_H

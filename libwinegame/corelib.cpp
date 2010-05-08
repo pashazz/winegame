@@ -294,3 +294,11 @@ QString corelib::autorun(QString diskRoot)
  }
  return "";
 }
+
+
+corelib::~corelib()
+{
+	QSqlDatabase db = QSqlDatabase::database();
+	db.close();
+
+}

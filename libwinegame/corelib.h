@@ -33,6 +33,7 @@ class  WINESTUFFSHARED_EXPORT corelib : public QObject
     Q_OBJECT
 public:
     corelib(QObject *parent);
+	virtual ~corelib();
      static QString whichBin (QString bin);
 	  void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
      static void unpackWine(QString distr, QString destination);

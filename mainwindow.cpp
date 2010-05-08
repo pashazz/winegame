@@ -22,6 +22,7 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 	ui(new Ui::MainWindow),
 	core (lib)
 {
+	qDebug() << core->mountDir();
     ui->setupUi(this);
 	 QFile f (QDir::homePath() + "/.config/winegame.geom");
     if (f.open(QIODevice::ReadOnly))
@@ -165,6 +166,11 @@ void MainWindow::saveGeom()
 void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
 	/// TODO: нужно реализовать установку новых приложений в текущий префикс (здесь)
+	Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString());
+	if (!prefix->hasDBEntry())
+		return; //нету установленных приложений здесь.
+	QString exe = QFileDialog::getOpenFileName(0,  tr("Выберите EXE файл"), QDir::homePath(), tr("Windows executables (*.exe)"));
+	 prefix->runProgram(exe);
 }
 
 void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
