@@ -199,7 +199,12 @@ void engine::makecdlink()
 QString engine::getRunnableExe()
 {
     QString exe;
-    //Теперь просмотрим AutoRun
+	//force application/setup
+	QSettings stg (controlFile, QSettings::IniFormat, this);
+	exe = diskpath + QDir::separator() +  stg.value("application/setup").toString();
+	if (QFile::exists(exe) && (!exe.isEmpty()))
+		return exe;
+   //Теперь просмотрим AutoRun
 	if (!core->autorun(diskpath).isEmpty())
     {
 		QSettings autorun(core->autorun(diskpath), QSettings::IniFormat, this);
@@ -211,7 +216,7 @@ QString engine::getRunnableExe()
             exe = ""; //дальше поехали
     }
     //А теперь спросим EXE у пользователя.
-    exe = QFileDialog::getOpenFileName(0,  tr("Выберите EXE файл"), QDir::homePath(), tr("Windows executables (*.exe)"));
+	exe = QFileDialog::getOpenFileName(0,  tr("Select EXE file"), QDir::homePath(), tr("Windows executables (*.exe)"));
     return exe;
 }
 QString engine::myPrefixName ()

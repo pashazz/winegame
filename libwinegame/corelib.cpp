@@ -285,10 +285,12 @@ QString corelib::autorun(QString diskRoot)
 	autorunNames.append("AUTORUN.INF");
 	autorunNames.append("AutoRun.inf");
  QDir dir (diskRoot);
+ qDebug() << "autorun: diskroot" << diskRoot;
  foreach (QString fileName,  dir.entryList(QDir::Files | QDir::Readable))
  {
 	 if (autorunNames.contains(fileName, Qt::CaseSensitive))
 	 {
+		 qDebug()  << diskRoot + QDir::separator() + fileName;
 		 return diskRoot + QDir::separator() + fileName;
 	 }
  }
