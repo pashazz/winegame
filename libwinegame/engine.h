@@ -61,7 +61,6 @@ QString program;
  void makecdlink();
  QString controlFile;
  //И еще функции
- QString getRunnableExe();
 QString myPrefixName(); /// имя префикса, используется в lauch
 };
 

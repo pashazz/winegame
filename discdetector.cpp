@@ -26,12 +26,10 @@ bool DiscDetector::tryDetect(QString path)
     /// path - путь к корню CD/DVD
     cdroot = path;
     // для начала просмотрим все папочки в core->packageDir()
-    qDebug() << tr("DDT: [scan] scanning dir %1").arg(path);
     QDir dir (core->packageDir());
     foreach (QString dirName, dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs))
     {
         QDir myDir (dir.path() + QDir::separator() + dirName + "/cdrom.d");
-        qDebug() << myDir.path() << "is scanning";
         foreach (QFileInfo info, myDir.entryInfoList(QDir::Files | QDir::Readable))
         {
         //читаем файл .cdrom

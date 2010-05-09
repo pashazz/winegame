@@ -23,6 +23,7 @@
 #include <QtCore>
 #include <QDesktopServices>
 #include <QIcon>
+#include <QFileDialog>
 #include "libwinegame_global.h"
 #include "corelib.h"
 
@@ -37,7 +38,8 @@ public:
     QString standardExe();
    QString name ();
    QString note ();
-  QIcon icon ();
+   QIcon icon ();
+   QString getRunnableExe();
   void makeDesktopIcon (const QString &path, const  QString &name);
   bool isPreset();
   QString projectWorkingDir () {return _workdir;}
@@ -68,5 +70,6 @@ void getPrefixPath();
 QSqlDatabase db;
 
 protected:
+QString selectExe ();
 };
 #endif // PREFIX_H

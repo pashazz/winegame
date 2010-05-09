@@ -48,20 +48,23 @@ void DiskDialog::buildList()
 {
 	QDir dir (core->packageDir());
 	qDebug() << dir.path();
-	foreach (QFileInfo info, dir.entryInfoList(QDir::Dirs | QDir::Readable))
+	foreach (QFileInfo info, dir.entryInfoList(QDir::Dirs | QDir::Readable | QDir::NoDotAndDotDot))
 	{
 		//init Prefix object
 		Prefix *prefix = new Prefix (this, info.absoluteFilePath());
-		if (prefix->isPreset())
-		{
+
 		  //add it into this  list
 		  QListWidgetItem *item = new QListWidgetItem (ui->lstPresets, 0);
 		  item->setToolTip(prefix->note());
 		  item->setText(prefix->name());
 		  item->setData(Qt::UserRole, info.absoluteFilePath());
+		  if (!prefix->isPreset())
+			  item->setIcon(prefix->icon());
 		  ui->lstPresets->addItem(item);
-	  }
+
+
 	}
+	ui->lstPresets->sortItems(Qt::AscendingOrder);
 }
 
 
@@ -69,12 +72,21 @@ void DiskDialog::on_buttonBox_accepted()
 {
 	if (ui->lstPresets->selectedItems().count() == 0)
 		return;
-	qDebug() << "ddlg: lauching....";
+	QString workdir =ui->lstPresets->selectedItems().first()->data(Qt::UserRole).toString();
+	Prefix *prefix = new Prefix (this, workdir);
+	qDebug() << "ddlg: lauching....";\
+	if (prefix->hasDBEntry())
+	{
+		QString exe = prefix->getRunnableExe();
+		prefix->runProgram(exe);
+	}
+	else
+	{
 	engine *eng = new engine(this);
 	eng->setDiskpath(path);
 	eng->setCdMode(true);
 	hide();
-	eng->lauch(ui->lstPresets->selectedItems().first()->data(Qt::UserRole).toString(), false);
+	eng->lauch(workdir, false);
 	close();
-
+}
 }

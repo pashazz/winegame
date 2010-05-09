@@ -357,3 +357,52 @@ void Prefix::makeDesktopIcon(const QString &path, const QString &name)
 	str << QString("Categories=%1\n").arg("Game;"); //temporalily,
 	file.close();
 }
+
+QString Prefix::getRunnableExe()
+{
+	QString exe;
+	QString diskpath;
+	//Получаем diskpath
+	if (qApp->arguments().length() > 1)
+	{
+	   //Анализируем значение 2-го аргумента
+		QFileInfo info (qApp->arguments().at(1));
+		qDebug() << qApp->arguments().at(1) << "is the path";
+
+		if (info.isDir()) //Нас вызвали с директорией.
+			diskpath = info.absoluteFilePath();
+		else if (info.isFile()) //Логично, это образ ISO/MDF/BIN/NRG
+			diskpath = core->mountDir();
+
+		if (diskpath.isEmpty())
+			return selectExe();
+		//force application/setup
+			if (!s->value("application/setup").isNull()){
+		exe = diskpath + QDir::separator() +  s->value("application/setup").toString();
+		if (QFile::exists(exe))
+			return exe;
+	}
+
+		//Теперь просмотрим AutoRun
+		if (!core->autorun(diskpath).isEmpty())
+		{
+			QSettings autorun(core->autorun(diskpath), QSettings::IniFormat, this);
+			autorun.beginGroup("autorun");
+			if (!autorun.value("open").toString().isEmpty())
+			{
+				exe = diskpath + QDir::separator() + autorun.value("open").toString();
+		}
+			if (QFile::exists(exe))
+				return exe;
+		}
+	}
+	//А теперь спросим EXE у пользователя.
+return selectExe();
+}
+
+QString Prefix::selectExe()
+{
+	QString
+	exe = QFileDialog::getOpenFileName(0,  tr("Select EXE file"), QDir::homePath(), tr("Windows executables (*.exe)"));
+	return exe;
+}

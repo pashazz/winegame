@@ -43,7 +43,7 @@ void engine::lauch(QString workdir, bool msg)
 		return;
 	}
 	prefix = core->wineDir() + QDir::separator() + prefixName; //путь к префиксу
-  QString exe = getRunnableExe();
+  QString exe = wPrefix->getRunnableExe();
   qDebug() << "EXE FOR RUN" << exe;
   if (exe.isEmpty())
   {
@@ -165,35 +165,6 @@ void engine::makecdlink()
 		QFile::link(core->mountDir(),  prefix + "/dosdevices/d:");
     }
 
-}
-
-QString engine::getRunnableExe()
-{
-    QString exe;
-	if (cdMode) {
-	//force application/setup
-	QSettings stg (controlFile, QSettings::IniFormat, this);
-	exe = diskpath + QDir::separator() +  stg.value("application/setup").toString();
-	if (QFile::exists(exe) && (!exe.isEmpty()))
-		return exe;
-    //Теперь просмотрим AutoRun
-	qDebug() << core->autorun(diskpath);
-	if (!core->autorun(diskpath).isEmpty())
-    {
-		QSettings autorun(core->autorun(diskpath), QSettings::IniFormat, this);
-        autorun.beginGroup("autorun");
-		if (!autorun.value("open").isNull())
-			exe = diskpath + QDir::separator() + autorun.value("open").toString();
-		qDebug() << exe;
-		if (QFile::exists(exe) && (!exe.isEmpty()))
-            return exe;
-        else
-            exe = ""; //дальше поехали
-    }
-}
-    //А теперь спросим EXE у пользователя.
-	exe = QFileDialog::getOpenFileName(0,  tr("Select EXE file"), QDir::homePath(), tr("Windows executables (*.exe)"));
-    return exe;
 }
 QString engine::myPrefixName ()
 {
