@@ -69,13 +69,6 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_File">
-    <property name="title">
-     <string>&amp;File</string>
-    </property>
-    <addaction name="action_Settings"/>
-    <addaction name="action_Quit"/>
-   </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
      <string>&amp;Help</string>
@@ -83,11 +76,23 @@
     <addaction name="actionAbout_Qt"/>
     <addaction name="action_About"/>
    </widget>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_Settings"/>
+    <addaction name="action_Quit"/>
+    <addaction name="separator"/>
+    <addaction name="action_Make_desktop_icon"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Help"/>
   </widget>
   <action name="action_Settings">
    <property name="text">
+    <string>&amp;Settings</string>
+   </property>
+   <property name="toolTip">
     <string>&amp;Settings</string>
    </property>
    <property name="shortcut">
@@ -113,6 +118,11 @@
   <action name="action_About">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="action_Make_desktop_icon">
+   <property name="text">
+    <string>&amp; Make desktop icon</string>
    </property>
   </action>
  </widget>

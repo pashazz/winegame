@@ -209,3 +209,23 @@ void MainWindow::on_action_About_triggered()
 	About *a = new About (this);
 	a->exec();
 }
+
+void MainWindow::on_action_Make_desktop_icon_triggered()
+{
+	if (ui->lstGames->selectedItems().count() <= 0)
+	{
+		statusBar()->showMessage(tr("No item selected"));
+		return;
+	}
+	Prefix *prefix = new Prefix (this, ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
+	ShortCutDialog *dlg = new ShortCutDialog (this, prefix->name(), prefix->prefixPath());
+	if (dlg->exec() == QDialog::Accepted)
+	{
+		if (dlg->name().isEmpty() || dlg->path().isEmpty())
+		{
+			QMessageBox::warning(this, tr("warning"), tr("Append all fields"));
+			return;
+		}
+		prefix->makeDesktopIcon(dlg->path(), dlg->name());
+	}
+}

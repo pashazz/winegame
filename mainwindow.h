@@ -23,10 +23,10 @@
 #include "engine.h"
 #include "prefixdialog.h"
 #include "settingsdialog.h"
+#include "shortcutdialog.h"
 namespace Ui {
     class MainWindow;
 }
-
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
@@ -45,7 +45,8 @@ void saveGeom();
     void buildList();
     void lauchEngine(QString pkgpath);
 private slots:
-	void on_action_About_triggered();
+	void on_action_Make_desktop_icon_triggered();
+ void on_action_About_triggered();
  void on_actionAbout_Qt_triggered();
  void on_action_Quit_triggered();
  void on_action_Settings_triggered();

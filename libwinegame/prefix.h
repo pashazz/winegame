@@ -38,6 +38,7 @@ public:
    QString name ();
    QString note ();
   QIcon icon ();
+  void makeDesktopIcon (const QString &path, const  QString &name);
   bool isPreset();
   QString projectWorkingDir () {return _workdir;}
   QProcessEnvironment envs () {return env;}

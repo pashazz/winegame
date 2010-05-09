@@ -342,3 +342,18 @@ void Prefix::getPrefixPath()
 		_path = core->wineDir() + QDir::separator() + _prefix;
 	}
 
+void Prefix::makeDesktopIcon(const QString &path, const QString &name)
+{
+	//For now, we use QDesktopServices::desktop
+	QFile file  (QDesktopServices::storageLocation(QDesktopServices::DesktopLocation) + QDir::separator() + name + ".desktop");
+	QTextStream str (&file);
+	file.open(QIODevice::WriteOnly | QIODevice::Text);
+	str << "[Desktop Entry]\n";
+	str << QString ("Name=%1\n").arg(name);
+	str << "Type=Application\n";
+	str << QString("Exec=env WINEPREFIX=\"%1\" winegame -r \"%2\"\n").arg(_path).arg(path);
+	str << QString ("Icon=%1\n").arg(_workdir + QDir::separator() + "icon");
+	str << QString ("Comment=%1\n").arg(note());
+	str << QString("Categories=%1\n").arg("Game;"); //temporalily,
+	file.close();
+}

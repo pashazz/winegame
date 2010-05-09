@@ -13,7 +13,8 @@ SOURCES += main.cpp \
     isomaster.cpp \
     diskdialog.cpp \
     settingsdialog.cpp \
-    about.cpp
+    about.cpp \
+    shortcutdialog.cpp
 HEADERS += mainwindow.h \
     discdetector.h \
     gamedialog.h \
@@ -21,13 +22,15 @@ HEADERS += mainwindow.h \
     isomaster.h \
     diskdialog.h \
     settingsdialog.h \
-    about.h
+    about.h \
+    shortcutdialog.h
 FORMS += mainwindow.ui \
     gamedialog.ui \
     prefixdialog.ui \
     diskdialog.ui \
     settingsdialog.ui \
-    about.ui
+    about.ui \
+    shortcutdialog.ui
 INCLUDEPATH += libwinegame
 RESOURCES += res.qrc
 LIBS += -L \
