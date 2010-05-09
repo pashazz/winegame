@@ -1,0 +1,5 @@
+[application]
+prefix="fallout3"
+[wine]
+components="cc580 d3dx9 multisampling=enabled"
+memory=true
