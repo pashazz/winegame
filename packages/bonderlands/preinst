@@ -1,0 +1,9 @@
+#!/bin/bash
+# A script, that does offline bonderlands activation.
+
+cd $WINEPREFIX
+wget http://download.securom.com/support/2k/BorderlandsManualReleaseDateCheck.zip -O act.zip
+unzip act.zip
+$WINE BordelandsOfflineInstaller.exe
+sleep 3s
+$WINE wineboot

@@ -1,0 +1,4 @@
+#!/bin/bash
+# PostInst script enables force_box mouse overriding
+cd $FILESDIR
+$WINE regedit dinput.reg
