@@ -8,6 +8,12 @@ Install deps:
 Qt 4.6 (Core, Gui and Network modules)
 fuseiso
 notify-send/KDialog
+winetricks
+=========================================
+Winetricks info:
+Homepage: http://wiki.winehq.org/winetricks
+Download url: http://tinyurl.com/winetricks
+You can find ebuild for winetricks in gentoo/ subdirectory. Don`t forgot about digests.
 =========================================
 Installation:
 ./quickinstall.sh

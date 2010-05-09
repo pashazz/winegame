@@ -48,8 +48,6 @@ isEmpty (PREFIX) {
 message ("Winegame packages is always in /usr/share/winegame")
 message ("Checking for fuseISO")
 system ("which fuseiso"):FUSEISO_BIN = FALSE # fuseiso check
-tools.path = $$PREFIX/bin
-tools.files = tools/*
 pkgs.path = /usr/share/winegame
 pkgs.files = packages/*
 target.path = $$PREFIX/bin

@@ -52,14 +52,14 @@ void SettingsDialog::changeEvent(QEvent *e)
 
 void SettingsDialog::on_cmdBrowseWG_clicked()
 {
-	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame Packages directory"));
+	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame Packages directory"), core->packageDir());
 	if (!newdir.isEmpty())
 		ui->txtPkg->setText(newdir);
 }
 
 void SettingsDialog::on_cmdBrowseWine_clicked()
 {
-	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame Windows storage directory"));
+	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame Windows storage directory"), core->wineDir());
 	if (!newdir.isEmpty())
 		ui->txtWineDir->setText(newdir);
 }
@@ -77,7 +77,7 @@ void SettingsDialog::on_buttonBox_accepted()
 
 void SettingsDialog::on_cmdBrowseMount_clicked()
 {
-	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame directory for mounting ISOs"));
+	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame directory for mounting ISOs"), core->mountDir());
 	if (!newdir.isEmpty())
 		ui->txtWineDir->setText(newdir);
 }
