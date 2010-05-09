@@ -46,8 +46,8 @@ public:
   void lauchWinetricks(QStringList args);
   void setMemory();
   void removePrefix ();
-  void installFirstApplication ();
-  void checkWineDistr();
+  bool installFirstApplication ();
+  bool checkWineDistr();
   bool hasDBEntry ();
 public slots:
   void lauch_c();

@@ -172,12 +172,12 @@ bool Prefix::isPreset()
 }
 
 
-void Prefix::checkWineDistr()
+bool Prefix::checkWineDistr()
 {
    /// проверяет дистрибутив Wine для префикса. Если проверка не удается, загружает дистрибутив заново.
     //Если у нас системный Wine, то и делать неча.
 if (s->value("wine/distr").isNull())
-    return;
+	return true;
     QFile file (_path + QDir::separator() + ".wine");
     QTextStream stream (&file);
 
@@ -185,6 +185,8 @@ if (s->value("wine/distr").isNull())
     {
         //Загружаем Wine
         QString wineUrl = downloadWine();
+		if (wineUrl.isEmpty())
+			return false;
         //записываем Wine в .wine
 		file.open(QIODevice::WriteOnly | QIODevice::Text);
         stream << wineUrl;
@@ -195,7 +197,9 @@ if (s->value("wine/distr").isNull())
     else
     {
         //Открываем файл для чтения
-		file.open(QIODevice::ReadOnly | QIODevice::Text);
+		if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+			return false;
+
         QString installedWine = stream.readAll().trimmed();
 		file.close();
         if (installedWine != s->value("wine/distr").toString())
@@ -207,6 +211,7 @@ if (s->value("wine/distr").isNull())
 
 
     }
+	return true;
 }
 
 QString Prefix::downloadWine() {
@@ -222,8 +227,11 @@ QString Prefix::downloadWine() {
 		qDebug() << "WINE IS DOWNLOADING FROM" << distr << "to" <<QDir::tempPath();
 		  corelib * core = new corelib(this);
 		QString distrname =   core->downloadWine(distr);
+		if (distrname.isEmpty())
+			return "";
             qDebug() << "WINE IS UNPACKING TO " << destination << "FROM" << distrname;
-			core->unpackWine(distrname, destination);
+			if (!core->unpackWine(distrname, destination))
+				return "";
         qDebug() << "wine distribution is" << distr;
 		return distr;
    }
@@ -235,16 +243,18 @@ wineBinary = wine();
 return "";
 }
 
-void Prefix::installFirstApplication()
+bool Prefix::installFirstApplication()
 {
 	/// Проверяем Wine, загружаем его если надо, маркируем приложение как установленное и передаем управление движку'
 	// Данная процедура не нужна, если мы используем презет; тут все дефолтно.
 	if (s->value("application/prefix").isNull())
-		return; //skip this step.
+		return true; //skip this step.
 QDir dir (_path);
 if (!dir.exists())
 	dir.mkpath(dir.path());
-	checkWineDistr();
+
+	if (!checkWineDistr())
+		return false;
 	//Db Working
 	QSqlQuery q (db);
 	q.prepare("INSERT INTO Apps (prefix, wineprefix, wine) VALUES (:prefix, :wineprefix, :wine)");
@@ -267,8 +277,9 @@ if (!dir.exists())
 	   {
 		   QMessageBox::critical(0, tr("Database error"), tr("Failed to execute query for application. See errors on console"));
 		   qDebug() << "DB: Query error " << q.lastError().text();
-		   qApp->exit (-24);
+		   return false;
 	   }
+	   return true;
 }
 
 bool Prefix::hasDBEntry()

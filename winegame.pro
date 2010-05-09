@@ -57,6 +57,5 @@ icon.path = $$PREFIX/share/pixmaps
 icon.files = desktop/winegame.png
 INSTALLS += target \
     pkgs \
-    tools \
     desktop \
     icon

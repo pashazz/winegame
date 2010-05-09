@@ -36,7 +36,7 @@ public:
 	virtual ~corelib();
      static QString whichBin (QString bin);
 	  void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
-     static void unpackWine(QString distr, QString destination);
+	 static bool unpackWine(QString distr, QString destination);
      static void showNotify (QString, QString);
      static bool checkPrefixName (QString);
 	  void runSingleExe (QStringList exe) ;
@@ -57,13 +57,13 @@ public:
 private slots:
      void error (QNetworkReply::NetworkError);
      void setRange (qint64, qint64); //заглушка для QProgressDialog
-    void exitApp();
+	void exitApp();
 
 private:
     QProgressDialog *progress;
 	QSettings *settings;
 	QSqlDatabase db;
-
+  bool downloadExitCode;
 
 protected:
   void initconf ();

@@ -79,7 +79,7 @@ else
 }
 }
 
-void corelib::unpackWine (QString distr, QString destination)
+bool corelib::unpackWine (QString distr, QString destination)
 {
      QDir dir (destination);
      if (!dir.exists())
@@ -90,10 +90,12 @@ void corelib::unpackWine (QString distr, QString destination)
  proc->start(unpackLine);
   proc->waitForFinished(-1);
  qDebug() << QObject::tr("engine: Wine distribution %1 unpacked to %2").arg(distr).arg(destination);
-}
+ return proc->exitCode() == 0 ? true : false;
+	 }
 
 QString corelib::downloadWine(QString url) //TODO: проверка на ошибки.
 {
+	downloadExitCode = true;
     QUrl myurl = QUrl(url);
     QFileInfo inf (myurl.path());
 	QString wineFileName =QDir::tempPath() + QDir::separator() +  inf.fileName();
@@ -134,7 +136,7 @@ if (file.open(QIODevice::WriteOnly))
 else
     qDebug() << "engine: error open file (WINEDISTR):" << file.errorString();
 progress->deleteLater();
-return wineFileName;
+return downloadExitCode ? wineFileName : "";
 }
 
 
@@ -146,8 +148,8 @@ void corelib::error(QNetworkReply::NetworkError error)
    }
     else
     {
-        QMessageBox::warning(0, tr("Network error"), tr("Network error: %1. Exiting application"));
-        qApp->exit(-6);
+		QMessageBox::warning(0, tr("Network error"), tr("Network error: %1. Exiting installation"));
+	  downloadExitCode = false;
     }
 
 }
@@ -185,8 +187,8 @@ void corelib::setRange(qint64 aval, qint64 total)
 
 void corelib::exitApp()
 {
-    QMessageBox::critical(0, tr("Critical error"), tr("Wine distribution not downloaded, so exit application."));
-    qApp->exit(-4);
+	QMessageBox::critical(0, tr("Critical error"), tr("Wine distribution not downloaded, so exit installation."));
+	downloadExitCode = false;
 }
 
 bool corelib::checkPrefixName(QString prefix)
