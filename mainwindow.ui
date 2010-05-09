@@ -17,7 +17,7 @@
    <string>Install application</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="res.qrc">
     <normaloff>:/desktop/winegame.png</normaloff>:/desktop/winegame.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -124,9 +124,14 @@
    <property name="text">
     <string>&amp; Make desktop icon</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>
