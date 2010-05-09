@@ -19,7 +19,8 @@ IUSE=""
 DEPEND=">=x11-libs/qt-gui-4.6.1
 	>=x11-libs/qt-core-4.6.1
 	>=x11-libs/qt-sql-4.6.1
-	app-emulation/wine"
+	app-emulation/wine
+        app-emulation/winetricks"
 
 
 src_install () {
