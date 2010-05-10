@@ -31,6 +31,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 	ui->txtWineDir->setText(core->wineDir());
   ui->sbMemory->setValue(core->videoMemory().toInt());
 	ui->txtMount->setText(core->mountDir());
+	ui->cbForceFuse->setChecked(core->forceFuseiso());
 }
 
 SettingsDialog::~SettingsDialog()
@@ -73,6 +74,9 @@ void SettingsDialog::on_buttonBox_accepted()
 		core->setPackageDir(ui->txtPkg->text());
 	if (!ui->txtMount->text().isEmpty())
 		core->setMountDir(ui->txtMount->text());
+	core->setForceFuseiso(ui->cbForceFuse->isChecked());
+
+	core->syncSettings();
 }
 
 void SettingsDialog::on_cmdBrowseMount_clicked()

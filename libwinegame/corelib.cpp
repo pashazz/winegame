@@ -257,22 +257,22 @@ QString corelib::mountDir() {
 void corelib::setWineDir(QString dir)
 {
 	settings->setValue("WineDir", dir);
-	settings->sync();
 }
 void corelib::setPackageDir(QString dir)
 {
 	settings->setValue("PackageDir", dir);
-	settings->sync();
 }
 void corelib::setMountDir(QString dir)
 {
 	settings->setValue("MountDir", dir);
-	settings->sync();
 }
 void corelib::setVideoMemory(int memory)
 {
+	int oldMemory = settings->value("VideoMemory").toInt();
+	if (oldMemory == memory)
+		return;
 	settings->setValue("VideoMemory", memory);
-	settings->sync();
+	settings->sync(); //we need to force sync
 	//Sync all videomemory entries
 	QDir dir (packageDir());
 	foreach (QFileInfo info, dir.entryInfoList(QDir::Dirs | QDir::Readable))
@@ -318,4 +318,27 @@ corelib::~corelib()
 	QSqlDatabase db = QSqlDatabase::database();
 	db.close();
 
+}
+
+QString corelib::getSudoProg()
+{
+	QFile file;
+	QStringList programs = QStringList () << "kdesu" << "gksu";
+	foreach (QString str, programs)
+	{
+		file.setFileName(whichBin(str));
+		if (file.exists())
+			return str;
+	}
+	return "";
+}
+
+bool corelib::forceFuseiso()
+{
+	return settings->value("ForceFuseiso", false).toBool();
+}
+
+void corelib::setForceFuseiso(bool value)
+{
+	settings->setValue("ForceFuseiso", value);
 }

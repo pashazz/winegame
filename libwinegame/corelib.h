@@ -45,12 +45,15 @@ public:
 	 QString packageDir ();
 	 QString mountDir ();
 	 QString videoMemory ();
+	 bool forceFuseiso ();
+	 void setForceFuseiso(bool);
+	 void syncSettings() {settings->sync();}
 	 static QString autorun (QString diskRoot);
 	 void setWineDir (QString dir);
 	 void setPackageDir (QString dir);
 	 void setMountDir (QString dir);
 	 void setVideoMemory (int memory);
-
+	 QString getSudoProg ();
 	 //void updateWines ();
 	  QString downloadWine(QString url);
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>598</width>
-    <height>153</height>
+    <width>604</width>
+    <height>193</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -65,13 +65,16 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="7" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -82,6 +85,21 @@
     <widget class="QPushButton" name="cmdBrowseMount">
      <property name="text">
       <string>Browse</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Force using FuseISO (don`t ask for password)
+for mount ISO images</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QCheckBox" name="cbForceFuse">
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </item>

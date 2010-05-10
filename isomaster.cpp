@@ -26,9 +26,41 @@ IsoMaster::IsoMaster(corelib *lib, QString imageFile) : //просто конс�
 	QDir dir (core->mountDir());
     if (!dir.exists())
         dir.mkdir(dir.path());
-
+	if (core->getSudoProg().isEmpty() || core->forceFuseiso()) {
 	mount = QString("fuseiso \"%1\" \"%2\"").arg(imageFile).arg(core->mountDir());
 	umount = QString("fusermount -u \"%1\"").arg(core->mountDir());
+}
+	else
+	{
+		QString sudo = core->getSudoProg();
+		QString mountString = QString ("mount -o loop \"%1\" \"%2\"").arg(imageFile).arg(core->mountDir());
+		QString umountString = QString ("umount \"%1\"").arg(core->mountDir());
+		if (sudo == "kdesu" && QProcessEnvironment::systemEnvironment().contains("KDE_FULL_SESSION"))
+		{
+			mount = QString ("kdesu -i %1 \"%2\"").arg(qApp->applicationName().toLower()).arg(mountString);
+			umount = QString ("kdesu -i %1 \"%2\"").arg(qApp->applicationName().toLower()).arg(umountString);
+		}
+		else if (sudo == "gksu")
+		{
+		 QString mountMsg = tr("Enter password to mount ISO image");
+		 QString umountMsg = tr("Enter password to unmount ISO image");
+		 mount = QString ("gksu -m %1 -D %2 \"%3\"").arg(mountMsg).arg(qApp->applicationName()).arg(mountString);
+		 umount = QString ("gksu -m %1 -D %2 \"%3\"").arg(umountMsg).arg(qApp->applicationName()).arg(umountString);
+			  }
+		else if (sudo == "xdg-su")
+		{
+			mount = QString ("xdg-su -c \"%1\"").arg(mountString);
+			umount = QString ("xdg-su -c \"%1\"").arg(umountString);
+		}
+		else
+		{
+			//force fuseiso
+			mount = QString("fuseiso \"%1\" \"%2\"").arg(imageFile).arg(core->mountDir());
+			umount = QString("fusermount -u \"%1\"").arg(core->mountDir());
+		}
+		qDebug() << "IsoMaster: mount string is" << mount;
+		qDebug() << "IsoMaster: umount string is " << umount;
+	}
 
 }
 bool IsoMaster::lauchApp()
@@ -49,7 +81,6 @@ bool IsoMaster::lauchApp()
     }
     else
     {
-//        QMessageBox::critical(0, tr("Warning"), tr("I can not get Windows application from this image"));
 		DiskDialog *dlg = new DiskDialog (0, core, core->mountDir());
 		//run diskdialog and exit
 		dlg->exec();
