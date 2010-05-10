@@ -323,7 +323,7 @@ corelib::~corelib()
 QString corelib::getSudoProg()
 {
 	QFile file;
-	QStringList programs = QStringList () << "kdesu" << "gksu";
+	QStringList programs = QStringList () << "kdesu" << "gksu" << "xdg-su";
 	foreach (QString str, programs)
 	{
 		file.setFileName(whichBin(str));
@@ -340,5 +340,7 @@ bool corelib::forceFuseiso()
 
 void corelib::setForceFuseiso(bool value)
 {
-	settings->setValue("ForceFuseiso", value);
+	QFile file (corelib::whichBin("fuseiso"));
+	if (file.exists())
+		settings->setValue("ForceFuseiso", value);
 }
