@@ -44,8 +44,8 @@ IsoMaster::IsoMaster(corelib *lib, QString imageFile) : //просто конс�
 		{
 		 QString mountMsg = tr("Enter password to mount ISO image");
 		 QString umountMsg = tr("Enter password to unmount ISO image");
-		 mount = QString ("gksu -m %1 -D %2 \"%3\"").arg(mountMsg).arg(qApp->applicationName()).arg(mountString);
-		 umount = QString ("gksu -m %1 -D %2 \"%3\"").arg(umountMsg).arg(qApp->applicationName()).arg(umountString);
+		 mount = QString ("gksu -m \"%1\" -D %2 \"%3\"").arg(mountMsg).arg(qApp->applicationName()).arg(mountString);
+		 umount = QString ("gksu -m \"%1\" -D %2 \"%3\"").arg(umountMsg).arg(qApp->applicationName()).arg(umountString);
 			  }
 		else if (sudo == "xdg-su")
 		{
@@ -58,8 +58,6 @@ IsoMaster::IsoMaster(corelib *lib, QString imageFile) : //просто конс�
 			mount = QString("fuseiso \"%1\" \"%2\"").arg(imageFile).arg(core->mountDir());
 			umount = QString("fusermount -u \"%1\"").arg(core->mountDir());
 		}
-		qDebug() << "IsoMaster: mount string is" << mount;
-		qDebug() << "IsoMaster: umount string is " << umount;
 	}
 
 }
