@@ -3,6 +3,9 @@ REGEDIT4
 [HKEY_CURRENT_USER\Software\Blizzard Entertainment\Warcraft III]
 "Gfx OpenGL"=dword:00000001
 
+[HKEY_CURRENT_USER\Software\Blizzard Entertainment\Warcraft III\Misc]
+"seeintromovie"=dword:00000001
+
 [HKEY_CURRENT_USER\Software\Blizzard Entertainment\Warcraft III\Video]
 "reswidth"=dword:00000280
 "resheight"=dword:000001e0
