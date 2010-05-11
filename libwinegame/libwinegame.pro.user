@@ -75,7 +75,7 @@
     <value type="QString">CONFIG_PROTECT=/usr/share/X11/xkb /usr/share/config</value>
     <value type="QString">CONFIG_PROTECT_MASK=/etc/gentoo-release /etc/sandbox.d /etc/fonts/fonts.conf /etc/terminfo /etc/ca-certificates.conf /etc/revdep-rebuild</value>
     <value type="QString">CVS_RSH=ssh</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-gVcIFrxHTI,guid=03804d2c2814acf3fe96955400001573</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-bRI18VXHzf,guid=deef4f4558b884a02985c586000016ec</value>
     <value type="QString">DESKTOP_SESSION=default</value>
     <value type="QString">DISPLAY=:0.0</value>
     <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
@@ -83,13 +83,11 @@
     <value type="QString">GCC_SPECS=</value>
     <value type="QString">GDK_USE_XFT=1</value>
     <value type="QString">GS_LIB=/home/pasha/.fonts</value>
-    <value type="QString">GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pasha/.gtkrc-2.0:/home/pasha/.gtkrc-2.0-kde4:/home/pasha/.kde4/share/config/gtkrc-2.0</value>
-    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/pasha/.gtkrc::/home/pasha/.kde4/share/config/gtkrc</value>
+    <value type="QString">GTK2_RC_FILES=/home/pasha/.gtkrc-2.0-kde4</value>
     <value type="QString">HG=/usr/bin/hg</value>
     <value type="QString">HOME=/home/pasha</value>
     <value type="QString">INFOPATH=/usr/share/info:/usr/share/binutils-data/x86_64-pc-linux-gnu/2.20.1/info:/usr/share/gcc-data/x86_64-pc-linux-gnu/4.4.3/info</value>
     <value type="QString">KDE_FULL_SESSION=true</value>
-    <value type="QString">KDE_MULTIHEAD=false</value>
     <value type="QString">KDE_SESSION_UID=1000</value>
     <value type="QString">KDE_SESSION_VERSION=4</value>
     <value type="QString">LANG=ru_RU.UTF-8</value>
@@ -107,11 +105,11 @@
     <value type="QString">QT_PLUGIN_PATH=/home/pasha/.kde4/lib64/kde4/plugins/:/usr/lib64/kde4/plugins/</value>
     <value type="QString">R_HOME=/usr/lib64/R</value>
     <value type="QString">SANE_CONFIG_DIR=/etc/sane.d</value>
-    <value type="QString">SESSION_MANAGER=local/pashazz:@/tmp/.ICE-unix/19783,unix/pashazz:/tmp/.ICE-unix/19783</value>
+    <value type="QString">SESSION_MANAGER=local/pashazz:@/tmp/.ICE-unix/19820,unix/pashazz:/tmp/.ICE-unix/19820</value>
     <value type="QString">SHELL=/bin/zsh</value>
     <value type="QString">SHLVL=1</value>
-    <value type="QString">SSH_AGENT_PID=17445</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-DryPw17444/agent.17444</value>
+    <value type="QString">SSH_AGENT_PID=17590</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-ufqIV17589/agent.17589</value>
     <value type="QString">STRIGI_PLUGIN_PATH=/usr/lib64/strigi:</value>
     <value type="QString">USB_DEVFS_PATH=/dev/bus/usb</value>
     <value type="QString">USER=pasha</value>
@@ -120,7 +118,7 @@
     <value type="QString">XCURSOR_THEME=Oxygen_Black</value>
     <value type="QString">XDG_CONFIG_DIRS=/etc/xdg</value>
     <value type="QString">XDG_DATA_DIRS=/usr/share:/usr/local/share:/usr/share</value>
-    <value type="QString">XDG_SESSION_COOKIE=d6466f416073e84a380d925300000035-1273314873.772585-1733199120</value>
+    <value type="QString">XDG_SESSION_COOKIE=d6466f416073e84a380d925300000035-1273510627.740452-2087338095</value>
     <value type="QString">XDM_MANAGED=method=classic</value>
     <value type="QString">_=/usr/lib64/kde4/libexec/start_kdeinit_wrapper</value>
    </valuelist>
@@ -144,7 +142,7 @@
     <value type="QString">CONFIG_PROTECT=/usr/share/X11/xkb /usr/share/config</value>
     <value type="QString">CONFIG_PROTECT_MASK=/etc/gentoo-release /etc/sandbox.d /etc/fonts/fonts.conf /etc/terminfo /etc/ca-certificates.conf /etc/revdep-rebuild</value>
     <value type="QString">CVS_RSH=ssh</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-gVcIFrxHTI,guid=03804d2c2814acf3fe96955400001573</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-bRI18VXHzf,guid=deef4f4558b884a02985c586000016ec</value>
     <value type="QString">DESKTOP_SESSION=default</value>
     <value type="QString">DISPLAY=:0.0</value>
     <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
@@ -152,13 +150,11 @@
     <value type="QString">GCC_SPECS=</value>
     <value type="QString">GDK_USE_XFT=1</value>
     <value type="QString">GS_LIB=/home/pasha/.fonts</value>
-    <value type="QString">GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/pasha/.gtkrc-2.0:/home/pasha/.gtkrc-2.0-kde4:/home/pasha/.kde4/share/config/gtkrc-2.0</value>
-    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/pasha/.gtkrc::/home/pasha/.kde4/share/config/gtkrc</value>
+    <value type="QString">GTK2_RC_FILES=/home/pasha/.gtkrc-2.0-kde4</value>
     <value type="QString">HG=/usr/bin/hg</value>
     <value type="QString">HOME=/home/pasha</value>
     <value type="QString">INFOPATH=/usr/share/info:/usr/share/binutils-data/x86_64-pc-linux-gnu/2.20.1/info:/usr/share/gcc-data/x86_64-pc-linux-gnu/4.4.3/info</value>
     <value type="QString">KDE_FULL_SESSION=true</value>
-    <value type="QString">KDE_MULTIHEAD=false</value>
     <value type="QString">KDE_SESSION_UID=1000</value>
     <value type="QString">KDE_SESSION_VERSION=4</value>
     <value type="QString">LANG=ru_RU.UTF-8</value>
@@ -176,11 +172,11 @@
     <value type="QString">QT_PLUGIN_PATH=/home/pasha/.kde4/lib64/kde4/plugins/:/usr/lib64/kde4/plugins/</value>
     <value type="QString">R_HOME=/usr/lib64/R</value>
     <value type="QString">SANE_CONFIG_DIR=/etc/sane.d</value>
-    <value type="QString">SESSION_MANAGER=local/pashazz:@/tmp/.ICE-unix/19783,unix/pashazz:/tmp/.ICE-unix/19783</value>
+    <value type="QString">SESSION_MANAGER=local/pashazz:@/tmp/.ICE-unix/19820,unix/pashazz:/tmp/.ICE-unix/19820</value>
     <value type="QString">SHELL=/bin/zsh</value>
     <value type="QString">SHLVL=1</value>
-    <value type="QString">SSH_AGENT_PID=17445</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-DryPw17444/agent.17444</value>
+    <value type="QString">SSH_AGENT_PID=17590</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-ufqIV17589/agent.17589</value>
     <value type="QString">STRIGI_PLUGIN_PATH=/usr/lib64/strigi:</value>
     <value type="QString">USB_DEVFS_PATH=/dev/bus/usb</value>
     <value type="QString">USER=pasha</value>
@@ -189,7 +185,7 @@
     <value type="QString">XCURSOR_THEME=Oxygen_Black</value>
     <value type="QString">XDG_CONFIG_DIRS=/etc/xdg</value>
     <value type="QString">XDG_DATA_DIRS=/usr/share:/usr/local/share:/usr/share</value>
-    <value type="QString">XDG_SESSION_COOKIE=d6466f416073e84a380d925300000035-1273314873.772585-1733199120</value>
+    <value type="QString">XDG_SESSION_COOKIE=d6466f416073e84a380d925300000035-1273510627.740452-2087338095</value>
     <value type="QString">XDM_MANAGED=method=classic</value>
     <value type="QString">_=/usr/lib64/kde4/libexec/start_kdeinit_wrapper</value>
    </valuelist>

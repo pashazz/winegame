@@ -52,7 +52,7 @@ p, li { white-space: pre-wrap; }
     <name>DiscDetector</name>
     <message>
         <source>DDT: [scan] scanning dir %1</source>
-        <translation>DDT: [cкан] сканирую папку %1</translation>
+        <translation type="obsolete">DDT: [cкан] сканирую папку %1</translation>
     </message>
     <message>
         <source>DDT: scanning file %1</source>
@@ -102,6 +102,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>I can not get Windows application from this image</source>
         <translation type="obsolete">Не могу определить Windows-приложение на этом образе диска</translation>
+    </message>
+    <message>
+        <source>Enter password to mount ISO image</source>
+        <translation>Введите пароль для монтирования образа</translation>
+    </message>
+    <message>
+        <source>Enter password to unmount ISO image</source>
+        <translation>Введите пароль для размонтирования образа</translation>
     </message>
 </context>
 <context>
@@ -193,6 +201,26 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&amp;About</source>
         <translation>&amp;О программе</translation>
+    </message>
+    <message>
+        <source>&amp; Make desktop icon</source>
+        <translation>&amp;Создать ярлык на рабочем столе</translation>
+    </message>
+    <message>
+        <source>Ctrl+I</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>No item selected</source>
+        <translation>Ничего не выбрано</translation>
+    </message>
+    <message>
+        <source>warning</source>
+        <translation>Внимание</translation>
+    </message>
+    <message>
+        <source>Append all fields</source>
+        <translation>Заполните все поля</translation>
     </message>
 </context>
 <context>
@@ -317,12 +345,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Click &amp;quot;&lt;span style=&quot; font-weight:600;&quot;&gt;Administration&lt;/span&gt;&amp;quot;, if you want to delete this Windows with your app, or back up it.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Click &lt;span style=&quot; font-weight:600;&quot;&gt;buttons right&lt;/span&gt; to run your Linux file manager with drive C, or run EXE in this virtual&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Этот диалог поможет вам управлять вашей виртуальной системой Windows
- (в которую вы установили это приложение)
+ (в которую вы установили это приложение).
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Нажмите &amp;quot;&lt;span style=&quot; font-weight:600;&quot;&gt;Системные программы&lt;/span&gt;&amp;quot;, если вы хотите запустить:&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* Панель управления&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* Редактор реестра&lt;/p&gt;
@@ -462,6 +490,39 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Select Winegame directory for mounting ISOs</source>
         <translation>Выберите папку для монтирования ISO</translation>
+    </message>
+    <message>
+        <source>Force using FuseISO (don`t ask for password)
+for mount ISO images</source>
+        <translation>Всегда использовать FuseISO (не спрашивать пароль)
+для монтирования образов</translation>
+    </message>
+</context>
+<context>
+    <name>ShortCutDialog</name>
+    <message>
+        <source>Path</source>
+        <translation>Путь</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation>Обзор</translation>
+    </message>
+    <message>
+        <source>Display name:</source>
+        <translation>Название:</translation>
+    </message>
+    <message>
+        <source>Select EXE file</source>
+        <translation>Выберите EXE файл</translation>
+    </message>
+    <message>
+        <source>Windows executables (*.exe)</source>
+        <translation>Исполняемые файлы Windows (*.exe)</translation>
+    </message>
+    <message>
+        <source>Create shortcut on desktop</source>
+        <translation>Создать ярлык на рабочем столе</translation>
     </message>
 </context>
 <context>
