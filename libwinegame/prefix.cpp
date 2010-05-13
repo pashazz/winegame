@@ -95,6 +95,7 @@ void Prefix::lauchWinetricks(QStringList args)
     QProcess *p = new QProcess (this);
     p->setProcessEnvironment(env);
     qDebug() << tr("engine: [prefix]: starting winetricks");
+	args.prepend("-q");
     p->start(corelib::whichBin("winetricks"), args);
      p->waitForFinished(-1);
 }

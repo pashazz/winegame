@@ -116,7 +116,7 @@ void engine::doPkgs(QString pkgs, const QProcessEnvironment &env)
     corelib::showNotify(tr("Downloading packages..."), tr("Now we will install Microsoft components"));
     QProcess p (this);
   p.setProcessEnvironment(env);
-    p.start(core->whichBin("winetricks") + " " + pkgs);
+	p.start(core->whichBin("winetricks") + " -q " + pkgs);
     p.waitForFinished(-1);
 }
 
