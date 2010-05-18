@@ -407,3 +407,13 @@ QString Prefix::selectExe()
 	exe = QFileDialog::getOpenFileName(0,  tr("Select EXE file"), QDir::homePath(), tr("Windows executables (*.exe)"));
 	return exe;
 }
+
+bool Prefix::runApplication(QString exe)
+{
+	if (hasDBEntry())
+	{
+		runProgram(exe);
+		return true;
+	}
+	//перемещаем все из метода engine сюда
+}

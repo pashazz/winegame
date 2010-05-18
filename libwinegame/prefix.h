@@ -40,6 +40,7 @@ public:
    QString note ();
    QIcon icon ();
    QString getRunnableExe();
+   bool runApplication (QString exe); //well, it`s helper.
   void makeDesktopIcon (const QString &path, const  QString &name);
   bool isPreset();
   QString projectWorkingDir () {return _workdir;}
