@@ -40,7 +40,7 @@ public:
    QString note ();
    QIcon icon ();
    QString getRunnableExe();
-   bool runApplication (QString exe); //well, it`s helper.
+   bool runApplication (QString exe, QString diskroot = "", QString imageFile = ""); //well, it`s helper.
   void makeDesktopIcon (const QString &path, const  QString &name);
   bool isPreset();
   QString projectWorkingDir () {return _workdir;}
@@ -58,7 +58,8 @@ public slots:
 
 
 signals:
-
+void prefixNameNeed (QString &name);
+void error(const  QString &errorString);
 private:
 QString _prefix;
 QString _path;
@@ -72,5 +73,6 @@ QSqlDatabase db;
 
 protected:
 QString selectExe ();
+void makeWineCdrom (QString path);
 };
 #endif // PREFIX_H

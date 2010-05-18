@@ -408,7 +408,7 @@ QString Prefix::selectExe()
 	return exe;
 }
 
-bool Prefix::runApplication(QString exe)
+bool Prefix::runApplication(QString exe, QString diskroot, QString imageFile)
 {
 	if (hasDBEntry())
 	{
@@ -416,4 +416,52 @@ bool Prefix::runApplication(QString exe)
 		return true;
 	}
 	//перемещаем все из метода engine сюда
+
+	// ! Смотрим, определен ли префикс.
+	if (s->value("application/prefix").isNull())
+	{
+		if (s->value("wine/preset").toBool())
+		{
+			//Таак, быстро отвязываем библиотечку от гуя
+			QString prefixName;
+			emit prefixNameNeed(prefixName); //если намереваемся ставить аппликуху, обязательно связываем этот сигнал со слотом, иначе краш и все такое.
+			if (prefixName.isEmpty())
+			{
+				emit error (tr("Fatal error: Prefix name is empty."));
+				return false;
+			}
+			else
+			{
+				//override constructor code
+				_prefix = prefixName;
+				_path = core->wineDir() + QDir::separator() + _prefix;
+				env.insert("WINEPREFIX", _path);
+			}	
+		}
+		else
+		{
+			emit error (tr("Fatal error: Package is broken."));
+			return false;
+		}
+	}
+	QString wineBin;
+
+	if (!diskroot.isEmpty())
+		env.insert("CDROOT", diskroot);
+
+	env.insert("FILESDIR", _workdir + "/files");
+	wineBin = wine(); //автоматически добавляет нужную запись в env.
+
+	//запуск Winetricks
+	lauchWinetricks(s->value("wine/components").toString().split(" ", QString::SkipEmptyParts));
+
+	/// TODO: работа по копированию файлов для последующей их установки с ЖД, если необходимо.
+	//пока работаем так
+
+
+}
+
+void Prefix::makeWineCdrom(QString path)
+{
+///Куча незаконченного кода, оставляю пылиться передэкзаменами
 }
