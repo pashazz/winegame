@@ -1,0 +1,6 @@
+[application]
+prefix="crysis"
+[wine]
+components="mwo=force ddr=opengl psm=on vsm-hard"
+memory=true
+distr="http://winegame.googlecode.com/files/wine-crysis.tar.bz2"
