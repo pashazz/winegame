@@ -1,0 +1,4 @@
+#!/bin/sh
+cd "$WINEPREFIX/drive_c/Program Files/Crytek/Crysis"
+cat "r_glow=0" > autoexec.cfg
+cat "r_glow=0" > System.cfg
