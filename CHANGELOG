@@ -16,5 +16,6 @@ r14:bioshock added, silent hill 3 added, RELEASE RC2
 r15:CS:S added, GTA3,SA added.Using QSQLITE & QtSql to store installed apps
 r16:Perfect World added
 r17:RELEASE RC3
-r18: wizardry, fallout 3, silent hunter 5 added
-r19: using kdesu/gksu for mounting, add an option to force using fuseiso
+r18:wizardry, fallout 3, silent hunter 5 added
+r19:using kdesu/gksu for mounting, add an option to force using fuseiso
+r20:crysis added, winegame understands XDG_CONFIG_HOME env. variable
