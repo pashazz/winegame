@@ -59,7 +59,7 @@ void DiskDialog::buildList()
 		  item->setText(prefix->name());
 		  item->setData(Qt::UserRole, info.absoluteFilePath());
 		  if (!prefix->isPreset())
-			  item->setIcon(prefix->icon());
+			  item->setIcon(icon (prefix->projectWorkingDir()));
 		  ui->lstPresets->addItem(item);
 
 
@@ -85,3 +85,12 @@ void DiskDialog::on_buttonBox_accepted()
 //New prefix engine obj
 }
 }
+QIcon DiskDialog::icon(QString pkgpath)
+{
+	if (QFile::exists(pkgpath + "/icon"))
+	  {
+		  QIcon icon (pkgpath + "/icon");
+		  return icon;
+  }
+	  else
+		  return QIcon::fromTheme("application-default-icon");}

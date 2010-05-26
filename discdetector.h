@@ -32,8 +32,8 @@ public:
  void lauchApp (); //call only even tryDetect is TRUE!!!!!!!!
 signals:
 
-public slots:
-
+private slots:
+void selectFile (QString &fileName);
 private:
  QString gamefolder;
  QString cdroot;

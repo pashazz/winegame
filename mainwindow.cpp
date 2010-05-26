@@ -95,7 +95,7 @@ void MainWindow::buildList()
                 it->setData(0, Qt::UserRole, core->packageDir() + QDir::separator() + entry);
         it->setText(0,  myPrefix.name());
 			   //загружаем icon как значок игры (если есть)
-        it->setIcon(0, myPrefix.icon());
+		it->setIcon(0, icon (myPrefix.projectWorkingDir()));
 		//Force adding to installed, if so.
         if (myPrefix.isPreset())
             presetpar->addChild(it);
@@ -277,4 +277,15 @@ void MainWindow::on_action_Make_desktop_icon_triggered()
 		}
 		prefix->makeDesktopIcon(dlg->path(), dlg->name());
 	}
+}
+
+QIcon MainWindow::icon(QString pkgpath)
+{
+	if (QFile::exists(pkgpath + "/icon"))
+	  {
+		  QIcon icon (pkgpath + "/icon");
+		  return icon;
+  }
+	  else
+		  return QIcon::fromTheme("application-default-icon");
 }

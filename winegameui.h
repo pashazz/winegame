@@ -30,10 +30,12 @@ public:
 	void showNotify (QString title, QString body);
 	void error (QString title, QString text);
 	void showProgressBar (QString title); //показываем прогрессбар с заголовком title
-	   void progressText (QString text) ; //показать текст text на прогрессбаре
-	   void progressRange (int, int); //прогресс операции
-	   void endProgress (); //закрытие бара.
-	   int getVideoMemory();
+	void progressText (QString text) ; //показать текст text на прогрессбаре
+	void progressRange (int, int); //прогресс операции
+	void endProgress (); //закрытие бара.
+	int getVideoMemory();
+	QString desktopLocation() { return QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);} //GUI интерфейс предоставляет десктоп по-умолчанию.
+
 
 signals:
 	   void cancelOperation ();

@@ -21,10 +21,6 @@
 #define CORELIB_H
 
 #include <QtCore>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QProgressDialog>
-#include <QPushButton>
 #include <QtNetwork>
 #include <QtSql>
 #include "uiclient.h"

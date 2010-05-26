@@ -3,6 +3,7 @@
 # -------------------------------------------------
 QT += network \
     sql
+QT -=gui
 TARGET = winestuff
 TEMPLATE = lib
 DEFINES += WINESTUFF_LIBRARY

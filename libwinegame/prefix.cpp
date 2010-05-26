@@ -30,7 +30,8 @@ getPrefixPath();
 env = QProcessEnvironment::systemEnvironment();
 env.insert("WINEDEBUG", "-all");
 env.insert("WINEPREFIX", _path);
-//env.insert("WINE", wine());
+if (hasDBEntry())
+	env.insert("WINE", wine());
 }
 
 void rp(QString path, QProcessEnvironment env)
@@ -73,7 +74,7 @@ QString Prefix::wine()
 	q.bindValue(":prefix", _prefix);
 	if (!q.exec())
 	  {
-		QMessageBox::critical(0, tr("Database error"), tr("Failed to fetch wine"));
+		core->client()->error(tr("Database error"), tr("Failed to fetch wine"));
 		return core->whichBin("wine");
 			}
 q.first();
@@ -87,9 +88,9 @@ env.insert("WINE", wine); //hack
 return wine;
 }
 
-void Prefix::lauch_c()
-{
-	QDesktopServices::openUrl(QUrl(_path + "/drive_c")); //bad func. WINEPREFIX and WINE not set
+void Prefix::lauch_c() /// Use xdg-open instead of QDesktopServices.
+ {
+	rp ("xdg-open " + _path + "/dosdevices/c:", env);
 }
 void Prefix::lauchWinetricks(QStringList args)
 {
@@ -158,17 +159,6 @@ return note;
 
 }
 
-QIcon Prefix::icon()
-{
-            if (QFile::exists(_workdir + "/icon"))
-        {
-            QIcon icon (_workdir + "/icon");
-            return icon;
-    }
-        else
-            return QIcon::fromTheme("application-default-icon");
-
-    }
 bool Prefix::isPreset()
 {
     return s->value("wine/preset").toBool();
@@ -277,7 +267,7 @@ if (!dir.exists())
 	   q.bindValue(":wine", wine);
 	   if (!q.exec())
 	   {
-		   QMessageBox::critical(0, tr("Database error"), tr("Failed to execute query for application. See errors on console"));
+		   core->client()->error(tr("Database error"), tr("Failed to execute query for application. See errors on console"));
 		   qDebug() << "DB: Query error " << q.lastError().text();
 		   return false;
 	   }
@@ -352,7 +342,7 @@ void Prefix::getPrefixPath()
 void Prefix::makeDesktopIcon(const QString &path, const QString &name)
 {
 	//For now, we use QDesktopServices::desktop
-	QFile file  (QDesktopServices::storageLocation(QDesktopServices::DesktopLocation) + QDir::separator() + name + ".desktop");
+	QFile file  (core->client()->desktopLocation() + QDir::separator() + name + ".desktop");
 	QTextStream str (&file);
 	file.open(QIODevice::WriteOnly | QIODevice::Text);
 	str << "[Desktop Entry]\n";
@@ -374,8 +364,6 @@ bool Prefix::runApplication(QString exe, QString diskroot, QString imageFile)
 		runProgram(exe);
 		return true;
 	}
-	//перемещаем все из метода engine сюда
-
 	// ! Смотрим, определен ли префикс.
 	if (s->value("application/prefix").isNull())
 	{
@@ -386,7 +374,7 @@ bool Prefix::runApplication(QString exe, QString diskroot, QString imageFile)
 			emit prefixNameNeed(prefixName); //если намереваемся ставить аппликуху, обязательно связываем этот сигнал со слотом, иначе краш и все такое.
 			if (prefixName.isEmpty())
 			{
-				emit error (tr("Fatal error: Prefix name is empty."));
+				core->client()->error (tr("Installation error"),tr("Fatal error: Prefix name is empty."));
 				return false;
 			}
 			else
@@ -399,7 +387,7 @@ bool Prefix::runApplication(QString exe, QString diskroot, QString imageFile)
 		}
 		else
 		{
-			emit error (tr("Fatal error: Package is broken."));
+			core->client()->error (tr ("Packaging error"),tr("Fatal error: Package is broken."));
 			return false;
 		}
 	}

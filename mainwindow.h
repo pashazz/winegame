@@ -37,28 +37,29 @@ protected:
     void changeEvent(QEvent *e);
 private:
     Ui::MainWindow *ui;
-QString diskpath;
-bool cdMode;
-corelib *core;
-QSqlDatabase db;
-void saveGeom();
-    void buildList();
-    void lauchEngine(QString pkgpath);
+	QString diskpath;
+	bool cdMode;
+	corelib *core;
+	QSqlDatabase db;
+	void saveGeom();
+	void buildList();
+	void lauchEngine(QString pkgpath);
+	QIcon icon (QString pkgpath);
 private slots:
 	void on_action_Make_desktop_icon_triggered();
- void on_action_About_triggered();
- void on_actionAbout_Qt_triggered();
- void on_action_Quit_triggered();
- void on_action_Settings_triggered();
+	void on_action_About_triggered();
+	void on_actionAbout_Qt_triggered();
+	void on_action_Quit_triggered();
+	void on_action_Settings_triggered();
 	void on_lstGames_itemClicked(QTreeWidgetItem* item, int column);
     void on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column);
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 
 	//Обработчики событий prefix
-void showError (QString error);
-void getPrefixName (QString &prefixName);
-void getFileName (QString &fileName);
+	void showError (QString error);
+	void getPrefixName (QString &prefixName);
+	void getFileName (QString &fileName);
 };
 
 #endif // MAINWINDOW_H

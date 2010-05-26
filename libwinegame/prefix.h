@@ -21,9 +21,6 @@
 #define PREFIX_H
 /// класс для работы с префиксами (не preset)
 #include <QtCore>
-#include <QDesktopServices>
-#include <QIcon>
-#include <QFileDialog>
 #include "libwinegame_global.h"
 #include "corelib.h"
 
@@ -60,7 +57,6 @@ public slots:
 
 signals:
 void prefixNameNeed (QString &name);
-void error(const  QString &errorString);
 void fileNeed (QString &fileName);
 private:
 QString _prefix;

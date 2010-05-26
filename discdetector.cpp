@@ -73,8 +73,7 @@ bool DiscDetector::tryDetect(QString path)
 
 void DiscDetector::lauchApp()
 {
-
-GameDialog *dlg = new GameDialog(0, gamefolder);
+		GameDialog *dlg = new GameDialog(0, gamefolder);
 if (dlg->exec() == QDialog::Accepted)
 {
 	Prefix *prefix = new Prefix (this, gamefolder, core);
@@ -85,15 +84,15 @@ if (dlg->exec() == QDialog::Accepted)
         /*!
           Хардкорный хак для FIFA 2010,  там некорректный авторан, но он блять прописан!! Я негодую
           */
-            if (prefix->prefixName() == "fifa10") {goto dialog;}
+		if (prefix->prefixName() == "fifa10") {goto dialog;}
         //Может быть, нам стоит запустить AutoRun?
-		if (!core->autorun(cdroot).isEmpty())
-		{
+			if (!core->autorun(cdroot).isEmpty())
+			{
 			QSettings stg (core->autorun(cdroot), QSettings::IniFormat, this);
             stg.beginGroup("autorun");
             QString myExe = cdroot + QDir::separator() + stg.value("open").toString();
-             QString myWine = prefix->wine();
-            qDebug() << "DDT: Starting Autorun: " << myWine << myExe;
+			QString myWine = prefix->wine();
+			 qDebug() << "DDT: Starting Autorun: " << myWine << myExe;
             QProcess p;
             QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
             env.insert("WINEPREFIX", prefix->prefixPath());
@@ -107,16 +106,21 @@ if (dlg->exec() == QDialog::Accepted)
         else {
         //TODO: создаем диалог редактирования виртуальной Windows
             dialog:
-PrefixDialog *pdlg = new PrefixDialog (0, gamefolder, core);
-pdlg->exec();
-        delete pdlg;
-
+			PrefixDialog *pdlg = new PrefixDialog (0, gamefolder, core);
+			pdlg->exec();
+			delete pdlg;
     }
     }
     else{
     //создаем объект движка
-		//New prefix obj init
+		//соединяем сигнал со слотом
 }
 }
 dlg->deleteLater();
+}
+
+void DiscDetector::selectFile(QString &fileName)
+{
+	fileName = QFileDialog::getOpenFileName(0,  tr("Выберите EXE файл"), cdroot, tr("Windows executables (*.exe)"));
+
 }

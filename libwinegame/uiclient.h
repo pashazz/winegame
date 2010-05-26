@@ -38,6 +38,7 @@ public:
    virtual void endProgress () = 0; //закрытие бара.
    virtual void error (QString title, QString text) =0; //показ ошибки.
    virtual int getVideoMemory() = 0; //запрос видеопамяти при первом запуске.
+   virtual QString desktopLocation () = 0; //Папка рабочего стола (может определяться по-разному в зависимости от типа UI). Используется для создания ярлыка Freedesktop
 };
 
 #endif // UICLIENT_H
