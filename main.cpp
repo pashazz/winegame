@@ -21,7 +21,8 @@
 #include "discdetector.h"
 #include "diskdialog.h"
 #include "isomaster.h"
-#include "QDir"
+#include <QDir>
+#include "winegameui.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -46,7 +47,10 @@ int main(int argc, char *argv[])
 		  QMessageBox::critical(0, QObject::tr("Initialization error"), QObject::tr("Qt`s SQLite module not found"));
 		  return -5;
 	  }
-		  corelib *core =  new corelib (0);
+	  //Our winegame GUI client
+	  WinegameUi *client = new WinegameUi(); //опасные утечки памяти
+
+		  corelib *core =  new corelib (0, client);
 	  core->init();
 	  //Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
 	  if (a.arguments().length() > 2)
@@ -110,6 +114,7 @@ if (a.arguments().length() > 1) {
     }
 
 }
+client->showNotify(QObject::tr("Hello!"),QObject::tr("Please connect to internet :)"));
 	MainWindow w(core);
     w.show();
     return a.exec();

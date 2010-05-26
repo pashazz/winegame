@@ -27,12 +27,13 @@
 #include <QPushButton>
 #include <QtNetwork>
 #include <QtSql>
+#include "uiclient.h"
 #include "libwinegame_global.h"
 class  WINESTUFFSHARED_EXPORT corelib : public QObject
 {
     Q_OBJECT
 public:
-    corelib(QObject *parent);
+	corelib(QObject *parent, UiClient *client);
 	virtual ~corelib();
      static QString whichBin (QString bin);
 	  void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
@@ -56,16 +57,18 @@ public:
 	 QString getSudoProg ();
 	 //void updateWines ();
 	  QString downloadWine(QString url);
+
+	  UiClient * client () {return ui;}
 private slots:
      void error (QNetworkReply::NetworkError);
      void setRange (qint64, qint64); //заглушка для QProgressDialog
 	void exitApp();
 
 private:
-    QProgressDialog *progress;
+	UiClient *ui;
 	QSettings *settings;
 	QSqlDatabase db;
-  bool downloadExitCode;
+	bool downloadExitCode;
 
 protected:
   void initconf ();

@@ -20,8 +20,8 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
-SettingsDialog::SettingsDialog(QWidget *parent) :
-	QDialog(parent), core (new corelib(this)),
+SettingsDialog::SettingsDialog(QWidget *parent, corelib *lib) :
+	QDialog(parent), core (lib),
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);

@@ -19,10 +19,10 @@
 #include "prefixdialog.h"
 #include "ui_prefixdialog.h"
 
-PrefixDialog::PrefixDialog(QWidget *parent, QString path) :
+PrefixDialog::PrefixDialog(QWidget *parent, QString path, corelib *core) :
     QDialog(parent),
     ui(new Ui::PrefixDialog),
-    pr (new Prefix (this, path))
+	pr (new Prefix (this, path, core))
 {
     ui->setupUi(this);
     ui->toolBox->setCurrentIndex(0);//это если вдруг я забыл переместить страницу в designer

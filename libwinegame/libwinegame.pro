@@ -6,13 +6,12 @@ QT += network \
 TARGET = winestuff
 TEMPLATE = lib
 DEFINES += WINESTUFF_LIBRARY
-SOURCES += engine.cpp \
-    corelib.cpp \
-    prefix.cpp
+SOURCES +=   corelib.cpp \
+	prefix.cpp
 HEADERS += libwinegame_global.h \
-    engine.h \
     corelib.h \
-    prefix.h
+    prefix.h \
+    uiclient.h
 isEmpty ($$PREFIX)
 :PREFIX = /usr
 target.path = $$PREFIX/lib

@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "winegameui.h"
 #include "gamedialog.h"
 #include "ui_gamedialog.h"
 
@@ -24,7 +25,7 @@ GameDialog::GameDialog(QWidget *parent, QString path) :
     ui(new Ui::GameDialog),
     _path (path)
 {
-    Prefix *prefix = new Prefix (this, path);
+	Prefix *prefix = new Prefix (this, path, new corelib(this, new WinegameUi ()));
     ui->setupUi(this);
     //setting the UI
     if (qApp->arguments().length() > 1)

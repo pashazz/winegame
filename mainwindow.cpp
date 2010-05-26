@@ -47,7 +47,6 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
     QLabel * cdlab = new QLabel (diskpath);
    statusBar()->addWidget(cdlab);
 buildList();
-core->showNotify(tr("Hello"), tr("Please connect to Internet!"));
 db = QSqlDatabase::database();
 }
 
@@ -91,7 +90,7 @@ void MainWindow::buildList()
        presetpar->setText(0, tr("Pre-Sets (Templates)"));
     foreach (QString entry, wdir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
     {
-        Prefix myPrefix (this, core->packageDir() + QDir::separator() + entry);
+		Prefix myPrefix (this, core->packageDir() + QDir::separator() + entry, core);
         QTreeWidgetItem *it = new QTreeWidgetItem (0);
                 it->setData(0, Qt::UserRole, core->packageDir() + QDir::separator() + entry);
         it->setText(0,  myPrefix.name());
@@ -119,14 +118,14 @@ void MainWindow::buildList()
 
 void MainWindow::lauchEngine(QString pkgpath)
 {
-    Prefix *prefix = new Prefix (this, pkgpath);
+	Prefix *prefix = new Prefix (this, pkgpath, core);
     QDir dir (prefix->prefixPath());
 if (dir.exists())
 {
     QStringList list = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     if (list.contains("drive_c") && list.contains("dosdevices"))
     {
-   PrefixDialog *dlg = new PrefixDialog(this,pkgpath);
+   PrefixDialog *dlg = new PrefixDialog(this,pkgpath, core);
   dlg->exec();
   return;
     }
@@ -218,7 +217,7 @@ void MainWindow::saveGeom()
 
 void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
-	Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString());
+	Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString(), core);
 	if (!prefix->hasDBEntry())
 		return; //нету установленных приложений здесь.
 	QString exe = QFileDialog::getOpenFileName(0,  tr("Выберите EXE файл"), QDir::homePath(), tr("Windows executables (*.exe)"));
@@ -232,7 +231,7 @@ void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
         ui->lblNote->setText("");
         return;
     }
-    Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString());
+	Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString(), core);
     ui->lblNote->setText(prefix->note());
     prefix->deleteLater();
 }
@@ -240,7 +239,7 @@ void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
 
 void MainWindow::on_action_Settings_triggered()
 {
-	SettingsDialog *dlg = new SettingsDialog (this);
+	SettingsDialog *dlg = new SettingsDialog (this, core);
 	dlg->exec();
 }
 
@@ -267,7 +266,7 @@ void MainWindow::on_action_Make_desktop_icon_triggered()
 		statusBar()->showMessage(tr("No item selected"));
 		return;
 	}
-	Prefix *prefix = new Prefix (this, ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
+	Prefix *prefix = new Prefix (this, ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString(),core);
 	ShortCutDialog *dlg = new ShortCutDialog (this, prefix->name(), prefix->prefixPath());
 	if (dlg->exec() == QDialog::Accepted)
 	{

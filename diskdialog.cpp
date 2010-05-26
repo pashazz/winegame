@@ -51,7 +51,7 @@ void DiskDialog::buildList()
 	foreach (QFileInfo info, dir.entryInfoList(QDir::Dirs | QDir::Readable | QDir::NoDotAndDotDot))
 	{
 		//init Prefix object
-		Prefix *prefix = new Prefix (this, info.absoluteFilePath());
+		Prefix *prefix = new Prefix (this, info.absoluteFilePath(), core);
 
 		  //add it into this  list
 		  QListWidgetItem *item = new QListWidgetItem (ui->lstPresets, 0);
@@ -73,7 +73,7 @@ void DiskDialog::on_buttonBox_accepted()
 	if (ui->lstPresets->selectedItems().count() == 0)
 		return;
 	QString workdir =ui->lstPresets->selectedItems().first()->data(Qt::UserRole).toString();
-	Prefix *prefix = new Prefix (this, workdir);
+	Prefix *prefix = new Prefix (this, workdir, core);
 	qDebug() << "ddlg: lauching....";\
 	if (prefix->hasDBEntry())
 	{
@@ -82,11 +82,6 @@ void DiskDialog::on_buttonBox_accepted()
 	}
 	else
 	{
-	engine *eng = new engine(this);
-	eng->setDiskpath(path);
-	eng->setCdMode(true);
-	hide();
-	eng->lauch(workdir, false);
-	close();
+//New prefix engine obj
 }
 }

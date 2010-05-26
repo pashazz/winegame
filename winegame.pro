@@ -14,7 +14,8 @@ SOURCES += main.cpp \
     diskdialog.cpp \
     settingsdialog.cpp \
     about.cpp \
-    shortcutdialog.cpp
+    shortcutdialog.cpp \
+    winegameui.cpp
 HEADERS += mainwindow.h \
     discdetector.h \
     gamedialog.h \
@@ -23,7 +24,8 @@ HEADERS += mainwindow.h \
     diskdialog.h \
     settingsdialog.h \
     about.h \
-    shortcutdialog.h
+    shortcutdialog.h \
+    winegameui.h
 FORMS += mainwindow.ui \
     gamedialog.ui \
     prefixdialog.ui \

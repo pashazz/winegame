@@ -20,8 +20,8 @@
 #include "prefix.h"
 
 using namespace QtConcurrent;
-Prefix::Prefix(QObject *parent, QString workdir) :
-		QObject(parent), _workdir (workdir),  s (new QSettings (_workdir + "/control", QSettings::IniFormat, this)), core (new corelib(parent))
+Prefix::Prefix(QObject *parent, QString workdir, corelib *lib) :
+		QObject(parent), _workdir (workdir),  s (new QSettings (_workdir + "/control", QSettings::IniFormat, this)), core (lib)
 {
 	db = QSqlDatabase::database();
 _prefix = s->value("application/prefix").toString();
@@ -228,7 +228,6 @@ QString Prefix::downloadWine() {
         if (!dir.exists())
             dir.mkdir(dir.path());
 		qDebug() << "WINE IS DOWNLOADING FROM" << distr << "to" <<QDir::tempPath();
-		  corelib * core = new corelib(this);
 		QString distrname =   core->downloadWine(distr);
 		if (distrname.isEmpty())
 			return "";
@@ -387,6 +386,7 @@ bool Prefix::runApplication(QString exe, QString diskroot, QString imageFile)
 			emit prefixNameNeed(prefixName); //если намереваемся ставить аппликуху, обязательно связываем этот сигнал со слотом, иначе краш и все такое.
 			if (prefixName.isEmpty())
 			{
+				emit error (tr("Fatal error: Prefix name is empty."));
 				return false;
 			}
 			else
@@ -409,8 +409,8 @@ bool Prefix::runApplication(QString exe, QString diskroot, QString imageFile)
 
 	env.insert("FILESDIR", _workdir + "/files");
 	env.insert("WINEDEBUG", "-all");
-	wineBin = wine(); //автоматически добавляет нужную запись в env.
 	installFirstApplication();
+	wineBin = wine(); //автоматически добавляет нужную запись в env.
 	//запуск Winetricks
 	lauchWinetricks(s->value("wine/components").toString().split(" ", QString::SkipEmptyParts));
 	if (imageFile.isEmpty())

@@ -31,7 +31,7 @@
 {
 Q_OBJECT
 public:
-    explicit Prefix(QObject *parent, QString workdir);
+	explicit Prefix(QObject *parent, QString workdir, corelib *lib);
 	QString prefixPath () {return _path;}
     QString prefixName () {return _prefix;}
     QString wine();
@@ -53,6 +53,7 @@ public:
   bool installFirstApplication ();
   bool checkWineDistr();
   bool hasDBEntry ();
+  QString getExeWorkingDirectory (QString);
 public slots:
   void lauch_c();
 
@@ -75,7 +76,6 @@ QSqlDatabase db;
 protected:
 void makefix (); //исправление реестра Wine: запуск winebrowser.exe -nohome %1 вместо winebrowser.exe -nohome
 void makeWineCdrom (const  QString &path, const QString &device= "/dev/cdrom");
-QString getExeWorkingDirectory (QString);
 
 };
 #endif // PREFIX_H

@@ -17,33 +17,29 @@
 */
 
 
-#ifndef SETTINGSDIALOG_H
-#define SETTINGSDIALOG_H
-
-#include <QDialog>
-#include <QFileDialog>
-#include "corelib.h"
-namespace Ui {
-    class SettingsDialog;
-}
-
-class SettingsDialog : public QDialog {
-    Q_OBJECT
+#ifndef WINEGAMEUI_H
+#define WINEGAMEUI_H
+#include "uiclient.h"
+#include <QtGui>
+class WinegameUi : public UiClient
+{
+	Q_OBJECT
 public:
-	SettingsDialog(QWidget *parent, corelib *lib);
-    ~SettingsDialog();
+	WinegameUi();
+	~WinegameUi();
+	void showNotify (QString title, QString body);
+	void error (QString title, QString text);
+	void showProgressBar (QString title); //показываем прогрессбар с заголовком title
+	   void progressText (QString text) ; //показать текст text на прогрессбаре
+	   void progressRange (int, int); //прогресс операции
+	   void endProgress (); //закрытие бара.
+	   int getVideoMemory();
 
-protected:
-    void changeEvent(QEvent *e);
-
+signals:
+	   void cancelOperation ();
 private:
-	corelib *core;
-    Ui::SettingsDialog *ui;
-private slots:
-	void on_cmdBrowseMount_clicked();
- void on_buttonBox_accepted();
- void on_cmdBrowseWine_clicked();
- void on_cmdBrowseWG_clicked();
+	   QProgressDialog *progress;
+
 };
 
-#endif // SETTINGSDIALOG_H
+#endif // WINEGAMEUI_H

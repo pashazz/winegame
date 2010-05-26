@@ -77,7 +77,7 @@ void DiscDetector::lauchApp()
 GameDialog *dlg = new GameDialog(0, gamefolder);
 if (dlg->exec() == QDialog::Accepted)
 {
-    Prefix *prefix = new Prefix (this, gamefolder);
+	Prefix *prefix = new Prefix (this, gamefolder, core);
     QDir prdir (prefix->prefixPath());
 
     if (prdir.exists())
@@ -99,7 +99,7 @@ if (dlg->exec() == QDialog::Accepted)
             env.insert("WINEPREFIX", prefix->prefixPath());
             env.insert("WINEDEBUG", "-all");
             p.setProcessEnvironment(env);
-            p.setWorkingDirectory(engine::getExeWorkingDirectory(myExe));
+			p.setWorkingDirectory(prefix->getExeWorkingDirectory(myExe));
             p.start(myWine, QStringList (myExe));
             p.waitForFinished(-1);
 
@@ -107,7 +107,7 @@ if (dlg->exec() == QDialog::Accepted)
         else {
         //TODO: создаем диалог редактирования виртуальной Windows
             dialog:
-PrefixDialog *pdlg = new PrefixDialog (0, gamefolder);
+PrefixDialog *pdlg = new PrefixDialog (0, gamefolder, core);
 pdlg->exec();
         delete pdlg;
 
@@ -115,10 +115,7 @@ pdlg->exec();
     }
     else{
     //создаем объект движка
-    engine *eng = new engine (this);
-    eng->setCdMode(true);
-    eng->setDiskpath(cdroot);
-    eng->lauch(gamefolder, false); //мы не будем показывать сообщение (установить еще) в конце.
+		//New prefix obj init
 }
 }
 dlg->deleteLater();

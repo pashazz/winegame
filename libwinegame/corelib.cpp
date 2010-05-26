@@ -20,11 +20,13 @@
 #include "corelib.h"
 #include "prefix.h"
 //The core of WineGame. Commonly used func.
-corelib::corelib(QObject *parent)
-    :QObject(parent)
+corelib::corelib(QObject *parent, UiClient *client)
+	:QObject(parent), ui (client)
 {
 	//Init Settings object
 	settings = new QSettings (config(), QSettings::IniFormat, this);
+	//Init gui object
+
 }
 
 QString corelib::whichBin(QString bin) {
@@ -52,7 +54,7 @@ if (!QFile::exists(wineDir() + "/installed.db"))
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 	db.setDatabaseName(wineDir() + "/installed.db");
 	if (!db.open()){
-		QMessageBox::critical(0, tr("Database error"), tr("Failed to create database for storing installed applications. See errors on console"));
+		ui->error(tr("Database error"), tr("Failed to create database for storing installed applications. See errors on console"));
 		qDebug() << "DB: error: " << db.lastError().text();
 		qApp->exit(-24);
 }
@@ -60,7 +62,7 @@ if (!QFile::exists(wineDir() + "/installed.db"))
 	q.prepare("CREATE TABLE Apps (id INTEGER PRIMARY KEY, prefix TEXT, wineprefix TEXT, wine TEXT)");
   if (!q.exec())
 	{
-	  QMessageBox::critical(0, tr("Database error"), tr("Failed to create table for storing installed applications. See errors on console"));
+	  ui->error( tr("Database error"), tr("Failed to create table for storing installed applications. See errors on console"));
 	  qDebug() << "DB: Query error " << q.lastError().text();
 	  qApp->exit (-24);
   }
@@ -71,7 +73,7 @@ else
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 	db.setDatabaseName(wineDir() + "/installed.db");
 	if (!db.open()){
-		QMessageBox::critical(0, tr("Database error"), tr("Failed to open database for storing installed applications. See errors on console"));
+		ui->error(tr("Database error"), tr("Failed to open database for storing installed applications. See errors on console"));
 		qDebug() << "DB: error: " << db.lastError().text();
 		qApp->exit(-24);
 }
@@ -101,30 +103,21 @@ QString corelib::downloadWine(QString url) //TODO: проверка на оши�
     //проверяем, есть ли у нас данный файл
     if (QFile::exists(wineFileName))
         return wineFileName;
-     showNotify(tr("Don`t worry!"), tr("Now WineGame will download some files, that will need for get your applicaton running"));
-  progress = new QProgressDialog(0);
+
+	ui->showNotify(tr("Don`t worry!"), tr("Now WineGame will download some files, that will need for get your applicaton running"));
      QEventLoop loop;
 QNetworkAccessManager *manager = new QNetworkAccessManager (this);
 QNetworkRequest req; //request для Url
-this->progress = progress;
 req.setUrl(QUrl(url));
 req.setRawHeader("User-Agent", "Winegame-Browser 0.1");
 QNetworkReply *reply = manager->get(req);
 connect (reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(setRange(qint64,qint64)));
 connect (reply, SIGNAL(finished()), &loop, SLOT(quit()));
 connect (reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT (error(QNetworkReply::NetworkError)));
-progress->setModal(true);
-progress->setWindowTitle(tr("Downloading Wine..."));
-progress->setLabelText(tr("Downloading %1").arg(url));
-QPushButton *but = new QPushButton  (progress);
-but->setFlat(true);
-but->setDisabled(false);
-but->setText(tr("Cancel"));
-connect (but, SIGNAL(clicked()), this, SLOT (exitApp()));
-progress->setCancelButton(but);
-progress->show();
+ui->showProgressBar(tr("Downloading Wine..."));
+ui->progressText(tr("Go, Baby, Go!"));
 loop.exec();
-progress->close();
+ui->endProgress();
 QByteArray buffer = reply->readAll();
 QFile file (wineFileName);
 if (file.open(QIODevice::WriteOnly))
@@ -134,7 +127,6 @@ if (file.open(QIODevice::WriteOnly))
                     }
 else
     qDebug() << "engine: error open file (WINEDISTR):" << file.errorString();
-progress->deleteLater();
 return downloadExitCode ? wineFileName : "";
 }
 
@@ -147,46 +139,68 @@ void corelib::error(QNetworkReply::NetworkError error)
    }
     else
     {
-		QMessageBox::warning(0, tr("Network error"), tr("Network error: %1. Exiting installation"));
+		QString errstr;
+		switch (error)
+		{
+		case QNetworkReply::ConnectionRefusedError:
+			errstr = tr("Connection refused");
+			break;
+		case QNetworkReply::RemoteHostClosedError:
+			errstr = tr("Remote host closed connection");
+			break;
+		case QNetworkReply::HostNotFoundError:
+			errstr = tr("Host not found");
+			break;
+		case QNetworkReply::TimeoutError:
+			errstr = tr("Connection timeout");
+			break;
+		case QNetworkReply::OperationCanceledError:
+			errstr = tr("Operation Canceled");
+			break;
+		case QNetworkReply::SslHandshakeFailedError:
+			errstr = tr("SSL error");
+			break;
+		case QNetworkReply::ProxyConnectionRefusedError:
+		case QNetworkReply::ProxyAuthenticationRequiredError:
+		case QNetworkReply::ProxyTimeoutError:
+		case QNetworkReply::ProxyNotFoundError:
+		case QNetworkReply::ProxyConnectionClosedError:
+		case QNetworkReply::UnknownProxyError:
+			errstr = tr("Proxy server error");
+			break;
+		case QNetworkReply::ContentAccessDenied:
+			errstr = tr("Acess denied");
+			break;
+		case QNetworkReply::ContentNotFoundError:
+		case QNetworkReply::ContentOperationNotPermittedError:
+			errstr = tr("File not found/Acess not permitted");
+			break;
+		case QNetworkReply::AuthenticationRequiredError:
+			errstr = tr ("Authentication Required");
+			break;
+		case QNetworkReply::ContentReSendError:
+			errstr = tr("Content resend error");
+			break;
+		default:
+			errstr = tr("Unknown error");
+			break;
+		}
+		ui->error(tr("Network error"), tr("Something went wrong! %1.").arg(errstr));
 	  downloadExitCode = false;
     }
 
 }
-void corelib::showNotify (QString header, QString body) //функция НУ СОВСЕМ не доделана.
-{
-/// знаю что тупизм,но никто не хочет помогать
-    if (QProcessEnvironment::systemEnvironment().contains("KDE_FULL_SESSION")) //пока кеды юзают KDialog
-        //вся земля юзает notify-send
-        //чезез kdialog:
-    {
-                             QStringList arguments;
-                            arguments << "--passivepopup" <<body;
-                            arguments << "--title"<<header;
-                            QProcess::startDetached("/usr/bin/kdialog",arguments);
-                                      }
-
-
-        //Через notify-send:
-    else
-    {
-                             QStringList arguments;
-                            arguments << header << body;
-                            QProcess::startDetached("/usr/bin/notify-send",arguments);
-                        }
-
-   }
 
 void corelib::setRange(qint64 aval, qint64 total)
 {
     int kbAval = aval;
     int kbTotal = total;
-    progress->setMaximum(kbTotal);
-    progress->setValue(kbAval);
+ui->progressRange(kbAval, kbTotal);
 }
 
 void corelib::exitApp()
 {
-	QMessageBox::critical(0, tr("Critical error"), tr("Wine distribution not downloaded, so exit installation."));
+	ui->error(tr("Critical error"), tr("Wine distribution not downloaded, so exit installation."));
 	downloadExitCode = false;
 }
 
@@ -234,14 +248,11 @@ void corelib::initconf()
 		return;
 	qDebug() << "winegame: Init configuration";
 
-	int mem = 0;
-	 mem= QInputDialog::getInt(0, QObject::tr("WineGame"), QObject::tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
-		if (mem == 0)
-			mem = 128;
-		setVideoMemory(mem);
-		setWineDir(QDir::homePath() + "/Windows");
-		setMountDir(QDir::homePath() + "/game");
-		setPackageDir("/usr/share/winegame");
+	int mem = ui->getVideoMemory();
+	setVideoMemory(mem);
+	setWineDir(QDir::homePath() + "/Windows");
+	setMountDir(QDir::homePath() + "/game");
+	setPackageDir("/usr/share/winegame");
 }
 
 QString corelib::wineDir() {
@@ -277,7 +288,7 @@ void corelib::setVideoMemory(int memory)
 	foreach (QFileInfo info, dir.entryInfoList(QDir::Dirs | QDir::Readable))
 	{
 		//construct prefix obj
-		Prefix *prefix = new Prefix (this, info.absoluteFilePath());
+		Prefix *prefix = new Prefix (this->parent(), info.absoluteFilePath(), this);
 		if (prefix->hasDBEntry())
 		{
 			prefix->checkWineDistr();
