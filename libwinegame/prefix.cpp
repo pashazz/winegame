@@ -87,7 +87,7 @@ return wine;
 
 void Prefix::lauch_c()
 {
-    QDesktopServices::openUrl(QUrl(_path + "/drive_c"));
+	QDesktopServices::openUrl(QUrl(_path + "/drive_c")); //bad func. WINEPREFIX and WINE not set
 }
 void Prefix::lauchWinetricks(QStringList args)
 {
@@ -337,6 +337,11 @@ void Prefix::getPrefixPath()
 			_path=q.value(0).toString();
 			if (!_path.isEmpty())
 				return;
+		}
+		else
+		{
+			_path = core->wineDir() + QDir::separator() + _prefix;
+			return;
 		}
 	}
 		//ничего у нас не получилось, используем старый fallback-метод

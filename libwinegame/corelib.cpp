@@ -24,8 +24,7 @@ corelib::corelib(QObject *parent)
     :QObject(parent)
 {
 	//Init Settings object
-	QString config = QDir::homePath() + "/.config/winegame.conf";
-	settings = new QSettings (config, QSettings::IniFormat, this);
+	settings = new QSettings (config(), QSettings::IniFormat, this);
 }
 
 QString corelib::whichBin(QString bin) {
@@ -231,7 +230,7 @@ void corelib::runSingleExe(QStringList exe)
 void corelib::initconf()
 {
 	//Init our configuration.
-	if (QFile::exists(QDir::homePath() + "/.config/winegame.conf"))
+	if (QFile::exists(config()))
 		return;
 	qDebug() << "winegame: Init configuration";
 
@@ -343,4 +342,13 @@ void corelib::setForceFuseiso(bool value)
 	QFile file (corelib::whichBin("fuseiso"));
 	if (file.exists())
 		settings->setValue("ForceFuseiso", value);
+}
+
+QString corelib::config()
+{
+	if (QProcessEnvironment::systemEnvironment().contains("XDG_CONFIG_HOME"))
+		return QProcessEnvironment::systemEnvironment().value("XDG_CONFIG_HOME") + QDir::separator() + "winegame.conf";
+	else
+		return QDir::homePath() + "/.cofig/winegame.conf";
+
 }

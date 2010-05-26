@@ -70,6 +70,7 @@ private:
 
 protected:
   void initconf ();
+  inline QString config();
 
 };
 
