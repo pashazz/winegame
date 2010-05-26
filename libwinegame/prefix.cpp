@@ -56,6 +56,8 @@ QFuture <void> fProc = run(rp, tr("%1  \"%2\"").arg(wine()).arg(exe),  this->env
 void Prefix::removePrefix()
 {
     rp("rm -rf " + this->_path, QProcessEnvironment::systemEnvironment());
+	if (isPreset())
+		return;
 	QSqlQuery q(db);
 	q.prepare("DELETE FROM Apps WHERE prefix=:pr");
 	q.bindValue(":pr", _prefix);
@@ -364,54 +366,7 @@ void Prefix::makeDesktopIcon(const QString &path, const QString &name)
 	file.close();
 }
 
-QString Prefix::getRunnableExe()
-{
-	QString exe;
-	QString diskpath;
-	//Получаем diskpath
-	if (qApp->arguments().length() > 1)
-	{
-	   //Анализируем значение 2-го аргумента
-		QFileInfo info (qApp->arguments().at(1));
-		qDebug() << qApp->arguments().at(1) << "is the path";
 
-		if (info.isDir()) //Нас вызвали с директорией.
-			diskpath = info.absoluteFilePath();
-		else if (info.isFile()) //Логично, это образ ISO/MDF/BIN/NRG
-			diskpath = core->mountDir();
-
-		if (diskpath.isEmpty())
-			return selectExe();
-		//force application/setup
-			if (!s->value("application/setup").isNull()){
-		exe = diskpath + QDir::separator() +  s->value("application/setup").toString();
-		if (QFile::exists(exe))
-			return exe;
-	}
-
-		//Теперь просмотрим AutoRun
-		if (!core->autorun(diskpath).isEmpty())
-		{
-			QSettings autorun(core->autorun(diskpath), QSettings::IniFormat, this);
-			autorun.beginGroup("autorun");
-			if (!autorun.value("open").toString().isEmpty())
-			{
-				exe = diskpath + QDir::separator() + autorun.value("open").toString();
-		}
-			if (QFile::exists(exe))
-				return exe;
-		}
-	}
-	//А теперь спросим EXE у пользователя.
-return selectExe();
-}
-
-QString Prefix::selectExe()
-{
-	QString
-	exe = QFileDialog::getOpenFileName(0,  tr("Select EXE file"), QDir::homePath(), tr("Windows executables (*.exe)"));
-	return exe;
-}
 
 bool Prefix::runApplication(QString exe, QString diskroot, QString imageFile)
 {
@@ -432,7 +387,6 @@ bool Prefix::runApplication(QString exe, QString diskroot, QString imageFile)
 			emit prefixNameNeed(prefixName); //если намереваемся ставить аппликуху, обязательно связываем этот сигнал со слотом, иначе краш и все такое.
 			if (prefixName.isEmpty())
 			{
-				emit error (tr("Fatal error: Prefix name is empty."));
 				return false;
 			}
 			else
@@ -450,23 +404,122 @@ bool Prefix::runApplication(QString exe, QString diskroot, QString imageFile)
 		}
 	}
 	QString wineBin;
-
 	if (!diskroot.isEmpty())
 		env.insert("CDROOT", diskroot);
 
 	env.insert("FILESDIR", _workdir + "/files");
+	env.insert("WINEDEBUG", "-all");
 	wineBin = wine(); //автоматически добавляет нужную запись в env.
-
+	installFirstApplication();
 	//запуск Winetricks
 	lauchWinetricks(s->value("wine/components").toString().split(" ", QString::SkipEmptyParts));
+	if (imageFile.isEmpty())
+		makeWineCdrom(diskroot);
+	else
+		makeWineCdrom(diskroot, imageFile);
 
 	/// TODO: работа по копированию файлов для последующей их установки с ЖД, если необходимо.
+	/// мы будем поддерживать мультидисковые игры (если и будем) только с реальных дисков.
 	//пока работаем так
+	QProcess *proc = new QProcess (this);
+	proc->setProcessEnvironment(env);
+	proc->setWorkingDirectory(getExeWorkingDirectory(exe));
+	if (QFile::exists(_workdir + "/preinst"))
+	{
+		proc->start ("\"" +_workdir + "/preinst\"");
+		proc->waitForFinished(-1);
+	}
 
+	qDebug() << tr("engine: starting Windows program %1 with wine binary %2").arg(exe).arg(wineBin) << proc->workingDirectory();
+	qDebug() << wineBin + " \"" + exe  +"\"" ;
+	proc->start(wineBin + " \"" + exe  +"\"" );
+	proc->waitForFinished(-1);
 
+	//ну а теперь финальная часть, запуск postinst
+	if (QFile::exists(_workdir + "/postinst"))
+	{
+	proc->start("\"" + _workdir + "/postinst\"");
+	proc->waitForFinished(-1);
+	makefix();
+	}
+	setMemory();
+
+return true;
 }
 
-void Prefix::makeWineCdrom(QString path)
+void Prefix::makeWineCdrom(const QString &path, const QString &device)
+		//Path - путь к CDROM
+		//Device - путь к реальному файлу устройства. /dev/cdrom по умолчанию, это может быть файл образа
 {
-///Куча незаконченного кода, оставляю пылиться передэкзаменами
+	if (path.isEmpty())
+		return;
+	qDebug() << "engine: make DOS CD/DVD drive D" << path << "at" << device;
+	QFile::link(path, _path + "/dosdevices/d:"); //Drive letter D: is hardcoded
+	if (!device.isEmpty())
+	QFile::link(device, _path + "/dosdevices/d::");
+}
+
+void Prefix::makefix()
+{
+	QFile file (_path + "/system.reg");
+	QTextStream stream (&file);
+   //сначала откроем реестр для чтения
+	file.open(QIODevice::ReadOnly | QIODevice::Text);
+	QString registry = stream.readAll();
+	file.close();
+	registry.replace ("winebrowser.exe -nohome", "winebrowser.exe -nohome %1");
+	file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate);
+	stream << registry;
+	file.close();
+}
+QString Prefix::getExeWorkingDirectory(QString exe)
+{
+	QFileInfo info (exe);
+	return info.absolutePath();
+}
+
+QString Prefix::getRunnableExe()
+{
+QString exe;
+QString diskpath;
+//Получаем diskpath
+if (qApp->arguments().length() > 1)
+{
+//Анализируем значение 2-го аргумента
+QFileInfo info (qApp->arguments().at(1));
+qDebug() << qApp->arguments().at(1) << "is the path";
+
+if (info.isDir()) //Нас вызвали с директорией.
+diskpath = info.absoluteFilePath();
+else if (info.isFile()) //Логично, это образ ISO/MDF/BIN/NRG
+diskpath = core->mountDir();
+
+if (diskpath.isEmpty())
+{
+	emit fileNeed(exe);
+	return exe;
+}
+//force application/setup
+if (!s->value("application/setup").isNull()){
+exe = diskpath + QDir::separator() + s->value("application/setup").toString();
+if (QFile::exists(exe))
+return exe;
+}
+
+//Теперь просмотрим AutoRun
+if (!core->autorun(diskpath).isEmpty())
+{
+QSettings autorun(core->autorun(diskpath), QSettings::IniFormat, this);
+autorun.beginGroup("autorun");
+if (!autorun.value("open").toString().isEmpty())
+{
+exe = diskpath + QDir::separator() + autorun.value("open").toString();
+}
+if (QFile::exists(exe))
+return exe;
+}
+}
+//А теперь спросим EXE у пользователя.
+emit fileNeed(exe);
+return exe;
 }

@@ -60,6 +60,7 @@ public slots:
 signals:
 void prefixNameNeed (QString &name);
 void error(const  QString &errorString);
+void fileNeed (QString &fileName);
 private:
 QString _prefix;
 QString _path;
@@ -72,7 +73,9 @@ void getPrefixPath();
 QSqlDatabase db;
 
 protected:
-QString selectExe ();
-void makeWineCdrom (QString path);
+void makefix (); //исправление реестра Wine: запуск winebrowser.exe -nohome %1 вместо winebrowser.exe -nohome
+void makeWineCdrom (const  QString &path, const QString &device= "/dev/cdrom");
+QString getExeWorkingDirectory (QString);
+
 };
 #endif // PREFIX_H

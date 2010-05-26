@@ -131,16 +131,69 @@ if (dir.exists())
   return;
     }
 }
-engine *eng = new engine (this);
-   eng->setDiskpath(diskpath);
-   eng->setCdMode(cdMode);
-   eng->lauch(pkgpath);
+//т.к. запуск идет из MainWindow, мы заранее знаем, что ни о каких исошках не может быть и  реч
+QStringList filters;
+filters.push_back(tr("Windows Executables (*.exe)"));
+filters.push_back(tr("Microsoft Installers (*.msi)"));
+QString filter;
+QString fileName =  QFileDialog::getOpenFileName(this, tr("Select EXE/MSI file"), QDir::homePath(), filters.join(";;"), &filter);
+if (fileName.isEmpty())
+{
+	statusBar()->showMessage(tr("No file selected, aborting"));
+	return;
+}
+if (filter == filters.at(1)) //MSI
 
+{
+	//prepend "msiexec"
+	fileName.prepend("msiexec ");
+}
+connect (prefix, SIGNAL(fileNeed(QString&)),this, SLOT(getFileName(QString&)));
+connect (prefix, SIGNAL(prefixNameNeed(QString&)), this, SLOT (getPrefixName(QString&)));
+connect (prefix, SIGNAL(error(QString)), this, SLOT(showError(QString)));
+bool res  = prefix->runApplication(fileName, "", "");
+if (!res)
+showError(tr("Installation error"));
+
+}
+
+void MainWindow::getFileName(QString &fileName)
+{
+	fileName = QFileDialog::getOpenFileName(0,  tr("Выберите EXE файл"), QDir::homePath(), tr("Windows executables (*.exe)"));
+}
+
+void MainWindow::getPrefixName(QString &prefixName)
+{
+	dialog:
+	QString myPrefix =QInputDialog::getText(0, tr("Give a name for your application"), tr ("Give a short latin name for your application. <br> It will be installed in %1/Windows/APPLICATION NAME/drive_c").arg(QDir::homePath()));
+	if (myPrefix.isEmpty())
+	{
+		QMessageBox::critical(0, tr("No name specified"), tr ("Abort. Reason: No application name specified"));
+		prefixName = "";
+		return;
+	}
+	//проверим, есть ли такой префикс уже.
+	QDir dir;
+	dir.setPath(core->wineDir() + QDir::separator() + myPrefix);
+	if (dir.exists()){
+
+		QMessageBox::warning(0, tr("Application with this name is already installed."), tr("To force installation process, remove directory %1.").arg(core->wineDir() +QDir::separator() + myPrefix));
+		//я знаю, это плохо
+		goto dialog;
+	}
+	if (!corelib::checkPrefixName(myPrefix))
+		goto dialog;
+	prefixName = myPrefix;
+	return;
+}
+
+void MainWindow::showError(QString error)
+{
+	QMessageBox::critical(this, tr("Engine execution error"), error);
 }
 
 void MainWindow::on_buttonBox_accepted()
 {
-
    if (!ui->lstGames->selectedItems().isEmpty()) {
 	   {
 		   if (ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString().isEmpty())
@@ -148,9 +201,7 @@ void MainWindow::on_buttonBox_accepted()
 	   lauchEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
 		buildList();
 	}
-
     }
-
     else
     {
         QMessageBox::warning(this, tr("Warning"), tr("Select item to run"));
@@ -167,7 +218,6 @@ void MainWindow::saveGeom()
 
 void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
-	/// TODO: нужно реализовать установку новых приложений в текущий префикс (здесь)
 	Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString());
 	if (!prefix->hasDBEntry())
 		return; //нету установленных приложений здесь.

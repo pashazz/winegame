@@ -54,6 +54,11 @@ private slots:
     void on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column);
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
+
+	//Обработчики событий prefix
+void showError (QString error);
+void getPrefixName (QString &prefixName);
+void getFileName (QString &fileName);
 };
 
 #endif // MAINWINDOW_H
