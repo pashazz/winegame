@@ -33,7 +33,6 @@ GameDialog::GameDialog(QWidget *parent, QString path) :
 	else
 	   ui->lblIcon->setPixmap(getIcoFromDisc());
 
-
     ui->lblIcon->setText("");
     ui->lblName->setText(tr("A Microsoft Windows(r) application is found on this disc. <br><br><b>%1</b><br><br> Would you like to install it? ").arg(prefix->name()));
     ui->lblDesc->setText(prefix->note());
@@ -59,7 +58,6 @@ if (qApp->arguments().length() > 1)
 }
     else
         return QPixmap(_path + "/icon");
-
 }
 return QPixmap(_path + "/icon");
 }

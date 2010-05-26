@@ -19,33 +19,33 @@
 #include "ui_mainwindow.h"
 #include "about.h"
 MainWindow::MainWindow(corelib *lib, QWidget *parent) :
-	QMainWindow(parent),
-	ui(new Ui::MainWindow),
-	core (lib)
+		QMainWindow(parent),
+		ui(new Ui::MainWindow),
+		core (lib)
 {
     ui->setupUi(this);
-	 QFile f (QDir::homePath() + "/.config/winegame.geom");
+	QFile f (QDir::homePath() + "/.config/winegame.geom");
     if (f.open(QIODevice::ReadOnly))
     {
-    restoreGeometry(f.readAll());
-    f.close();
-}
+		restoreGeometry(f.readAll());
+		f.close();
+	}
     if (qApp->arguments().empty())
         cdMode = false; //Not to check CD
     else
     {
         if (qApp->arguments().length() > 1) {
-        QString cdpath = qApp->arguments().at(1);
-        QDir td (QDir::rootPath());
-        cdMode = td.exists(cdpath);
-        diskpath = cdpath;
-    }
+			QString cdpath = qApp->arguments().at(1);
+			QDir td (QDir::rootPath());
+			cdMode = td.exists(cdpath);
+			diskpath = cdpath;
+		}
         else
             cdMode = false;
     }
-    //показываем в статусбаре путь к диску
-    QLabel * cdlab = new QLabel (diskpath);
-   statusBar()->addWidget(cdlab);
+	//показываем в статусбаре путь к диску
+QLabel * cdlab = new QLabel (diskpath);
+statusBar()->addWidget(cdlab);
 buildList();
 db = QSqlDatabase::database();
 }

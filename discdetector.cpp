@@ -111,7 +111,8 @@ if (dlg->exec() == QDialog::Accepted)
 			delete pdlg;
     }
     }
-    else{
+	else
+	{
     //создаем объект движка
 		//соединяем сигнал со слотом
 }

@@ -26,7 +26,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-//загружаем локализацию
+	//загружаем локализацию
     QTranslator qt;
     qt.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     a.installTranslator(&qt);
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
      QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
-      //Set some refspecs
+	 //Set some refspecs
       a.setApplicationName("WineGame");
       a.setApplicationVersion("0.0.1");
 	  a.setOrganizationName("Pashazz");
@@ -51,12 +51,12 @@ int main(int argc, char *argv[])
 	  WinegameUi *client = new WinegameUi(); //опасные утечки памяти
 
 		  corelib *core =  new corelib (0, client);
-	  core->init();
+		  core->init();
 	  //Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
-	  if (a.arguments().length() > 2)
-	  {
-		  if (a.arguments().at(1) == "-r")
+		  if (a.arguments().length() > 2)
 		  {
+		  if (a.arguments().at(1) == "-r")
+			  {
 			  QStringList exe = a.arguments();
 			  exe.removeFirst();
 			  exe.removeOne("-r");
@@ -65,58 +65,58 @@ int main(int argc, char *argv[])
 		  }
 	  }
 
- //проверяем главную папочку  WineGame
+		  //проверяем главную папочку  WineGame
 
-if (a.arguments().length() > 1) {
-    QFileInfo info (a.arguments().at(1));
-    if (!info.exists())
-    {
-        QMessageBox::critical(0,QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
-        return -3;
-}
+		  if (a.arguments().length() > 1) {
+			  QFileInfo info (a.arguments().at(1));
+			  if (!info.exists())
+			  {
+				  QMessageBox::critical(0,QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
+				  return -3;
+			  }
 
-    if (info.isDir()) //запускаем детектор диска
-    {
-        if (!QFile::exists(core->autorun(info.absoluteFilePath())) && (!QFile::exists(info.absoluteFilePath() + "/Setup.exe"/*блядь, это все EA Games кривые*/)))
-        {
-            QMessageBox::critical(0, QObject::tr("I am confused"), QObject::tr ("This disc is not Windows Software disc, exiting"));
-            return -2;
-        }
-		DiscDetector det (core);
-        if (det.tryDetect(info.absoluteFilePath()))
-        {
-            det.lauchApp();
-            return 0;
-        }
-        else
-        {
-	 DiskDialog *dlg = new DiskDialog (0, core,  a.arguments().at(1));
-	 //run diskdialog and exit
-	 dlg->exec();
-	return 0;
-    }
-    }
-    else if (info.isFile())
-    {
-        //запуск IsoMaster
+			  if (info.isDir()) //запускаем детектор диска
+			  {
+				  if (!QFile::exists(core->autorun(info.absoluteFilePath())) && (!QFile::exists(info.absoluteFilePath() + "/Setup.exe"/*блядь, это все EA Games кривые*/)))
+				  {
+					  QMessageBox::critical(0, QObject::tr("I am confused"), QObject::tr ("This disc is not Windows Software disc, exiting"));
+					  return -2;
+				  }
+				  DiscDetector det (core);
+				  if (det.tryDetect(info.absoluteFilePath()))
+				  {
+					  det.lauchApp();
+					  return 0;
+				  }
+				  else
+				  {
+					  DiskDialog *dlg = new DiskDialog (0, core,  a.arguments().at(1));
+					  //run diskdialog and exit
+					  dlg->exec();
+					  return 0;
+				  }
+			  }
+			  else if (info.isFile())
+			  {
+				  //запуск IsoMaster
 
-		IsoMaster m (core, info.absoluteFilePath());
-        qDebug() << "iso: [master] - sending disk image file" << info.absoluteFilePath();
+				  IsoMaster m (core, info.absoluteFilePath());
+				  qDebug() << "iso: [master] - sending disk image file" << info.absoluteFilePath();
 
-        bool res = m.lauchApp();
-        if (!res)
-        {
-            QMessageBox::warning(0, QObject::tr("Error"), QObject::tr ("Error mount/unmount image"));
-            return -5;
-        }
-        //Чистим за собой
-        return 0;
-    }
+				  bool res = m.lauchApp();
+				  if (!res)
+				  {
+					  QMessageBox::warning(0, QObject::tr("Error"), QObject::tr ("Error mount/unmount image"));
+					  return -5;
+				  }
+				  //Чистим за собой
+				  return 0;
+			  }
 
-}
-client->showNotify(QObject::tr("Hello!"),QObject::tr("Please connect to internet :)"));
-	MainWindow w(core);
-    w.show();
-    return a.exec();
+		  }
+		  client->showNotify(QObject::tr("Hello!"),QObject::tr("Please connect to internet :)"));
+		  MainWindow w(core);
+		  w.show();
+		  return a.exec();
 
-}
+	  }

@@ -60,9 +60,7 @@ void DiskDialog::buildList()
 		  item->setData(Qt::UserRole, info.absoluteFilePath());
 		  if (!prefix->isPreset())
 			  item->setIcon(icon (prefix->projectWorkingDir()));
-		  ui->lstPresets->addItem(item);
-
-
+		  ui->lstPresets->addItem(item);  
 	}
 	ui->lstPresets->sortItems(Qt::AscendingOrder);
 }
