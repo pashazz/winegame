@@ -41,7 +41,6 @@ void corelib::init()
 {
 	if (!QFile::exists(whichBin("wine")))
 	{
-		qDebug() << "FATAL!!!! Wine not found, I WILL QUIT!";
 		qApp->exit(-4);
 	}
 initconf();

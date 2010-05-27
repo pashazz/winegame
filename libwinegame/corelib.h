@@ -31,33 +31,32 @@ class  WINESTUFFSHARED_EXPORT corelib : public QObject
 public:
 	corelib(QObject *parent, UiClient *client);
 	virtual ~corelib();
-     static QString whichBin (QString bin);
-	  void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
-	 static bool unpackWine(QString distr, QString destination);
-     static void showNotify (QString, QString);
-     static bool checkPrefixName (QString);
-	  void runSingleExe (QStringList exe) ;
-	 /// Блок настроек
-	 QString wineDir ();
-	 QString packageDir ();
-	 QString mountDir ();
-	 QString videoMemory ();
-	 bool forceFuseiso ();
-	 void setForceFuseiso(bool);
-	 void syncSettings() {settings->sync();}
-	 static QString autorun (QString diskRoot);
-	 void setWineDir (QString dir);
-	 void setPackageDir (QString dir);
-	 void setMountDir (QString dir);
-	 void setVideoMemory (int memory);
-	 QString getSudoProg ();
-	 //void updateWines ();
-	  QString downloadWine(QString url);
+	static QString whichBin (QString bin);
+	void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
+	static bool unpackWine(QString distr, QString destination);
+	static bool checkPrefixName (QString);
+	void runSingleExe (QStringList exe) ;
+	/// Блок настроек
+	QString wineDir ();
+	QString packageDir ();
+	QString mountDir ();
+	QString videoMemory ();
+	bool forceFuseiso ();
+	void setForceFuseiso(bool);
+	void syncSettings() {settings->sync();}
+	static QString autorun (QString diskRoot);
+	void setWineDir (QString dir);
+	void setPackageDir (QString dir);
+	void setMountDir (QString dir);
+	void setVideoMemory (int memory);
+	QString getSudoProg ();
+	//void updateWines ();
+	QString downloadWine(QString url);
 
-	  UiClient * client () {return ui;}
+	UiClient * client () {return ui;}
 private slots:
-     void error (QNetworkReply::NetworkError);
-     void setRange (qint64, qint64); //заглушка для QProgressDialog
+	void error (QNetworkReply::NetworkError);
+	void setRange (qint64, qint64); //заглушка для QProgressDialog
 	void exitApp();
 
 private:
@@ -67,8 +66,8 @@ private:
 	bool downloadExitCode;
 
 protected:
-  void initconf ();
-  inline QString config();
+	void initconf ();
+	inline QString config();
 
 };
 
