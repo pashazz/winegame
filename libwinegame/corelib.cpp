@@ -45,9 +45,6 @@ void corelib::init()
 	}
 initconf();
 //Init our DB.
-QDir dir (wineDir());
-if (!dir.exists())
-  dir.mkdir(dir.path());
 if (!QFile::exists(wineDir() + "/installed.db"))
 {
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
@@ -249,9 +246,18 @@ void corelib::initconf()
 
 	int mem = ui->getVideoMemory();
 	setVideoMemory(mem);
-	setWineDir(QDir::homePath() + "/Windows");
-	setMountDir(QDir::homePath() + "/game");
+	setWineDir(QDir::homePath() + "/.winegame/windows");
+	setMountDir(QDir::homePath() + "/.winegame/mounts");
+	setDiscDir(QDir::homePath() + "/.winegame/disc");
 	setPackageDir("/usr/share/winegame");
+	//check if dirs exists
+QStringList paths = QStringList () << wineDir() << mountDir() /*<< discDir()*/;
+foreach (QString path, paths)
+{
+	QDir dir (path);
+	if (!dir.exists())
+		dir.mkpath(dir.path());
+}
 }
 
 QString corelib::wineDir() {
@@ -352,6 +358,16 @@ void corelib::setForceFuseiso(bool value)
 	QFile file (corelib::whichBin("fuseiso"));
 	if (file.exists())
 		settings->setValue("ForceFuseiso", value);
+}
+
+void corelib::setDiscDir(QString dir)
+{
+	settings->setValue("DiscDir", dir);
+}
+
+QString corelib::discDir()
+{
+	return settings->value("DiscDir").toString();
 }
 
 QString corelib::config()

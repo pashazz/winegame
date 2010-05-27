@@ -7,20 +7,16 @@ QT += network \
     sql
 SOURCES += main.cpp \
     mainwindow.cpp \
-    discdetector.cpp \
     gamedialog.cpp \
     prefixdialog.cpp \
-    isomaster.cpp \
     diskdialog.cpp \
     settingsdialog.cpp \
     about.cpp \
     shortcutdialog.cpp \
     winegameui.cpp
 HEADERS += mainwindow.h \
-    discdetector.h \
     gamedialog.h \
     prefixdialog.h \
-    isomaster.h \
     diskdialog.h \
     settingsdialog.h \
     about.h \

@@ -23,6 +23,28 @@
 #include "isomaster.h"
 #include <QDir>
 #include "winegameui.h"
+#include "dvdrunner.h"
+
+void runDVD (QString path, corelib *lib) //запуск с DVD
+{
+	DVDRunner *runner = new DVDRunner (lib, path);
+	if (runner->success())
+	{
+		Prefix *prefix =  runner->prefix();
+		GameDialog *dlg = new GameDialog (0, prefix->projectWorkingDir());
+		if (dlg->exec() == QDialog::Rejected)
+			return;
+		qDebug() << "Installing conf " << prefix->name();
+		prefix->runApplication(runner->exe(), runner->diskDirectory(), runner->imageFile());
+	}
+	else
+	{
+		qDebug() << "Not success";
+		/* выбор игры здесь*/
+		return;
+	}
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -65,8 +87,6 @@ int main(int argc, char *argv[])
 		  }
 	  }
 
-		  //проверяем главную папочку  WineGame
-
 		  if (a.arguments().length() > 1) {
 			  QFileInfo info (a.arguments().at(1));
 			  if (!info.exists())
@@ -74,46 +94,10 @@ int main(int argc, char *argv[])
 				  QMessageBox::critical(0,QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
 				  return -3;
 			  }
-
-			  if (info.isDir()) //запускаем детектор диска
-			  {
-				  if (!QFile::exists(core->autorun(info.absoluteFilePath())) && (!QFile::exists(info.absoluteFilePath() + "/Setup.exe"/*блядь, это все EA Games кривые*/)))
-				  {
-					  QMessageBox::critical(0, QObject::tr("I am confused"), QObject::tr ("This disc is not Windows Software disc, exiting"));
-					  return -2;
-				  }
-				  DiscDetector det (core);
-				  if (det.tryDetect(info.absoluteFilePath()))
-				  {
-					  det.lauchApp();
-					  return 0;
-				  }
-				  else
-				  {
-					  DiskDialog *dlg = new DiskDialog (0, core,  a.arguments().at(1));
-					  //run diskdialog and exit
-					  dlg->exec();
-					  return 0;
-				  }
-			  }
-			  else if (info.isFile())
-			  {
-				  //запуск IsoMaster
-
-				  IsoMaster m (core, info.absoluteFilePath());
-				  qDebug() << "iso: [master] - sending disk image file" << info.absoluteFilePath();
-
-				  bool res = m.lauchApp();
-				  if (!res)
-				  {
-					  QMessageBox::warning(0, QObject::tr("Error"), QObject::tr ("Error mount/unmount image"));
-					  return -5;
-				  }
-				  //Чистим за собой
-				  return 0;
+			  runDVD(a.arguments().at(1), core);
+			  return 0;
 			  }
 
-		  }
 		  client->showNotify(QObject::tr("Hello!"),QObject::tr("Please connect to internet :)"));
 		  MainWindow w(core);
 		  w.show();

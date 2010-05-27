@@ -3,16 +3,18 @@
 # -------------------------------------------------
 QT += network \
     sql
-QT -=gui
+QT -= gui
 TARGET = winestuff
 TEMPLATE = lib
 DEFINES += WINESTUFF_LIBRARY
-SOURCES +=   corelib.cpp \
-	prefix.cpp
+SOURCES += corelib.cpp \
+    prefix.cpp \
+    dvdrunner.cpp
 HEADERS += libwinegame_global.h \
     corelib.h \
     prefix.h \
-    uiclient.h
+    uiclient.h \
+    dvdrunner.h
 isEmpty ($$PREFIX)
 :PREFIX = /usr
 target.path = $$PREFIX/lib

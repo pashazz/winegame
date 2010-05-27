@@ -18,7 +18,7 @@
 
 
 #include "prefix.h"
-
+#include <limits>
 using namespace QtConcurrent;
 Prefix::Prefix(QObject *parent, QString workdir, corelib *lib) :
 		QObject(parent), _workdir (workdir),  s (new QSettings (_workdir + "/control", QSettings::IniFormat, this)), core (lib)
@@ -466,48 +466,21 @@ QString Prefix::getExeWorkingDirectory(QString exe)
 	return info.absolutePath();
 }
 
-QString Prefix::getRunnableExe()
+QString Prefix::setup()
 {
-QString exe;
-QString diskpath;
-//Получаем diskpath
-if (qApp->arguments().length() > 1)
-{
-//Анализируем значение 2-го аргумента
-QFileInfo info (qApp->arguments().at(1));
-qDebug() << qApp->arguments().at(1) << "is the path";
-
-if (info.isDir()) //Нас вызвали с директорией.
-diskpath = info.absoluteFilePath();
-else if (info.isFile()) //Логично, это образ ISO/MDF/BIN/NRG
-diskpath = core->mountDir();
-
-if (diskpath.isEmpty())
-{
-	emit fileNeed(exe);
-	return exe;
-}
-//force application/setup
-if (!s->value("application/setup").isNull()){
-exe = diskpath + QDir::separator() + s->value("application/setup").toString();
-if (QFile::exists(exe))
-return exe;
+	return s->value("application/setup").toString();
 }
 
-//Теперь просмотрим AutoRun
-if (!core->autorun(diskpath).isEmpty())
+bool Prefix::isMulti()
 {
-QSettings autorun(core->autorun(diskpath), QSettings::IniFormat, this);
-autorun.beginGroup("autorun");
-if (!autorun.value("open").toString().isEmpty())
+	return s->value("disc/multicd").toBool();
+}
+ short int Prefix::discCount()
 {
-exe = diskpath + QDir::separator() + autorun.value("open").toString();
-}
-if (QFile::exists(exe))
-return exe;
-}
-}
-//А теперь спросим EXE у пользователя.
-emit fileNeed(exe);
-return exe;
+	 if (s->value("disc/count").toInt() > SHRT_MAX)
+	 {
+		 core->client()->error(tr("Package error"), "Olololo error");
+		 return 0;
+	 }
+	return s->value("disc/count").toInt();
 }

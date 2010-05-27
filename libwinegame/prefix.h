@@ -23,10 +23,10 @@
 #include <QtCore>
 #include "libwinegame_global.h"
 #include "corelib.h"
-
  class WINESTUFFSHARED_EXPORT  Prefix : public QObject
 {
 Q_OBJECT
+
 public:
 	explicit Prefix(QObject *parent, QString workdir, corelib *lib);
 	QString prefixPath () {return _path;}
@@ -36,10 +36,12 @@ public:
    QString name ();
    QString note ();
    QIcon icon ();
-   QString getRunnableExe();
+   QString setup (); //application/setup value
    bool runApplication (QString exe, QString diskroot = "", QString imageFile = ""); //well, it`s helper.
   void makeDesktopIcon (const QString &path, const  QString &name);
   bool isPreset();
+  bool isMulti();
+   short int discCount();
   QString projectWorkingDir () {return _workdir;}
   QProcessEnvironment envs () {return env;}
   //Запуск программы в данном Prefix
@@ -57,7 +59,6 @@ public slots:
 
 signals:
 void prefixNameNeed (QString &name);
-void fileNeed (QString &fileName);
 private:
 QString _prefix;
 QString _path;

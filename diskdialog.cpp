@@ -75,8 +75,8 @@ void DiskDialog::on_buttonBox_accepted()
 	qDebug() << "ddlg: lauching....";\
 	if (prefix->hasDBEntry())
 	{
-		QString exe = prefix->getRunnableExe();
-		prefix->runProgram(exe);
+//		QString exe = prefix->getRunnableExe();
+//		prefix->runProgram(exe);
 	}
 	else
 	{

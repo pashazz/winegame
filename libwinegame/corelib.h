@@ -41,6 +41,7 @@ public:
 	QString packageDir ();
 	QString mountDir ();
 	QString videoMemory ();
+	QString discDir();
 	bool forceFuseiso ();
 	void setForceFuseiso(bool);
 	void syncSettings() {settings->sync();}
@@ -49,6 +50,7 @@ public:
 	void setPackageDir (QString dir);
 	void setMountDir (QString dir);
 	void setVideoMemory (int memory);
+	void setDiscDir(QString dir);
 	QString getSudoProg ();
 	//void updateWines ();
 	QString downloadWine(QString url);
