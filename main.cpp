@@ -18,12 +18,11 @@
 
 
 #include "mainwindow.h"
-#include "discdetector.h"
 #include "diskdialog.h"
-#include "isomaster.h"
 #include <QDir>
 #include "winegameui.h"
 #include "dvdrunner.h"
+#include "gamedialog.h"
 
 void runDVD (QString path, corelib *lib) //запуск с DVD
 {
@@ -40,9 +39,10 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	else
 	{
 		qDebug() << "Not success";
-		/* выбор игры здесь*/
-		return;
+		DiskDialog *dlg = new DiskDialog (0, runner, lib);
+		dlg->exec();
 	}
+	runner->cleanup();
 }
 
 int main(int argc, char *argv[])

@@ -93,3 +93,14 @@ void WinegameUi::progressText(QString text)
 {
 	progress->setLabelText(text);
 }
+
+bool WinegameUi::questionDialog(const QString &title, const QString &text)
+{
+	return QMessageBox::question(0, title, text) == QMessageBox::Yes;
+}
+
+void WinegameUi::infoDialog(const QString &title, const QString &text)
+{
+	QMessageBox::information(0, title, text);
+	return;
+}

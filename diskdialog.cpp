@@ -20,9 +20,9 @@
 #include "diskdialog.h"
 #include "ui_diskdialog.h"
 
-DiskDialog::DiskDialog(QWidget *parent, corelib *lib, QString cdroot) :
+DiskDialog::DiskDialog(QWidget *parent, DVDRunner *runner,  corelib *lib) :
 	QDialog(parent),
-	ui(new Ui::DiskDialog), core (lib), path(cdroot)
+	ui(new Ui::DiskDialog), core (lib), dvd (runner)
 {
     ui->setupUi(this);
 	buildList();
@@ -72,16 +72,10 @@ void DiskDialog::on_buttonBox_accepted()
 		return;
 	QString workdir =ui->lstPresets->selectedItems().first()->data(Qt::UserRole).toString();
 	Prefix *prefix = new Prefix (this, workdir, core);
-	qDebug() << "ddlg: lauching....";\
-	if (prefix->hasDBEntry())
-	{
-//		QString exe = prefix->getRunnableExe();
-//		prefix->runProgram(exe);
-	}
-	else
-	{
-//New prefix engine obj
-}
+	qDebug() << "ddlg: lauching....";
+	dvd->setPrefix(prefix);
+	prefix->runApplication(dvd->exe(), dvd->diskDirectory(), dvd->imageFile());
+
 }
 QIcon DiskDialog::icon(QString pkgpath)
 {

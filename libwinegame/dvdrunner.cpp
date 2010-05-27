@@ -20,7 +20,7 @@
 #include "dvdrunner.h"
 #include <QtDebug>
 DVDRunner::DVDRunner(corelib *lib, QString path)
-	:QObject (0),core (lib)
+	:QObject (0),core (lib), mounted (false)
 {
 	//Пробуем определить тип
 	QFileInfo info (path);
@@ -47,8 +47,8 @@ DVDRunner::DVDRunner(corelib *lib, QString path)
 			QString umountString = QString ("umount \"%1\"").arg(diskPath);
 			if (sudo == "kdesu" && QProcessEnvironment::systemEnvironment().contains("KDE_FULL_SESSION"))
 			{
-				mount = QString ("kdesu -i %1 \"%2\"").arg("WineStuff").arg(mountString);
-				umount = QString ("kdesu -i %1 \"%2\"").arg("WineStuff").arg(umountString);
+				mount = QString ("kdesu -i %1 \"%2\"").arg("winegame").arg(mountString);
+				umount = QString ("kdesu -i %1 \"%2\"").arg("winegame").arg(umountString);
 			}
 			else if (sudo == "gksu")
 			{
@@ -84,12 +84,13 @@ bool DVDRunner::prepare(bool nodetect)
 	if (type == Pashazz::Unknown)
 		return false;
 	//1) монтируем образ, если это образ.
-	if (type == Pashazz::Image)
+	if (type == Pashazz::Image  && (!mounted))
 	{
 		QProcess p (this);
 		qDebug() << mount;
 		p.start(mount);
 		p.waitForFinished(-1);
+		mounted = true;
 		if (p.exitCode() != 0)
 			return false;
 }
@@ -211,16 +212,29 @@ bool DVDRunner::detect()
 	}
 }
 
-DVDRunner::~DVDRunner ()
+//DVDRunner::~DVDRunner ()
+//{
+//	qDebug() << "Destroy DVDRunner...";
+//	//размонтируем наш сидюк
+//	if (type == Pashazz::Image)
+//	{
+//		QProcess p (this);
+//		p.start(umount);
+//		p.waitForFinished(-1);
+//	}
+//}
+void DVDRunner::cleanup()
 {
-	qDebug() << "Destroy DVDRunner...";
 	//размонтируем наш сидюк
 	if (type == Pashazz::Image)
 	{
+		core->client()->infoDialog(tr("Information"), tr("Press OK/Enter when application`s installation ends"));
 		QProcess p (this);
 		p.start(umount);
 		p.waitForFinished(-1);
 	}
+
+	//TODO - удаление папочки core->discDir
 }
 
 QString DVDRunner::exe ()

@@ -41,7 +41,7 @@ class DVDRunner : public QObject
 	Q_OBJECT
 public:
 	DVDRunner(corelib *lib, QString path);
-	~DVDRunner();
+//	~DVDRunner();
 	QString diskDirectory() {return diskPath;} //возвращает пустую строку, если монтирование завершилось неудачно
 	QString exe();
 	QString imageFile() {return realDrive;}
@@ -50,6 +50,7 @@ public:
 	Prefix *prefix() {return this->Wprefix;} // Возвращает объект Prefix для работы
 	bool success() {return result;} //Закончилось ли распознавание успешно
 	void setPrefix (Prefix * prefix);
+	void cleanup ();
 signals:
 	void insertNextCd (bool &result, int cd); //Пользователь должен вставить CD.
 	void fileNeed (QString &exe, QString disc);
@@ -65,6 +66,7 @@ private:
 	QString mount, umount;
 	Pashazz::DriveType type;
 	int _max; //copyfile size
+	bool mounted;
 private slots:
 	void setProgress (qint64 bytes);
 	void closeBar ();

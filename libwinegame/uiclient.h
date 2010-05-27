@@ -39,6 +39,8 @@ public:
    virtual void error (QString title, QString text) =0; //показ ошибки.
    virtual int getVideoMemory() = 0; //запрос видеопамяти при первом запуске.
    virtual QString desktopLocation () = 0; //Папка рабочего стола (может определяться по-разному в зависимости от типа UI). Используется для создания ярлыка Freedesktop
+   virtual bool questionDialog (const QString &title, const QString &text) = 0; //Запрос ДА/НЕТ (true/false)
+   virtual void infoDialog (const QString &title, const QString &text) = 0; //Показ информации _И ОЖИДАНИЕ РЕАКЦИИ ПОЛЬЗОВАТЕЛЯ_. Проще говоря, мессейджбокс OK
 };
 
 #endif // UICLIENT_H

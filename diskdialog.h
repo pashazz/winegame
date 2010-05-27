@@ -22,6 +22,7 @@
 
 #include "prefix.h"
 #include "engine.h"
+#include "dvdrunner.h"
 
 namespace Ui {
     class DiskDialog;
@@ -30,7 +31,7 @@ namespace Ui {
 class DiskDialog : public QDialog {
     Q_OBJECT
 public:
-	DiskDialog(QWidget *parent, corelib *lib, QString cdroot);
+	DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib);
     ~DiskDialog();
 
 protected:
@@ -41,6 +42,7 @@ private:
 	void buildList();
 	corelib *core;
 	QString path;
+	DVDRunner *dvd;
 private slots:
 	void on_buttonBox_accepted();
 };

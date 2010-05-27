@@ -35,8 +35,8 @@ public:
 	void endProgress (); //закрытие бара.
 	int getVideoMemory();
 	QString desktopLocation() { return QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);} //GUI интерфейс предоставляет десктоп по-умолчанию.
-
-
+	bool questionDialog(const QString &title, const QString &text);
+	void infoDialog (const QString &title, const QString &text);
 signals:
 	   void cancelOperation ();
 private:
