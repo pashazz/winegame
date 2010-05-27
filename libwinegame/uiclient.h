@@ -42,6 +42,7 @@ public:
    virtual bool questionDialog (const QString &title, const QString &text) = 0; //Запрос ДА/НЕТ (true/false)
    virtual void infoDialog (const QString &title, const QString &text) = 0; //Показ информации _И ОЖИДАНИЕ РЕАКЦИИ ПОЛЬЗОВАТЕЛЯ_. Проще говоря, мессейджбокс OK
    virtual void selectExe (const QString &title, QString &file, QString home = "") = 0; //диалог выбора файла Exe.
+   virtual void insertNextCd (bool &result, int count) = 0;
 };
 
 #endif // UICLIENT_H

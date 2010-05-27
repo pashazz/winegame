@@ -112,7 +112,7 @@ bool DVDRunner::prepare(bool nodetect)
 			if (i != 1)
 			{
 				bool result = false;
-				emit insertNextCd(result, i);
+				core->client()->insertNextCd(result, i);
 				if (!result)
 				{
 					qDebug () << "Exiting (by user).....";

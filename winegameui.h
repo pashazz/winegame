@@ -38,6 +38,7 @@ public:
 	bool questionDialog(const QString &title, const QString &text);
 	void infoDialog (const QString &title, const QString &text);
 	void selectExe(const QString &title, QString &file, QString home= "");
+	void insertNextCd(bool &result, int count);
 signals:
 	   void cancelOperation ();
 private:
