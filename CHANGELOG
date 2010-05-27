@@ -19,3 +19,4 @@ r17:RELEASE RC3
 r18:wizardry, fallout 3, silent hunter 5 added
 r19:using kdesu/gksu for mounting, add an option to force using fuseiso
 r20:crysis added, winegame understands XDG_CONFIG_HOME env. variable
+r21:new "dvdrunner" class for detecting DVDs, new UiClient layer for GUI in libwinegame.

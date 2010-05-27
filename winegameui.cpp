@@ -104,3 +104,11 @@ void WinegameUi::infoDialog(const QString &title, const QString &text)
 	QMessageBox::information(0, title, text);
 	return;
 }
+
+void WinegameUi::selectExe(const QString &title, QString &file, QString home)
+{
+	if (home.isEmpty())
+		home = QDir::homePath();
+	QString myFile = QFileDialog::getOpenFileName(0, title, home);
+	file = myFile;
+}

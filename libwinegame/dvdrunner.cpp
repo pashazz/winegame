@@ -202,7 +202,6 @@ bool DVDRunner::detect()
 	QString packageDir = wrkdir(diskPath, QDir(core->packageDir()));
 	if (packageDir.isEmpty())
 	{
-		core->client()->error(tr("Detecting error"), tr("App not detected"));
 		return false;
 	}
 	else
@@ -262,7 +261,7 @@ QString DVDRunner::exe ()
 	return exe;
 	}
 	//А теперь спросим EXE у пользователя.
-	emit fileNeed(exe, diskPath);
+	core->client()->selectExe(tr("Select EXE file"), exe, diskPath);
 	return exe;
 }
 

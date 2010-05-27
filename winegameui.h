@@ -37,6 +37,7 @@ public:
 	QString desktopLocation() { return QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);} //GUI интерфейс предоставляет десктоп по-умолчанию.
 	bool questionDialog(const QString &title, const QString &text);
 	void infoDialog (const QString &title, const QString &text);
+	void selectExe(const QString &title, QString &file, QString home= "");
 signals:
 	   void cancelOperation ();
 private:
