@@ -9,12 +9,14 @@ TEMPLATE = lib
 DEFINES += WINESTUFF_LIBRARY
 SOURCES += corelib.cpp \
     prefix.cpp \
-    dvdrunner.cpp
+    dvdrunner.cpp \
+    qtfilecopier.cpp
 HEADERS += libwinegame_global.h \
     corelib.h \
     prefix.h \
     uiclient.h \
-    dvdrunner.h
+    dvdrunner.h \
+    qtfilecopier.h
 isEmpty ($$PREFIX)
 :PREFIX = /usr
 target.path = $$PREFIX/lib

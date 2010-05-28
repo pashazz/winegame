@@ -20,12 +20,12 @@
 #include "gamedialog.h"
 #include "ui_gamedialog.h"
 
-GameDialog::GameDialog(QWidget *parent, QString path) :
+GameDialog::GameDialog(QWidget *parent, QString path, corelib *lib) :
     QDialog(parent),
     ui(new Ui::GameDialog),
     _path (path)
 {
-	Prefix *prefix = new Prefix (this, path, new corelib(this, new WinegameUi ()));
+	Prefix *prefix = new Prefix (this, path, lib);
     ui->setupUi(this);
     //setting the UI
     if (qApp->arguments().length() > 1)

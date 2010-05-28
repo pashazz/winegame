@@ -30,7 +30,7 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	if (runner->success())
 	{
 		Prefix *prefix =  runner->prefix();
-		GameDialog *dlg = new GameDialog (0, prefix->projectWorkingDir());
+		GameDialog *dlg = new GameDialog (0, prefix->projectWorkingDir(), lib);
 		if (dlg->exec() == QDialog::Rejected)
 			return;
 		qDebug() << "Installing conf " << prefix->name();

@@ -113,7 +113,7 @@ void WinegameUi::selectExe(const QString &title, QString &file, QString home)
 	file = myFile;
 }
 
-void WinegameUi::insertNextCd(bool &result, int count)
+void WinegameUi::insertNextCd(bool &result, QString count)
 {
 	int res = QMessageBox::question(0, tr("Insert next CD"), tr("Insert program CD %1").arg(QString(count)), QMessageBox::Ok, QMessageBox::Ignore);
 	if (res == QMessageBox::Ok)

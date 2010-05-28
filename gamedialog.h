@@ -28,7 +28,7 @@ namespace Ui {
 class GameDialog : public QDialog {
     Q_OBJECT
 public:
-    GameDialog(QWidget *parent, QString path);
+	GameDialog(QWidget *parent, QString path, corelib *lib);
     ~GameDialog();
 
 private:

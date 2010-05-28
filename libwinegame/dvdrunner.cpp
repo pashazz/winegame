@@ -103,16 +103,17 @@ bool DVDRunner::prepare(bool nodetect)
 }
 	//3)Проверяем, возможно наша игра на нескольких дисках
 
-	if (Wprefix->isMulti() && Wprefix->discCount() > 1)
+	if (Wprefix->isMulti())
 	{
+		qDebug() << "multicd detected";
 		core->client()->showProgressBar(tr("Copying files from your CDs"));
-		for (int i=1; i > Wprefix->discCount(); i++)
+		for (int i=1; i <= Wprefix->discCount(); i++)
 		{
 			qDebug() << "DDT: CD " << i;
 			if (i != 1)
 			{
 				bool result = false;
-				core->client()->insertNextCd(result, i);
+				core->client()->insertNextCd(result, QVariant(i).toString());
 				if (!result)
 				{
 					qDebug () << "Exiting (by user).....";
@@ -122,6 +123,11 @@ bool DVDRunner::prepare(bool nodetect)
 			QFile file (diskPath);
 			_max = QFileInfo(file).size() / 1024;
 			QFile dest (core->discDir());
+			if (!dest.exists())
+			{
+				QDir t (dest.fileName());
+				t.mkdir(t.path());
+			}
 			connect (&dest, SIGNAL(bytesWritten(qint64)), this, SLOT (setProgress(qint64)));
 			connect (&dest, SIGNAL(aboutToClose()), this, SLOT (closeBar()));
 			file.copy(dest.fileName());
@@ -129,7 +135,8 @@ bool DVDRunner::prepare(bool nodetect)
 		diskPath = core->discDir();
 		core->client()->endProgress();
 	}
-
+	else
+		qDebug() << "game isn`t multicd, count" << Wprefix->discCount();
 	//вроде все.
 	return true;
 }
@@ -234,18 +241,24 @@ void DVDRunner::cleanup()
 	}
 
 	//TODO - удаление папочки core->discDir
+	QProcess *p = new QProcess(this);
+	p->start("rm -rf " + core->discDir());
+	p->waitForFinished();
+//временное решение, пока в Qt нет удаления папок.
 }
 
 QString DVDRunner::exe ()
 {
  //Получает файл из autorun.inf и/или "setup"
 	QString exe;
-
+	qDebug() << "diskDirectory() is" << diskPath;
 	//force application/setup
 	if (!Wprefix->setup().isEmpty()){
 	exe = diskPath + QDir::separator() + Wprefix->setup();
 	if (QFile::exists(exe))
-	return exe;
+		return exe;
+	else
+		qDebug() << "wrong exe: " << exe;
 	}
 
 	//Теперь просмотрим AutoRun
