@@ -56,7 +56,13 @@ QFuture <void> fProc = run(rp, tr("%1  \"%2\"").arg(wine()).arg(exe),  this->env
 
 void Prefix::removePrefix()
 {
-    rp("rm -rf " + this->_path, QProcessEnvironment::systemEnvironment());
+	rp("rm -rf " + this->_path, QProcessEnvironment::systemEnvironment());
+	/*
+	  когда я пробовал использовать для этого removeDir из corelib
+	  мой /home чуть не снесло
+	  а все потому, что QFile/QDir плохо относится к симлинкам
+	  так что только rm -rf. Я чуть не потерял свои данные
+	  */
 	if (isPreset())
 		return;
 	QSqlQuery q(db);
