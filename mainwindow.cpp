@@ -218,10 +218,14 @@ void MainWindow::saveGeom()
 void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
 	Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString(), core);
-	if (!prefix->hasDBEntry())
-		return; //нету установленных приложений здесь.
+/*	if (!prefix->hasDBEntry())
+*		return; //нету установленных приложений здесь.
+*/
 	QString exe = QFileDialog::getOpenFileName(0,  tr("Выберите EXE файл"), QDir::homePath(), tr("Windows executables (*.exe)"));
-	 prefix->runProgram(exe);
+	if (!exe.isEmpty())
+	 prefix->runApplication(exe);
+	else
+		statusBar()->showMessage(tr("No file selected, aborting"));
 }
 
 void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)

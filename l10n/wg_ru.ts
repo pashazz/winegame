@@ -58,10 +58,6 @@ p, li { white-space: pre-wrap; }
         <source>DDT: scanning file %1</source>
         <translation type="obsolete">DDT: сканирую файл %1</translation>
     </message>
-    <message>
-        <source>DDT: [warning] unable to open file %1: error %2</source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>DiskDialog</name>
@@ -105,11 +101,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter password to mount ISO image</source>
-        <translation>Введите пароль для монтирования образа</translation>
+        <translation type="obsolete">Введите пароль для монтирования образа</translation>
     </message>
     <message>
         <source>Enter password to unmount ISO image</source>
-        <translation>Введите пароль для размонтирования образа</translation>
+        <translation type="obsolete">Введите пароль для размонтирования образа</translation>
     </message>
 </context>
 <context>
@@ -120,11 +116,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Hello</source>
-        <translation>Привет!</translation>
+        <translation type="obsolete">Привет!</translation>
     </message>
     <message>
         <source>Please connect to Internet!</source>
-        <translation>Пожалуйста, подключитесь к Интернету!</translation>
+        <translation type="obsolete">Пожалуйста, подключитесь к Интернету!</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -221,6 +217,54 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Append all fields</source>
         <translation>Заполните все поля</translation>
+    </message>
+    <message>
+        <source>Windows Executables (*.exe)</source>
+        <translation>Исполняемые файлы Windows (*.exe)</translation>
+    </message>
+    <message>
+        <source>Microsoft Installers (*.msi)</source>
+        <translation>Инсталляторы Microsoft (*.msi)</translation>
+    </message>
+    <message>
+        <source>Select EXE/MSI file</source>
+        <translation>Выберите EXE/MSI файл</translation>
+    </message>
+    <message>
+        <source>No file selected, aborting</source>
+        <translation>Файл не выбран, прерываю операцию</translation>
+    </message>
+    <message>
+        <source>Installation error</source>
+        <translation>Ошибка установки</translation>
+    </message>
+    <message>
+        <source>Give a name for your application</source>
+        <translation>Дайте имя вашему приложению</translation>
+    </message>
+    <message>
+        <source>Give a short latin name for your application. &lt;br&gt; It will be installed in %1/Windows/APPLICATION NAME/drive_c</source>
+        <translation>Дайте короткое латинское имя вашему приложению.&lt;br&gt; Оно будет установлено в %1/Windows/ИМЯ ПРИЛОЖЕНИЯ/drive_c</translation>
+    </message>
+    <message>
+        <source>No name specified</source>
+        <translation>Не указано имя</translation>
+    </message>
+    <message>
+        <source>Abort. Reason: No application name specified</source>
+        <translation>Прерывание: Причина: Не задано имя приложения</translation>
+    </message>
+    <message>
+        <source>Application with this name is already installed.</source>
+        <translation>Приложение с этим именем уже установлено.</translation>
+    </message>
+    <message>
+        <source>To force installation process, remove directory %1.</source>
+        <translation>Чтобы все равно установить программу, удалите папку %1.</translation>
+    </message>
+    <message>
+        <source>Engine execution error</source>
+        <translation>Ошибка выполнения движка</translation>
     </message>
 </context>
 <context>
@@ -345,7 +389,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Click &amp;quot;&lt;span style=&quot; font-weight:600;&quot;&gt;Administration&lt;/span&gt;&amp;quot;, if you want to delete this Windows with your app, or back up it.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Click &lt;span style=&quot; font-weight:600;&quot;&gt;buttons right&lt;/span&gt; to run your Linux file manager with drive C, or run EXE in this virtual&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -366,7 +410,7 @@ p, li { white-space: pre-wrap; }
     <name>QObject</name>
     <message>
         <source>WineGame</source>
-        <translation type="obsolete">WineGame</translation>
+        <translation>WineGame</translation>
     </message>
     <message>
         <source>Downloading of some required components will be start now. It`s near 20-40 Mb. Please establish your internet connection!</source>
@@ -426,15 +470,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used</source>
-        <translation type="obsolete">Введите размер памяти вашей видеокарты (в мегабайтах). Если вы нажмете Отмена, тогда будет использовано значение по умолчанию</translation>
+        <translation>Введите размер памяти вашей видеокарты (в мегабайтах). Если вы нажмете Отмена, тогда будет использовано значение по умолчанию</translation>
     </message>
     <message>
         <source>I am confused</source>
-        <translation>Я не понимаю...</translation>
+        <translation type="obsolete">Я не понимаю...</translation>
     </message>
     <message>
         <source>This disc is not Windows Software disc, exiting</source>
-        <translation>Этот диск - не диск с приложением Windows, выходим</translation>
+        <translation type="obsolete">Этот диск - не диск с приложением Windows, выходим</translation>
     </message>
     <message>
         <source>Failed to detect game disc, exiting</source>
@@ -442,7 +486,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error mount/unmount image</source>
-        <translation>Ошибка монтирования образа</translation>
+        <translation type="obsolete">Ошибка монтирования образа</translation>
     </message>
     <message>
         <source>Initialization error</source>
@@ -451,6 +495,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Qt`s SQLite module not found</source>
         <translation>Модуль SQLite для Qt не найден</translation>
+    </message>
+    <message>
+        <source>Hello!</source>
+        <translation>Привет!</translation>
+    </message>
+    <message>
+        <source>Please connect to internet :)</source>
+        <translation>Пожалуйста, подключитесь к Интернету :)</translation>
     </message>
 </context>
 <context>
@@ -497,6 +549,14 @@ for mount ISO images</source>
         <translation>Всегда использовать FuseISO (не спрашивать пароль)
 для монтирования образов</translation>
     </message>
+    <message>
+        <source>Directory for copying files from multiple CDs</source>
+        <translation>Папка для копирования файлов с нескольких CD</translation>
+    </message>
+    <message>
+        <source>Select Winegame directory for copying files from multiple CDs</source>
+        <translation>Выберите папку для копирования файлов с нескольких CD</translation>
+    </message>
 </context>
 <context>
     <name>ShortCutDialog</name>
@@ -523,6 +583,17 @@ for mount ISO images</source>
     <message>
         <source>Create shortcut on desktop</source>
         <translation>Создать ярлык на рабочем столе</translation>
+    </message>
+</context>
+<context>
+    <name>WinegameUi</name>
+    <message>
+        <source>Insert next CD</source>
+        <translation>Вставьте следующий CD</translation>
+    </message>
+    <message>
+        <source>Insert program CD %1</source>
+        <translation>Вставьте CD %1 с программой</translation>
     </message>
 </context>
 <context>
