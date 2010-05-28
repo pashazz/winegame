@@ -67,9 +67,7 @@ private:
 	Pashazz::DriveType type;
 	int _max; //copyfile size
 	bool mounted;
-private slots:
-	void setProgress (qint64 bytes);
-	void closeBar ();
+
 };
 
 #endif // DVDRUNNER_H

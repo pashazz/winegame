@@ -376,5 +376,50 @@ QString corelib::config()
 		return QProcessEnvironment::systemEnvironment().value("XDG_CONFIG_HOME") + QDir::separator() + "winegame.conf";
 	else
 		return QDir::homePath() + "/.cofig/winegame.conf";
+}
 
+bool corelib::removeDir(const QString & dir)
+{
+	QDir dirObj(dir);
+	int i = 0;
+	int max = dirObj.entryList(QDir::Readable | QDir::NoDotAndDotDot | QDir::AllEntries).count();
+	ui->progressText(tr("Removing %1").arg(dir));
+	foreach (QString fileName, dirObj.entryList(QDir::Readable | QDir::NoDotAndDotDot | QDir::AllEntries))
+	{
+		i++;
+		ui->progressRange(i, max);
+		if (QFileInfo(dir+QDir::separator()+fileName).isDir())
+			removeDir(dir+QDir::separator()+fileName);
+		else
+			dirObj.remove(fileName);
+	}
+	if (!dirObj.rmdir(dir))
+		return false;
+
+	return true;
+}
+
+bool corelib::copyDir(const QString &dir, const QString &destination)
+{ //call corelib::client()::progresstext before this
+	QDir myDir(dir);
+	myDir.mkpath(destination);
+	int max = myDir.entryList(QDir::NoDotAndDotDot).count();
+	int i = 0;
+	foreach (QString fileName, myDir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries))
+	{
+		i++;
+		ui->progressText(tr("Copying %1 into %2").arg(dir + fileName).arg(destination + fileName));
+		ui->progressRange(i,max);
+		if (QFileInfo(dir + QDir::separator() + fileName).isDir())
+		{
+			qDebug() << "copying " << dir + QDir::separator() + fileName << " into " << destination + QDir::separator() + fileName;
+			copyDir (dir + QDir::separator() +fileName, destination + QDir::separator() + fileName);
+		}
+		else
+		{
+			QFile file (dir + QDir::separator() + fileName);
+			file.copy(destination + QDir::separator() + fileName);
+		}
+	}
+	return true; //others not implemented yet;
 }

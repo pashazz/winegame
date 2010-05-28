@@ -105,32 +105,29 @@ bool DVDRunner::prepare(bool nodetect)
 
 	if (Wprefix->isMulti())
 	{
-		qDebug() << "multicd detected";
 		core->client()->showProgressBar(tr("Copying files from your CDs"));
 		for (int i=1; i <= Wprefix->discCount(); i++)
 		{
-			qDebug() << "DDT: CD " << i;
 			if (i != 1)
 			{
 				bool result = false;
+				insertnextcd:
 				core->client()->insertNextCd(result, QVariant(i).toString());
 				if (!result)
 				{
 					qDebug () << "Exiting (by user).....";
 					break;
 				}
+				else
+				{
+					QDir dpath (diskPath);
+					qDebug() << dpath.path() << "is disc";
+					qDebug() << dpath.entryList(QDir::NoDotAndDotDot | QDir::AllEntries);
+					if (dpath.entryList(QDir::NoDotAndDotDot | QDir::AllEntries).count() == 0)
+						goto insertnextcd;
+				}
 			}
-			QFile file (diskPath);
-			_max = QFileInfo(file).size() / 1024;
-			QFile dest (core->discDir());
-			if (!dest.exists())
-			{
-				QDir t (dest.fileName());
-				t.mkdir(t.path());
-			}
-			connect (&dest, SIGNAL(bytesWritten(qint64)), this, SLOT (setProgress(qint64)));
-			connect (&dest, SIGNAL(aboutToClose()), this, SLOT (closeBar()));
-			file.copy(dest.fileName());
+			core->copyDir(diskPath, core->discDir());
 		}
 		diskPath = core->discDir();
 		core->client()->endProgress();
@@ -191,19 +188,6 @@ void DVDRunner::setPrefix(Prefix *prefix)
 	prepare(true); //true - отключаем детектинг (префикс установлен вручную)
 }
 
-void DVDRunner::setProgress(qint64 bytes)
-{
-	int kb = bytes / 1024;
-	core->client()->progressText(tr("Copying %1 of %2 into %3. Please wait").arg(QString(kb)).arg(QString(_max)).arg(core->discDir()));
-	core->client()->progressRange(kb, _max);
-}
-
-void DVDRunner::closeBar()
-{
-	qDebug() << "Closing....";
-//	core->client()->endProgress();
-}
-
 bool DVDRunner::detect()
 {
 	QString packageDir = wrkdir(diskPath, QDir(core->packageDir()));
@@ -239,12 +223,9 @@ void DVDRunner::cleanup()
 		p.start(umount);
 		p.waitForFinished(-1);
 	}
-
-	//TODO - удаление папочки core->discDir
-	QProcess *p = new QProcess(this);
-	p->start("rm -rf " + core->discDir());
-	p->waitForFinished();
-//временное решение, пока в Qt нет удаления папок.
+	core->client()->showProgressBar("Cleaning up....");
+	core->removeDir(core->discDir());
+	core->client()->endProgress();
 }
 
 QString DVDRunner::exe ()

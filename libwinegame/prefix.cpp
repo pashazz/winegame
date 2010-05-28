@@ -169,9 +169,16 @@ bool Prefix::checkWineDistr()
 {
    /// проверяет дистрибутив Wine для префикса. Если проверка не удается, загружает дистрибутив заново.
     //Если у нас системный Wine, то и делать неча.
+	QFile file (_path + QDir::separator() + ".wine");
 if (s->value("wine/distr").isNull())
+{
+//TODO - удаление кастомного wine. если он более не нужен
+	if (file.exists() && core->client()->questionDialog(tr("Wine outdated"), tr("Do you want to use system wine distribution for app %1?").arg(name())))
+	{
+
+	}
 	return true;
-    QFile file (_path + QDir::separator() + ".wine");
+}
     QTextStream stream (&file);
 
 	if ((!file.exists()) || (!QFile::exists(wine())))

@@ -32,6 +32,8 @@ public:
 	corelib(QObject *parent, UiClient *client);
 	virtual ~corelib();
 	static QString whichBin (QString bin);
+	bool removeDir (const QString &dir);
+	bool copyDir (const QString &dir, const QString &destination);
 	void init (); /// этот метод на данный момент только прописывает видеопамять. В конфиг.
 	static bool unpackWine(QString distr, QString destination);
 	static bool checkPrefixName (QString);
