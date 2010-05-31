@@ -55,7 +55,7 @@ public:
 	void setDiscDir(QString dir);
 	QString getSudoProg ();
 	//void updateWines ();
-	QString downloadWine(QString url);
+	QString downloadWine(QString url, QString &md5sum);
 
 	UiClient * client () {return ui;}
 private slots:
@@ -72,6 +72,8 @@ private:
 protected:
 	void initconf ();
 	inline QString config();
+
+	bool fileError;
 
 };
 

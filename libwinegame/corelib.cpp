@@ -21,7 +21,7 @@
 #include "prefix.h"
 //The core of WineGame. Commonly used func.
 corelib::corelib(QObject *parent, UiClient *client)
-	:QObject(parent), ui (client)
+	:QObject(parent), ui (client), fileError(false)
 {
 	//Init Settings object
 	settings = new QSettings (config(), QSettings::IniFormat, this);
@@ -90,7 +90,7 @@ bool corelib::unpackWine (QString distr, QString destination)
  return proc->exitCode() == 0 ? true : false;
 	 }
 
-QString corelib::downloadWine(QString url) //TODO: проверка на ошибки.
+QString corelib::downloadWine(QString url, QString &md5sum) //TODO: проверка на ошибки.
 {
 	downloadExitCode = true;
     QUrl myurl = QUrl(url);
@@ -111,18 +111,31 @@ connect (reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(setRange(qin
 connect (reply, SIGNAL(finished()), &loop, SLOT(quit()));
 connect (reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT (error(QNetworkReply::NetworkError)));
 ui->showProgressBar(tr("Downloading Wine..."));
-ui->progressText(tr("Go, Baby, Go!"));
+ui->progressText(tr("Downloading wine... %1").arg(url));
 loop.exec();
 ui->endProgress();
 QByteArray buffer = reply->readAll();
+//Get MD5 sum info...
+//do not provide error info..
+
+disconnect(reply, SIGNAL (error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
+req.setUrl(QUrl(url+ ".md5"));
+reply = manager->get(req);
+loop.exec();
+ md5sum = QString(reply->readAll());
+
 QFile file (wineFileName);
 if (file.open(QIODevice::WriteOnly))
 {
         file.write(buffer);
         file.close();
-                    }
+	}
 else
+{
     qDebug() << "engine: error open file (WINEDISTR):" << file.errorString();
+	return false;
+}
+
 return downloadExitCode ? wineFileName : "";
 }
 
@@ -184,7 +197,7 @@ void corelib::error(QNetworkReply::NetworkError error)
 		ui->error(tr("Network error"), tr("Something went wrong! %1.").arg(errstr));
 	  downloadExitCode = false;
     }
-
+	fileError = true;
 }
 
 void corelib::setRange(qint64 aval, qint64 total)

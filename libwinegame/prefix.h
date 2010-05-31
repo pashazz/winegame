@@ -69,7 +69,8 @@ QString downloadWine ();
 corelib *core;
 void getPrefixPath();
 QSqlDatabase db;
-
+QString getMD5();
+void writeMD5(QString md5sum);
 protected:
 void makefix (); //исправление реестра Wine: запуск winebrowser.exe -nohome %1 вместо winebrowser.exe -nohome
 void makeWineCdrom (const  QString &path, const QString &device= "/dev/cdrom");

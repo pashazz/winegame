@@ -174,14 +174,23 @@ bool Prefix::isPreset()
 bool Prefix::checkWineDistr()
 {
    /// проверяет дистрибутив Wine для префикса. Если проверка не удается, загружает дистрибутив заново.
-    //Если у нас системный Wine, то и делать неча.
 	QFile file (_path + QDir::separator() + ".wine");
 if (s->value("wine/distr").isNull())
 {
 //TODO - удаление кастомного wine. если он более не нужен
 	if (file.exists() && core->client()->questionDialog(tr("Wine outdated"), tr("Do you want to use system wine distribution for app %1?").arg(name())))
 	{
-
+		QString systemWine = core->whichBin("wine");
+		//make "UPDATE" Sqlquery
+		QSqlQuery q (db);
+		q.prepare("UPDATE Apps SET wine=:wine WHERE prefix=:prefix");
+		q.bindValue(":wine", systemWine);
+		q.bindValue(":prefix", _prefix);
+		if (!q.exec())
+		{
+			qDebug() << "engine: failed to execute query - " << q.lastError().text();
+			return false;
+		}
 	}
 	return true;
 }
@@ -193,12 +202,6 @@ if (s->value("wine/distr").isNull())
         QString wineUrl = downloadWine();
 		if (wineUrl.isEmpty())
 			return false;
-        //записываем Wine в .wine
-		file.open(QIODevice::WriteOnly | QIODevice::Text);
-        stream << wineUrl;
-        qDebug() << "Prefix: writing wine into" << file.fileName();
-        file.close();
-
     }
     else
     {
@@ -208,42 +211,44 @@ if (s->value("wine/distr").isNull())
 
         QString installedWine = stream.readAll().trimmed();
 		file.close();
-        if (installedWine != s->value("wine/distr").toString())
-        {
-			file.open(QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text);
-			stream << s->value("wine/distr").toString();
-			file.close();
-        }
-
-
+		QString md5sum =  getMD5();
+		if (installedWine != md5sum)
+		{
+			//записываем MD5 в файл
+			writeMD5(md5sum);
+		}
     }
 	return true;
 }
 
 QString Prefix::downloadWine() {
     QString wineBinary;
-    if (!s->value("wine/distr").toString().isEmpty())
+	QString md5sum;
+ if (!s->value("wine/distr").toString().isEmpty())
     {
-        QString distr = s->value("wine/distr").toString();
-    //здесь запускаем процесс закачки и распаковки данного дистрибутива Wine
-		QString destination = core->wineDir()+ QString("/wines/") + prefixName();
-		QDir dir (core->wineDir()+ "/wines");
-        if (!dir.exists())
-            dir.mkdir(dir.path());
-		qDebug() << "WINE IS DOWNLOADING FROM" << distr << "to" <<QDir::tempPath();
-		QString distrname =   core->downloadWine(distr);
-		if (distrname.isEmpty())
-			return "";
-            qDebug() << "WINE IS UNPACKING TO " << destination << "FROM" << distrname;
-			if (!core->unpackWine(distrname, destination))
-				return "";
-        qDebug() << "wine distribution is" << distr;
-		return distr;
-   }
-    else
-    {
-wineBinary = wine();
-    }
+	 QString distr = s->value("wine/distr").toString();
+	 //здесь запускаем процесс закачки и распаковки данного дистрибутива Wine
+	 QString destination = core->wineDir()+ QString("/wines/") + prefixName();
+	 QDir dir (core->wineDir()+ "/wines");
+	 if (!dir.exists())
+		 dir.mkdir(dir.path());
+	 QString distrname =   core->downloadWine(distr,md5sum);
+	 if (distrname.isEmpty())
+		 return "";
+	 if (!core->unpackWine(distrname, destination))
+		 return "";
+
+	 qDebug() << "wine distribution is" << distr;
+	 if (!md5sum.isEmpty())
+	 { //записываем сумму md5
+		 writeMD5(md5sum);
+	 }
+	 return distr;
+ }
+ else
+ {
+	 wineBinary = wine();
+ }
     //если wineBinary все еще не установлен
 return "";
 }
@@ -354,7 +359,6 @@ void Prefix::getPrefixPath()
 
 void Prefix::makeDesktopIcon(const QString &path, const QString &name)
 {
-	//For now, we use QDesktopServices::desktop
 	QFile file  (core->client()->desktopLocation() + QDir::separator() + name + ".desktop");
 	QTextStream str (&file);
 	file.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -497,3 +501,31 @@ bool Prefix::isMulti()
 	 }
 	return s->value("disc/count").toInt();
 }
+
+ void Prefix::writeMD5(QString md5sum)
+ {
+	 QFile file (_path +QDir::separator() + ".wine");
+	 if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+		 return;
+	 QTextStream stream (&file);
+	 stream << md5sum;
+	 file.close();
+ }
+ QString Prefix::getMD5()
+ {
+	//download MD5 file with QtNetwork
+	 QUrl url = QUrl(s->value("wine/distr").toString());
+	 if (url.isEmpty())
+		 return "";
+	 QEventLoop loop;
+	 QNetworkAccessManager *manager = new QNetworkAccessManager (this);
+	 QNetworkRequest req; //request для Url
+	 req.setUrl(QUrl(url));
+	 req.setRawHeader("User-Agent", "Winegame-Browser 0.1");
+	 QNetworkReply *reply = manager->get(req);
+	 connect (reply, SIGNAL(finished()), &loop, SLOT(quit()));
+	 loop.exec();
+	 QTextStream stream (reply);
+	 QString md5 = stream.readAll();
+	 return md5;
+ }
