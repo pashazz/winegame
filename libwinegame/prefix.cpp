@@ -523,7 +523,6 @@ bool Prefix::isMulti()
  QString Prefix::getMD5()
  {
 	//download MD5 file with QtNetwork
-	 qDebug() << "getting md5sum from NET....";
 	 QUrl url = QUrl(s->value("wine/distr").toString() + ".md5");
 	 if (url.isEmpty())
 		 return "";
