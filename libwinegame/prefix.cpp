@@ -50,7 +50,7 @@ void rp(QString path, QProcessEnvironment env)
 
 void Prefix::runProgram(QString exe)
 {
-QFuture <void> fProc = run(rp, tr("%1  \"%2\"").arg(wine()).arg(exe),  this->env);
+QFuture <void> fProc = run(rp, QString("%1  \"%2\"").arg(wine()).arg(exe),  this->env);
 //fProc.waitForFinished();
 }
 
@@ -323,7 +323,7 @@ QTemporaryFile f (this);
 	stream << "[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]";
 	stream << "\n";
 	stream << "\"VideoMemorySize\"=";
-	stream << tr("\"%1\"").arg(core->videoMemory());
+	stream << QString("\"%1\"").arg(core->videoMemory());
 	stream << "\n";
 	f.close();
 QProcess p (this);

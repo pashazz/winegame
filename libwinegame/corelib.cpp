@@ -25,7 +25,8 @@ corelib::corelib(QObject *parent, UiClient *client)
 {
 	//Init Settings object
 	settings = new QSettings (config(), QSettings::IniFormat, this);
-	//Init gui object
+	//Init translations object
+
 
 }
 
@@ -384,7 +385,7 @@ QString corelib::config()
 	if (QProcessEnvironment::systemEnvironment().contains("XDG_CONFIG_HOME"))
 		return QProcessEnvironment::systemEnvironment().value("XDG_CONFIG_HOME") + QDir::separator() + "winegame.conf";
 	else
-		return QDir::homePath() + "/.cofig/winegame.conf";
+		return QDir::homePath() + "/.config/winegame.conf";
 }
 
 bool corelib::removeDir(const QString & dir)

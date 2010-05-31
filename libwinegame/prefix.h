@@ -34,6 +34,7 @@ public:
     QString wine();
     QString standardExe();
    QString name ();
+   corelib *myLib() {return core;}
    QString note ();
    QIcon icon ();
    QString setup (); //application/setup value

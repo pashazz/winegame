@@ -9,15 +9,17 @@ TEMPLATE = lib
 DEFINES += WINESTUFF_LIBRARY
 SOURCES += corelib.cpp \
     prefix.cpp \
-    dvdrunner.cpp
+    dvdrunner.cpp \
+    poldownloader.cpp
 HEADERS += libwinegame_global.h \
     corelib.h \
     prefix.h \
     uiclient.h \
-    dvdrunner.h
+    dvdrunner.h \
+    poldownloader.h
 isEmpty ($$PREFIX)
 :PREFIX = /usr
 target.path = $$PREFIX/lib
 INSTALLS += target
 VERSION = 0.0.1
-FORMS += 
+TRANSLATIONS += ../l10n/lwg_ru.ts
