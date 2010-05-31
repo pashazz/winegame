@@ -173,6 +173,7 @@ bool Prefix::isPreset()
 
 bool Prefix::checkWineDistr()
 {
+	qDebug() << "checking wine... for " << name() ;
    /// проверяет дистрибутив Wine для префикса. Если проверка не удается, загружает дистрибутив заново.
 	QFile file (_path + QDir::separator() + ".wine");
 if (s->value("wine/distr").isNull())
@@ -201,7 +202,10 @@ if (s->value("wine/distr").isNull())
         //Загружаем Wine
         QString wineUrl = downloadWine();
 		if (wineUrl.isEmpty())
+		{
+			qDebug() << "winechecker: empty url - guru meditation error";
 			return false;
+		}
     }
     else
     {
@@ -209,7 +213,7 @@ if (s->value("wine/distr").isNull())
 		if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 			return false;
 
-        QString installedWine = stream.readAll().trimmed();
+		QString installedWine = stream.readAll();
 		file.close();
 		QString md5sum =  getMD5();
 		if (installedWine != md5sum)
@@ -218,6 +222,7 @@ if (s->value("wine/distr").isNull())
 			writeMD5(md5sum);
 		}
     }
+	qDebug() << "winechecker: done";
 	return true;
 }
 
@@ -232,15 +237,17 @@ QString Prefix::downloadWine() {
 	 QDir dir (core->wineDir()+ "/wines");
 	 if (!dir.exists())
 		 dir.mkdir(dir.path());
-	 QString distrname =   core->downloadWine(distr,md5sum);
+	 QString distrname =   core->downloadWine(distr);
 	 if (distrname.isEmpty())
 		 return "";
 	 if (!core->unpackWine(distrname, destination))
 		 return "";
 
 	 qDebug() << "wine distribution is" << distr;
+	 md5sum = getMD5();
 	 if (!md5sum.isEmpty())
 	 { //записываем сумму md5
+		 qDebug() << "writing md5: " << md5sum;
 		 writeMD5(md5sum);
 	 }
 	 return distr;
@@ -504,9 +511,11 @@ bool Prefix::isMulti()
 
  void Prefix::writeMD5(QString md5sum)
  {
+
 	 QFile file (_path +QDir::separator() + ".wine");
 	 if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
 		 return;
+	 qDebug() << "engine: writing md5 for " << name() << "sum " << md5sum;
 	 QTextStream stream (&file);
 	 stream << md5sum;
 	 file.close();
@@ -514,7 +523,8 @@ bool Prefix::isMulti()
  QString Prefix::getMD5()
  {
 	//download MD5 file with QtNetwork
-	 QUrl url = QUrl(s->value("wine/distr").toString());
+	 qDebug() << "getting md5sum from NET....";
+	 QUrl url = QUrl(s->value("wine/distr").toString() + ".md5");
 	 if (url.isEmpty())
 		 return "";
 	 QEventLoop loop;
@@ -527,5 +537,6 @@ bool Prefix::isMulti()
 	 loop.exec();
 	 QTextStream stream (reply);
 	 QString md5 = stream.readAll();
+	 qDebug() << "md5sum:" << md5 << "for app" << name();
 	 return md5;
  }

@@ -54,8 +54,7 @@ public:
 	void setVideoMemory (int memory);
 	void setDiscDir(QString dir);
 	QString getSudoProg ();
-	//void updateWines ();
-	QString downloadWine(QString url, QString &md5sum);
+	QString downloadWine(QString url);
 
 	UiClient * client () {return ui;}
 private slots:

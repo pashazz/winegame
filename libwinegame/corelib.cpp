@@ -83,14 +83,14 @@ bool corelib::unpackWine (QString distr, QString destination)
          dir.mkdir(dir.path());
  QProcess *proc = new QProcess (0); //не забываем удалять
  proc->setWorkingDirectory(destination);
- QString unpackLine =  QObject::tr ("tar xvpf %1 -C %2").arg(distr).arg(destination);
+ QString unpackLine =  QString ("tar xvpf %1 -C %2").arg(distr).arg(destination);
  proc->start(unpackLine);
   proc->waitForFinished(-1);
- qDebug() << QObject::tr("engine: Wine distribution %1 unpacked to %2").arg(distr).arg(destination);
+ qDebug() <<QString("engine: Wine distribution %1 unpacked to %2").arg(distr).arg(destination);
  return proc->exitCode() == 0 ? true : false;
 	 }
 
-QString corelib::downloadWine(QString url, QString &md5sum) //TODO: проверка на ошибки.
+QString corelib::downloadWine(QString url) //TODO: проверка на ошибки.
 {
 	downloadExitCode = true;
     QUrl myurl = QUrl(url);
@@ -117,24 +117,20 @@ ui->endProgress();
 QByteArray buffer = reply->readAll();
 //Get MD5 sum info...
 //do not provide error info..
-
-disconnect(reply, SIGNAL (error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
-req.setUrl(QUrl(url+ ".md5"));
-reply = manager->get(req);
-loop.exec();
- md5sum = QString(reply->readAll());
-
+qDebug() << "Download done...";
 QFile file (wineFileName);
+qDebug() << "Writing into file: " << file.fileName();
 if (file.open(QIODevice::WriteOnly))
 {
-        file.write(buffer);
-        file.close();
+		file.write(buffer);
+		file.close();
 	}
 else
 {
-    qDebug() << "engine: error open file (WINEDISTR):" << file.errorString();
+	qDebug() << "engine: error open file (WINEDISTR):" << file.errorString();
 	return false;
 }
+
 
 return downloadExitCode ? wineFileName : "";
 }

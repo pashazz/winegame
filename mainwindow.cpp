@@ -147,9 +147,8 @@ if (filter == filters.at(1)) //MSI
 	//prepend "msiexec"
 	fileName.prepend("msiexec ");
 }
-connect (prefix, SIGNAL(fileNeed(QString&)),this, SLOT(getFileName(QString&)));
+
 connect (prefix, SIGNAL(prefixNameNeed(QString&)), this, SLOT (getPrefixName(QString&)));
-connect (prefix, SIGNAL(error(QString)), this, SLOT(showError(QString)));
 bool res  = prefix->runApplication(fileName, "", "");
 if (!res)
 showError(tr("Installation error"));
