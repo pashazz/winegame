@@ -511,6 +511,8 @@ bool Prefix::isMulti()
 
  void Prefix::writeMD5(QString md5sum)
  {
+	 if (s->value("wine/nomd5", false).toBool())
+		 return;
 
 	 QFile file (_path +QDir::separator() + ".wine");
 	 if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
@@ -522,6 +524,8 @@ bool Prefix::isMulti()
  }
  QString Prefix::getMD5()
  {
+	 if (s->value("wine/nomd5", false).toBool())
+		 return "";
 	//download MD5 file with QtNetwork
 	 QUrl url = QUrl(s->value("wine/distr").toString() + ".md5");
 	 if (url.isEmpty())
