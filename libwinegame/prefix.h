@@ -38,6 +38,7 @@ public:
    QString note ();
    QIcon icon ();
    QString setup (); //application/setup value
+   QString distr(); //wine/distr value
    bool runApplication (QString exe, QString diskroot = "", QString imageFile = ""); //well, it`s helper.
   void makeDesktopIcon (const QString &path, const  QString &name);
   bool isPreset();

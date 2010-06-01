@@ -106,3 +106,15 @@ void PrefixDialog::on_cmdControl_clicked()
 {
      pr->runProgram("control");
 }
+
+void PrefixDialog::on_cmdTest_clicked()
+{
+   PolDownloader *pol = new PolDownloader(pr);
+   WineVersionsDialog *dlg = new WineVersionsDialog(this, pol->versionList(), pol->detectCurrentVersion());
+   connect (dlg, SIGNAL(fallback()), pol, SLOT(fallback())); //function to restore defaults
+   if (dlg->exec() == QDialog::Accepted)
+   {
+	   if (!dlg->fallbackRequested())
+		   pol->setWineVersion(dlg->wineVersion());
+   }
+}

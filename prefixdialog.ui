@@ -14,14 +14,14 @@
    <string>Dialog</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="res.qrc">
+   <iconset>
     <normaloff>:/desktop/winegame.png</normaloff>:/desktop/winegame.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
@@ -96,8 +96,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>182</width>
-        <height>256</height>
+        <width>867</width>
+        <height>283</height>
        </rect>
       </property>
       <attribute name="label">
@@ -201,15 +201,15 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>234</width>
-        <height>60</height>
+        <width>867</width>
+        <height>283</height>
        </rect>
       </property>
       <attribute name="label">
        <string>Administration</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
+       <item row="1" column="0">
         <widget class="QPushButton" name="cmdBoot">
          <property name="text">
           <string>Reboot virtual Windows</string>
@@ -219,7 +219,17 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="cmdTest">
+         <property name="text">
+          <string>Ahother Wine Version</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
         <widget class="QPushButton" name="cmdRemove">
          <property name="text">
           <string>Remove this system and close dialog</string>
@@ -248,9 +258,7 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="res.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

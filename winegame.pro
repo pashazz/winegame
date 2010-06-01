@@ -13,7 +13,8 @@ SOURCES += main.cpp \
     settingsdialog.cpp \
     about.cpp \
     shortcutdialog.cpp \
-    winegameui.cpp
+    winegameui.cpp \
+    wineversionsdialog.cpp
 HEADERS += mainwindow.h \
     gamedialog.h \
     prefixdialog.h \
@@ -21,14 +22,16 @@ HEADERS += mainwindow.h \
     settingsdialog.h \
     about.h \
     shortcutdialog.h \
-    winegameui.h
+    winegameui.h \
+    wineversionsdialog.h
 FORMS += mainwindow.ui \
     gamedialog.ui \
     prefixdialog.ui \
     diskdialog.ui \
     settingsdialog.ui \
     about.ui \
-    shortcutdialog.ui
+    shortcutdialog.ui \
+    wineversionsdialog.ui
 INCLUDEPATH += libwinegame
 RESOURCES += res.qrc
 LIBS += -L \

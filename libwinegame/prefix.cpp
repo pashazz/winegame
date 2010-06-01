@@ -543,3 +543,8 @@ bool Prefix::isMulti()
 	 qDebug() << "md5sum:" << md5 << "for app" << name();
 	 return md5;
  }
+
+ QString Prefix::distr()
+ {
+	 return s->value("wine/distr").toString();
+ }

@@ -1,4 +1,4 @@
-release 0.0.0
++-release 0.0.0
 r1:engine fixes, translation updates (Russian)
 r2:notifications (KDialog/notify-send) implemented
 r3:new download method: QNetworkAcessManager instead of wget
@@ -20,3 +20,5 @@ r18:wizardry, fallout 3, silent hunter 5 added
 r19:using kdesu/gksu for mounting, add an option to force using fuseiso
 r20:crysis added, winegame understands XDG_CONFIG_HOME env. variable
 r21:new "dvdrunner" class for detecting DVDs, new UiClient layer for GUI in libwinegame.
+r22:wine builds: MD5 checking
+r23:user can select custom wine version with PolDownloader class (repo on playonlinux.com)

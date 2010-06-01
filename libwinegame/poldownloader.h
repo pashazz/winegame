@@ -33,8 +33,10 @@ public:
 	PolDownloader(Prefix *prefixObj);
 	QStringList versionList() {return versions;}
 	bool setWineVersion (QString version); //return false if SQL error or no such version
-	void fallback();
+	QString detectCurrentVersion();
 
+public slots:
+	void fallback();
 
 private:
 	Prefix *prefix;

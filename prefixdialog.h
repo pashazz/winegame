@@ -22,6 +22,8 @@
 #include <QDialog>
 #include <QFileDialog>
 #include "prefix.h"
+#include "wineversionsdialog.h"
+#include "poldownloader.h"
 
 namespace Ui {
     class PrefixDialog;
@@ -38,7 +40,8 @@ private:
     Prefix *pr;
 
 private slots:
-    void on_cmdControl_clicked();
+	void on_cmdTest_clicked();
+	void on_cmdControl_clicked();
     void on_cmdRemove_clicked();
     void on_cmdBoot_clicked();
     void on_cmdUninst_clicked();
