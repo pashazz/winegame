@@ -405,6 +405,10 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Нажмите &lt;span style=&quot; font-weight:600;&quot;&gt;кнопки справа&lt;/span&gt;,чтобы запустить EXE файл в этой виртуальной системе &lt;br&gt; (не рекомендуем устанавливать сюда новые программы)!
  или просмотреть диск C: &lt;br&gt; с помощью вашего файлового менеджера (в Linux)&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
+    <message>
+        <source>Ahother Wine Version</source>
+        <translation>Другая версия Wine</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -583,6 +587,21 @@ for mount ISO images</source>
     <message>
         <source>Create shortcut on desktop</source>
         <translation>Создать ярлык на рабочем столе</translation>
+    </message>
+</context>
+<context>
+    <name>WineVersionsDialog</name>
+    <message>
+        <source>Using Default wine version</source>
+        <translation>Используется версия Wine по умолчанию</translation>
+    </message>
+    <message>
+        <source>Using %1 wine version</source>
+        <translation>Используется версия Wine %1.</translation>
+    </message>
+    <message>
+        <source>Select Wine version</source>
+        <translation>Выберите версию Wine</translation>
     </message>
 </context>
 <context>
