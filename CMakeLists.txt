@@ -49,6 +49,7 @@ find_package(WineStuff REQUIRED)
 message(STATUS "Searching for WineStuff")
 find_package(WineStuff REQUIRED)
 message(STATUS "WineStuff Include Dir: ${WINESTUFF_INCLUDE_DIR}")
+message(STATUS "WineStuff Library: ${WINESTUFF_LIBRARIES}")
 include_directories(${WINESTUFF_INCLUDE_DIR}/winestuff)
 
 

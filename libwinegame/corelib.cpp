@@ -259,7 +259,8 @@ void corelib::initconf()
 	setWineDir(QDir::homePath() + "/.winegame/windows");
 	setMountDir(QDir::homePath() + "/.winegame/mounts");
 	setDiscDir(QDir::homePath() + "/.winegame/disc");
-	setPackageDir("/usr/share/winegame");
+	//Calculate pkgdir
+	setPackageDir(QDir(qApp->applicationDirPath() + "../share/winegame").canonicalPath());
 	//check if dirs exists
 QStringList paths = QStringList () << wineDir() << mountDir() /*<< discDir()*/;
 foreach (QString path, paths)
