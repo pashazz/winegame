@@ -20,8 +20,8 @@
 #ifndef DISKDIALOG_H
 #define DISKDIALOG_H
 
+#include <QtGui>
 #include "prefix.h"
-#include "engine.h"
 #include "dvdrunner.h"
 
 namespace Ui {

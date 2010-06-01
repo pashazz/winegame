@@ -20,7 +20,6 @@
 #define MAINWINDOW_H
 
 #include <QtGui>
-#include "engine.h"
 #include "prefixdialog.h"
 #include "settingsdialog.h"
 #include "shortcutdialog.h"
