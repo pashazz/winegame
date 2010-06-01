@@ -106,8 +106,8 @@ if (wineFileName.isEmpty())
 QString archive = core->downloadWine(URL + wineFileName);
 if (archive.isEmpty())
 	return false;
-/*if (!checkSHA1(archive))
-	return false;*/ //experimental
+if (!checkSHA1(archive))
+	return false; //experimental
 if(!core->unpackWine(archive, core->wineDir()))
 	return false;
 
