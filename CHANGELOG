@@ -22,3 +22,4 @@ r20:crysis added, winegame understands XDG_CONFIG_HOME env. variable
 r21:new "dvdrunner" class for detecting DVDs, new UiClient layer for GUI in libwinegame.
 r22:wine builds: MD5 checking
 r23:user can select custom wine version with PolDownloader class (repo on playonlinux.com)
+r24:RELEASE RC4. MOVING TO 0.1
