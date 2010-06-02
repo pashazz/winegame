@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>l10n/wg_ru.qm</file>
         <file>desktop/winegame.png</file>
+        <file>l10n/wg_ru.qm</file>
     </qresource>
 </RCC>

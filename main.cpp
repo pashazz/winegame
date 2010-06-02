@@ -53,28 +53,32 @@ int main(int argc, char *argv[])
     qt.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     a.installTranslator(&qt);
     QTranslator app;
-    app.load(":/l10n/wg_" + QLocale::system().name());
-    a.installTranslator(&app);
+	app.load(":/l10n/wg_" +QLocale::system().name());
+	a.installTranslator(&app);
+    //загружаем локализацию для WineStuff
+    QTranslator winestuff;
+	if(!winestuff.load(QLibraryInfo::location(QLibraryInfo::PrefixPath)+ "/share/winestuff/l10n/lwg_" + QLocale::system().name()))
+		qDebug() << "No Loaded Localization for winestuff" << "PREFIX/share/winestuff/l10n/lwg_" + QLocale::system().name();
+    a.installTranslator(&winestuff);
     //set Linux console encoding to UTF-8
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-
-	 //Set some refspecs
-      a.setApplicationName("WineGame");
-      a.setApplicationVersion("0.0.1");
-	  a.setOrganizationName("Pashazz");
-	  a.setOrganizationDomain("org");
-	  if (!QSqlDatabase::drivers().contains("QSQLITE"))
+	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+    //Set some refspecs
+    a.setApplicationName("WineGame");
+    a.setApplicationVersion("0.0.1");
+    a.setOrganizationName("Pashazz");
+	a.setOrganizationDomain("org");
+	if (!QSqlDatabase::drivers().contains("QSQLITE"))
 	  {
-		  QMessageBox::critical(0, QObject::tr("Initialization error"), QObject::tr("Qt`s SQLite module not found"));
+		QMessageBox::critical(0, QObject::tr("Initialization error"), QObject::tr("Qt`s SQLite module not found"));
 		  return -5;
 	  }
 	  //Our winegame GUI client
-	  WinegameUi *client = new WinegameUi(); //опасные утечки памяти
+	WinegameUi *client = new WinegameUi(); //опасные утечки памяти
 
-		  corelib *core =  new corelib (0, client);
+	corelib *core =  new corelib (0, client);
 		  core->init();
-	  //Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
+		  //Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
 		  if (a.arguments().length() > 2)
 		  {
 		  if (a.arguments().at(1) == "-r")
@@ -96,7 +100,7 @@ int main(int argc, char *argv[])
 			  }
 			  runDVD(a.arguments().at(1), core);
 			  return 0;
-			  }
+		  }
 
 		  client->showNotify(QObject::tr("Hello!"),QObject::tr("Please connect to internet :)"));
 		  MainWindow w(core);

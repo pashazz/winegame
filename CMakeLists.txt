@@ -68,12 +68,37 @@ qt4_add_resources (QRC_SOURCES ${RES})
 #Генерируем файлы MOC
 qt4_wrap_cpp (MOC_SOURCES ${QOBJ_HEADERS})
 
-add_executable (winegame ${SOURCES} ${MOC_SOURCES} ${UI_HEADERS} ${QRC_SOURCES})
+#генерируем локализации
+set (TSDIR ${CMAKE_BINARY_DIR}/l10n)
+set (LANGUAGES wg_ru)
 
+foreach (LANGUAGE ${LANGUAGES})
+	set (TS ${TSDIR}/${LANGUAGE}.ts)
+	set (QM ${TSDIR}/${LANGUAGE}.qm)
+	set (TRANSLATIONS ${TRANSLATIONS} ${TS})
+	set (TRANSLATIONS_BINARY ${TRANSLATIONS_BINARY} ${QM})
+	add_custom_command (
+		OUTPUT ${QM}
+		COMMAND ${QT_LRELEASE_EXECUTABLE} ${TS}
+		MAIN_DEPENDENCY ${TS})
+endforeach()
+add_custom_target (
+	translations 
+	COMMAND ${QT_LUPDATE_EXECUTABLE} ${HEADERS} ${SOURCES} -ts ${TRANSLATIONS})
+add_custom_command (
+	TARGET translations
+	COMMAND ${QT_LRELEASE_EXECUTABLE} ${TRANSLATIONS})
+
+#Добавляем директорию, где расп. UI_blabla.h
+include_directories(${CMAKE_BINARY_DIR})
+
+add_executable (winegame ${SOURCES} ${MOC_SOURCES} ${UI_HEADERS} ${QRC_SOURCES} ${TRANS})
 
 #Линкуем
 target_link_libraries( winegame ${QT_LIBRARIES} ${WINESTUFF_LIBRARIES})
 
 #ставим
-install (TARGETS winegame DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-install (DIRECTORY packages DESTINATION ${CMAKE_INSTALL_PREFIX}/share/winegame)
+install (TARGETS winegame DESTINATION bin)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/packages DESTINATION share/winegame)
+install (FILES ${CMAKE_BINARY_DIR}/desktop/winegame.png DESTINATION share/pixmaps)
+install (FILES ${CMAKE_BINARY_DIR}/desktop/winegame.desktop DESTINATION share/applications)

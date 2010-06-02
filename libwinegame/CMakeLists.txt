@@ -24,11 +24,37 @@ find_package( Qt4 REQUIRED )
             ELSE(QT_QTSQL_FOUND)
                 MESSAGE(FATAL ERROR "Qt SQL libraries missing.")
             ENDIF(QT_QTSQL_FOUND)
+
 include (${QT_USE_FILE})
 set (QHEADERS corelib.h  dvdrunner.h  poldownloader.h  prefix.h  uiclient.h)
 set (HEADERS ${QHEADERS} libwinegame_global.h)
 set (SOURCES corelib.cpp  dvdrunner.cpp  poldownloader.cpp  prefix.cpp)
+message (STATUS "Run 'make translations && make' to compile winestuff")
+
 qt4_wrap_cpp (MOC_SOURCES ${QHEADERS})
+
+#Translations
+set (TSDIR ${CMAKE_BINARY_DIR}/l10n)
+set (LANGUAGES lwg_ru)
+
+foreach (LANGUAGE ${LANGUAGES})
+	set (TS ${TSDIR}/${LANGUAGE}.ts)
+	set (QM ${TSDIR}/${LANGUAGE}.qm)
+	set (TRANSLATIONS ${TRANSLATIONS} ${TS})
+	set (TRANSLATIONS_BINARY ${TRANSLATIONS_BINARY} ${QM})
+	add_custom_command (
+		OUTPUT ${QM}
+		COMMAND ${QT_LRELEASE_EXECUTABLE} ${TS}
+		MAIN_DEPENDENCY ${TS})
+endforeach()
+add_custom_target (
+	translations 
+	COMMAND ${QT_LUPDATE_EXECUTABLE} ${HEADERS} ${SOURCES} -ts ${TRANSLATIONS})
+add_custom_command (
+	TARGET translations
+	COMMAND ${QT_LRELEASE_EXECUTABLE} ${TRANSLATIONS})
+
+
 add_library(winestuff SHARED ${HEADERS} ${SOURCES} ${MOC_SOURCES} )
 
 target_link_libraries( winestuff ${QT_LIBRARIES} )
@@ -38,3 +64,4 @@ set(LIB_INCLUDE_PATH ${CMAKE_INSTALL_PREFIX}/include/winestuff)
 install (FILES ${HEADERS} DESTINATION ${LIB_INCLUDE_PATH})
 install (TARGETS winestuff DESTINATION ${LIB_INSTALL_PATH})
 install (FILES FindWineStuff.cmake DESTINATION ${CMAKE_ROOT}/Modules)
+install (FILES ${TRANSLATIONS_BINARY} DESTINATION share/winestuff/l10n)
