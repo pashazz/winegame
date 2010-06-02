@@ -16,11 +16,14 @@ Download url: http://tinyurl.com/winetricks
 You can find ebuild for winetricks in gentoo/ subdirectory. Don`t forgot about digests.
 =========================================
 Installation:
-./quickinstall.sh
+cd libwinegame
+cmake .
+make translations && make && sudo make install
+cd -
+cmake .
+make translations && make && sudo make install
 
-Uninstallation:
-sudo rm -rf `cat installmanifest.txt | xargs` (or similar)
-PLEASE, PLEASE, DONT USE make uninstall AT ALL!
+You can also command "make package" to get DEB, RPM & TGZ packages
 ==========================================
 
 Thanks, pashazz.

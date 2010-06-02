@@ -21,5 +21,5 @@ isEmpty ($$PREFIX)
 :PREFIX = /usr
 target.path = $$PREFIX/lib
 INSTALLS += target
-VERSION = 0.0.1
+VERSION = 0.1.0
 TRANSLATIONS += ../l10n/lwg_ru.ts
