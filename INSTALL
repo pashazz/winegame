@@ -1,0 +1,13 @@
+Install Qt 4.6 Core, Gui, SQL (including development headers)
+Install WineStuff library from http://github.com/pashazz/winestuff
+Do this:
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+make
+sudo make install
+
+For remove this program, do:
+
+cd build
+sudo rm `cat install_manifest.txt`
