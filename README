@@ -13,17 +13,15 @@ winetricks
 Winetricks info:
 Homepage: http://wiki.winehq.org/winetricks
 Download url: http://tinyurl.com/winetricks
-You can find ebuild for winetricks in gentoo/ subdirectory. Don`t forgot about digests.
+You can find ebuild for winetricks in os/gentoo/ subdirectory. Don`t forgot about digests.
 =========================================
-Installation:
-cd libwinegame
-cmake .
-make translations && make && sudo make install
-cd -
-cmake .
-make translations && make && sudo make install
-
-You can also command "make package" to get DEB, RPM & TGZ packages
+Directories info:
+src - sources
+src/l10n - translations
+packages - WineGame packages
+os - information for Linux distros (package managers)
+desktop - image & FreeDesktop launcher
+resources - QRC files
 ==========================================
 
 Thanks, pashazz.
