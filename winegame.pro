@@ -32,7 +32,7 @@ FORMS += mainwindow.ui \
     about.ui \
     shortcutdialog.ui \
     wineversionsdialog.ui
-INCLUDEPATH += libwinegame
+INCLUDEPATH += /usr/include/winestuff
 RESOURCES += res.qrc
 LIBS += -L \
     $$PREFIX/lib \
