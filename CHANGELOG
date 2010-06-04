@@ -1,4 +1,4 @@
-+-release 0.0.0
+r0:release 0.0.0
 r1:engine fixes, translation updates (Russian)
 r2:notifications (KDialog/notify-send) implemented
 r3:new download method: QNetworkAcessManager instead of wget
@@ -11,7 +11,7 @@ r9:autopackages included
 r10:now engine in shared library. And autopackages removed.
 r11:all prefix working in shared library, all packages merged
 r12:RELASE RC1
-r13:ebuilds added, debs added
+r13:ebuilds added, debs added for RC1
 r14:bioshock added, silent hill 3 added, RELEASE RC2
 r15:CS:S added, GTA3,SA added.Using QSQLITE & QtSql to store installed apps
 r16:Perfect World added
@@ -23,3 +23,4 @@ r21:new "dvdrunner" class for detecting DVDs, new UiClient layer for GUI in libw
 r22:wine builds: MD5 checking
 r23:user can select custom wine version with PolDownloader class (repo on playonlinux.com)
 r24:RELEASE RC4. MOVING TO 0.1
+r25:bugfixes, Ubuntu builds (both daily and releases), splitting winestuff & winegame changelogs
