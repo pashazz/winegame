@@ -217,6 +217,11 @@ void MainWindow::saveGeom()
 void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
 	Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString(), core);
+	if (prefix->isPreset())
+	{
+		core->client()->showNotify(tr("Preset"), tr("If you`re want to install application in pre-set, click OK."));
+		return;
+	}
 /*	if (!prefix->hasDBEntry())
 *		return; //нету установленных приложений здесь.
 */
