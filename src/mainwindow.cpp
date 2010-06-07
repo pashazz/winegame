@@ -216,6 +216,8 @@ void MainWindow::saveGeom()
 
 void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
+	if (!checkNodeForPrefix(ui->lstGames))
+		return;
 	Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString(), core);
 	if (prefix->isPreset())
 	{
@@ -269,11 +271,8 @@ void MainWindow::on_action_About_triggered()
 
 void MainWindow::on_action_Make_desktop_icon_triggered()
 {
-	if (ui->lstGames->selectedItems().count() <= 0)
-	{
-		statusBar()->showMessage(tr("No item selected"));
+	if (!checkNodeForPrefix(ui->lstGames))
 		return;
-	}
 	Prefix *prefix = new Prefix (this, ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString(),core);
 	ShortCutDialog *dlg = new ShortCutDialog (this, prefix->name(), prefix->prefixPath());
 	if (dlg->exec() == QDialog::Accepted)
@@ -297,3 +296,24 @@ QIcon MainWindow::icon(QString pkgpath)
 	  else
 		  return QIcon::fromTheme("application-default-icon");
 }
+
+void MainWindow::on_lblNote_linkActivated(QString link)
+{
+	QDesktopServices::openUrl(QUrl(link));
+}
+
+bool  MainWindow::checkNodeForPrefix(QTreeWidget *widget)
+{
+if (widget->selectedItems().isEmpty())
+{
+	statusBar()->showMessage(tr("No item selected"), 3000);
+	return false;
+}
+if (widget->selectedItems().at(0)->data(0,Qt::UserRole).isNull())
+{
+	statusBar()->showMessage(tr("No prefix associated with this node"), 3000);
+	return false;
+}
+return true;
+}
+

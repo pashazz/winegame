@@ -43,3 +43,10 @@ void About::changeEvent(QEvent *e)
         break;
     }
 }
+
+
+void About::on_label_linkActivated(QString link)
+{
+	//open url
+	QDesktopServices::openUrl(QUrl(link));
+}

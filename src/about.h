@@ -21,6 +21,7 @@
 #define ABOUT_H
 
 #include <QDialog>
+#include <QDesktopServices>
 
 namespace Ui {
     class About;
@@ -37,6 +38,11 @@ protected:
 
 private:
     Ui::About *ui;
+
+private slots:
+
+private slots:
+	void on_label_linkActivated(QString link);
 };
 
 #endif // ABOUT_H

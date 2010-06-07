@@ -58,3 +58,4 @@ void ShortCutDialog::on_cmdBrowse_clicked()
 {
 	ui->txtPath->setText(QFileDialog::getOpenFileName(this, tr("Select EXE file"), _prefix + "/dosdevices/c:", tr("Windows executables (*.exe)")));
 }
+

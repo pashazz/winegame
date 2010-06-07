@@ -49,6 +49,10 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 	//загружаем локализацию
+#ifdef QT_NO_CONCURRENT
+	qDebug() << "No QtConcurrent support";
+	return 0;
+#endif
     QTranslator qt;
     qt.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     a.installTranslator(&qt);
@@ -68,6 +72,15 @@ int main(int argc, char *argv[])
     a.setApplicationVersion("0.1.0");
     a.setOrganizationName("Pashazz");
 	a.setOrganizationDomain("org");
+#ifdef Q_WS_WIN
+	QMessageBox::critical(0, tr("Proprietary OS detected"), tr("Winegame will not work  when Ballmer sees."));
+	return 0;
+#endif
+
+#ifdef Q_WS_MAC
+	QMessageBox::critical(tr("Proprietary OS detected"), tr("Winegame will not work  when Jobs sees."));
+	return 0;
+#endif
 	if (!QSqlDatabase::drivers().contains("QSQLITE"))
 	  {
 		QMessageBox::critical(0, QObject::tr("Initialization error"), QObject::tr("Qt`s SQLite module not found"));

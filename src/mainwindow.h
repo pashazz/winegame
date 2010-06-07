@@ -40,12 +40,14 @@ private:
 	bool cdMode;
 	corelib *core;
 	QSqlDatabase db;
+	bool checkNodeForPrefix (QTreeWidget *widget);
 	void saveGeom();
 	void buildList();
 	void lauchEngine(QString pkgpath);
 	QIcon icon (QString pkgpath);
 private slots:
-	void on_action_Make_desktop_icon_triggered();
+	void on_lblNote_linkActivated(QString link);
+ void on_action_Make_desktop_icon_triggered();
 	void on_action_About_triggered();
 	void on_actionAbout_Qt_triggered();
 	void on_action_Quit_triggered();
