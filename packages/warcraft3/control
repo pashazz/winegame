@@ -1,4 +1,4 @@
 [application]
 prefix="warcraft3"
 [wine]
-distr="http://winegame.googlecode.com/files/wine-war3.tar.bz2"
+distr="wg:warcraft3/current/wine-war3.tar.bz2"

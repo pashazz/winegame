@@ -1,6 +1,6 @@
 [application]
 prefix="cstrikesource"
 [wine]
-distr="http://winegame.googlecode.com/files/wine-sourceengine.tar.bz2"
+distr="wg:source/current/wine-sourceengine.tar.bz2"
 components="nocrashdialog glsl-disable psm=off win98"
 memory=true

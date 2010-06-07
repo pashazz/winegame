@@ -3,4 +3,4 @@ prefix=mountblade
 [wine]
 memory=true
 components="ddr=opengl psm-on vsm-hard"
-distr="http://winegame.googlecode.com/files/wine-mousewarp-1.1.43.tar.bz2"
+distr="wg:mousewarp/current/wine-mousewarp.tar.bz2"

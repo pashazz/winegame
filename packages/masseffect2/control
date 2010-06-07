@@ -3,4 +3,4 @@ prefix="masseffect2"
 [wine]
 memory=true
 components="d3dx9 d3dx10 vcrun2005 physx psm=on vsm-hard mwo=force"
-distr="http://winegame.googlecode.com/files/wine-masseffect.tar.bz2"
+distr="wg:masseffect/current/wine-masseffect.tar.bz2"

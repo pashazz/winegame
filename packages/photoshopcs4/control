@@ -1,6 +1,5 @@
 [application]
 prefix="photoshopcs4"
-
 [wine]
-distr="http://winegame.googlecode.com/files/wine-1.1.17-bin.tar.bz2"
+distr="wg:adobecs4/current/wine-1.1.17-bin.tar.bz2"
 components="gecko allfonts fontsmooth-rgb atmlib msxml6 vcrun2005 gdiplus ie6"

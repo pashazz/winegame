@@ -1,6 +1,6 @@
 [application]
 prefix=bonderlands
 [wine]
-distr="http://winegame.googlecode.com/files/wine-mousewarp.tar.bz2"
+distr="wg:mousewarp/current/wine-mousewarp.tar.bz2"
 components="d3dx9 vcrun2005 vcrun2008 physx ddr=opengl psm=on vsm-hard"
 memory=true
