@@ -1,5 +1,0 @@
-[wine]
-components="corefonts ddr=opengl psm=on vsm-hard vcrun2005sp1"
-memory=true
-[application]
-prefix=eveonline

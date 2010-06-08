@@ -106,6 +106,6 @@ target_link_libraries( winegame ${QT_LIBRARIES} ${WINESTUFF_LIBRARIES})
 
 #ставим
 install (TARGETS winegame DESTINATION bin)
-install (DIRECTORY ${CMAKE_SOURCE_DIR}/packages DESTINATION share/winegame)
+install (FILES ${TRANSLATIONS_BINARY} DESTINATION share/winegame/translations)
 install (FILES ${CMAKE_SOURCE_DIR}/desktop/winegame.png DESTINATION share/pixmaps)
 install (FILES ${CMAKE_SOURCE_DIR}/desktop/winegame.desktop DESTINATION share/applications)

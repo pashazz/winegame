@@ -1,5 +1,0 @@
-[application]
-prefix="perfectworld"
-[wine]
-components="allfonts gecko multisampling=enabled psm=on ddr=opengl vsm-hard"
-memory=true

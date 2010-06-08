@@ -1,5 +1,0 @@
-[application]
-prefix=starcraft
-[wine]
-components="ie6 rtlm=readtex"
-

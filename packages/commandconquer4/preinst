@@ -1,5 +1,0 @@
-#!/bin/sh
-
-notify-send 'Command & Conquer 4' 'Installing...'
-cd $WINEPREFIX #simple trick (work around sandboxing)
-$WINE regedit $FILESDIR/net.reg

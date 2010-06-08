@@ -1,4 +1,0 @@
-#!/bin/bash
-#Simple script, that assigns CS:Source parameters to wine`s default.
-cd "$WINEPREFIX/drive_c/Program Files/Counter-Strike Source/cstrike/cfg"
-cp  $FILESDIR/game.cfg .

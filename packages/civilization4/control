@@ -1,5 +1,0 @@
-[wine]
-components="d3dx9 msxml3 msxml4 dotnet20"
-memory=true
-[application]
-prefix="civilization4"

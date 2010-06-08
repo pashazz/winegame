@@ -1,6 +1,0 @@
-[application]
-prefix=morrowind
-setup=Setup.exe
-[wine]
-components="glsl-enable vsm-hard psm=on"
-memory=true

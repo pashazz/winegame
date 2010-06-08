@@ -24,3 +24,4 @@ r22:wine builds: MD5 checking
 r23:user can select custom wine version with PolDownloader class (repo on playonlinux.com)
 r24:RELEASE RC4. MOVING TO 0.1
 r25:bugfixes, Ubuntu builds (both daily and releases), splitting winestuff & winegame changelogs
+r26:packages now downloading from internet, RECREATE YOUR CONFIG

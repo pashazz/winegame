@@ -1,3 +1,0 @@
-#!/bin/bash
-cd $WINEPREFIX
-$WINE regedit $FILESDIR/war3.reg

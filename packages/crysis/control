@@ -1,6 +1,0 @@
-[application]
-prefix="crysis"
-[wine]
-components="mwo=force ddr=opengl psm=on vsm-hard d3dx9"
-memory=true
-distr="crysis/current/wine-crysis.tar.bz2"

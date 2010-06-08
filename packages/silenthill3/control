@@ -1,5 +1,0 @@
-[wine]
-components="win98 ddr=opengl"
-memory=true
-[application]
-prefix=silenthill3

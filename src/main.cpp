@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     qt.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     a.installTranslator(&qt);
     QTranslator app;
-	app.load(":/l10n/wg_" +QLocale::system().name());
+	app.load("wg_" + QLocale::system().name(), QDir(a.applicationDirPath() + "/../share/translations").absolutePath());
 	a.installTranslator(&app);
     //загружаем локализацию для WineStuff
     QTranslator winestuff;
@@ -84,18 +84,17 @@ int main(int argc, char *argv[])
 	if (!QSqlDatabase::drivers().contains("QSQLITE"))
 	  {
 		QMessageBox::critical(0, QObject::tr("Initialization error"), QObject::tr("Qt`s SQLite module not found"));
-		  return -5;
+		return -5;
 	  }
 	  //Our winegame GUI client
 	WinegameUi *client = new WinegameUi(); //опасные утечки памяти
-
-	corelib *core =  new corelib (0, client);
-		  core->init();
-		  //Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
-		  if (a.arguments().length() > 2)
-		  {
+	corelib *core = new corelib (0, client);
+	core->init();
+	//Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
+	if (a.arguments().length() > 2)
+	{
 		  if (a.arguments().at(1) == "-r")
-			  {
+		{
 			  QStringList exe = a.arguments();
 			  exe.removeFirst();
 			  exe.removeOne("-r");
@@ -103,21 +102,21 @@ int main(int argc, char *argv[])
 			  qApp->quit();
 		  }
 	  }
-
-		  if (a.arguments().length() > 1) {
-			  QFileInfo info (a.arguments().at(1));
-			  if (!info.exists())
+	
+	if (a.arguments().length() > 1) {
+		QFileInfo info (a.arguments().at(1));
+		if (!info.exists())
 			  {
-				  QMessageBox::critical(0,QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
-				  return -3;
-			  }
-			  runDVD(a.arguments().at(1), core);
-			  return 0;
-		  }
+			QMessageBox::critical(0,QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
+			return -3;
+		}
+		runDVD(a.arguments().at(1), core);
+		return 0;
+	}
+	
+	client->showNotify(QObject::tr("Hello!"),QObject::tr("Please connect to internet :)"));
+	MainWindow w(core);
+	w.show();
+	return a.exec();
 
-		  client->showNotify(QObject::tr("Hello!"),QObject::tr("Please connect to internet :)"));
-		  MainWindow w(core);
-		  w.show();
-		  return a.exec();
-
-	  }
+}

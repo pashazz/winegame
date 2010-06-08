@@ -1,6 +1,0 @@
-[wine]
-components="mwo=force"
-memory=true
-[application]
-setup="GTA_3.exe"
-prefix="gta3"

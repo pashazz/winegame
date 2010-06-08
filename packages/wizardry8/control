@@ -1,4 +1,0 @@
-[application]
-prefix="wizardry8"
-[wine]
-components="nocrashdialog vcrun6"

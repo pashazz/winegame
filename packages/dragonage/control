@@ -1,6 +1,0 @@
-[application]
-prefix=dragonage
-setup=Setup.exe
-[wine]
-components="nocrashdialog physx multisampling=enabled strictdrawordering=disabled vcrun2005"
-memory=true

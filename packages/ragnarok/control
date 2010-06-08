@@ -1,5 +1,0 @@
-[application]
-prefix="ragnarok"
-[wine]
-components="vcrun6 d3dx9"
-memory=true

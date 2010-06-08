@@ -1,5 +1,0 @@
-[wine]
-components="vcrun2005 mwo=force"
-memory=true
-[application]
-prefix="bioshock" 

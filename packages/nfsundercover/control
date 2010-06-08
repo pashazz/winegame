@@ -1,5 +1,0 @@
-[application]
-prefix="nfsundercover"
-[wine]
-components="nocrashdialog d3dx9 ddr=opengl dinput8"
-memory=true

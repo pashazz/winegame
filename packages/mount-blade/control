@@ -1,6 +1,0 @@
-[application]
-prefix=mountblade
-[wine]
-memory=true
-components="ddr=opengl psm-on vsm-hard"
-distr="wg:mousewarp/current/wine-mousewarp.tar.bz2"

@@ -1,8 +1,0 @@
-[application]
-prefix="maxpayne"
-[wine]
-memory=true
-components="d3dx9 mwo=force"
-distr="wg:mousewarp/current/wine-mousewarp.tar.bz2"
-
-;made by  Slipped.on.blade

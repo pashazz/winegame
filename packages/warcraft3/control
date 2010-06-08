@@ -1,4 +1,0 @@
-[application]
-prefix="warcraft3"
-[wine]
-distr="wg:warcraft3/current/wine-war3.tar.bz2"

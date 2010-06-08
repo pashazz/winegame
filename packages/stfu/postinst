@@ -1,7 +1,0 @@
-#!/bin/sh
-#Патчим до 1.2
-cd $WINEPREFIX
-wget  http://xfer.lfnetwork.com/lucasfiles.com/downloads/1537/SWTFU_PC_EF_1.2_Update.exe -O patch.exe
-$WINE patch.exe
-sleep 5s
-rm patch.exe

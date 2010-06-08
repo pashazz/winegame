@@ -1,6 +1,0 @@
-[application]
-prefix="sourceengine"
-[wine]
-distr="wg:source/current/wine-sourceengine.tar.bz2"
-components="psm=on vsm-hard"
-memory=true

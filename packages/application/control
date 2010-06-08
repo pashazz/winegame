@@ -1,3 +1,0 @@
-[wine]
-preset=true
-components="allfonts vcrun2005sp1 msxml6"

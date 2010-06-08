@@ -1,6 +1,0 @@
-#!/bin/sh
-cd $WINEPREFIX
-wget http://www.torngaming.com/modules.php?name=Downloads&d_op=viewdownload&cid=1 -O patch.exe
-$WINE patch.exe
-sleep 5s
-rm patch.exe

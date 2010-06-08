@@ -1,5 +1,0 @@
-REGEDIT4
-
-[HKEY_CURRENT_USER\Software\Wine\DirectInput]
-"BoxPixels"="5"
-"MouseWarpOverride"="force-box"

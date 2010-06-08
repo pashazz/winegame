@@ -1,5 +1,0 @@
-#!/bin/sh
-cd $WINEPREFIX
-wget http://ftp.blizzard.com/pub/starcraft/patches/PC/SC-1161.exe
-$WINE SC-1161.exe
-cp $CDROOT/install.exe "$WINEPREFIX/Program Files/StarCraft/StarCraft.mpq"
