@@ -150,6 +150,7 @@ if (filter == filters.at(1)) //MSI
 
 connect (prefix, SIGNAL(prefixNameNeed(QString&)), this, SLOT (getPrefixName(QString&)));
 bool res  = prefix->runApplication(fileName, "", "");
+buildList();
 if (!res)
 showError(tr("Installation error"));
 
@@ -192,18 +193,9 @@ void MainWindow::showError(QString error)
 
 void MainWindow::on_buttonBox_accepted()
 {
-   if (!ui->lstGames->selectedItems().isEmpty()) {
-	   {
-		   if (ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString().isEmpty())
-			   return;
-	   lauchEngine(ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString());
-		buildList();
-	}
-    }
-    else
-    {
-        QMessageBox::warning(this, tr("Warning"), tr("Select item to run"));
-    }
+if (!checkNodeForPrefix(ui->lstGames))
+	qApp->quit();
+lauchEngine(ui->lstGames->selectedItems().at(0)->data(0, Qt::UserRole).toString());
 }
 
 void MainWindow::saveGeom()
@@ -218,20 +210,7 @@ void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column
 {
 	if (!checkNodeForPrefix(ui->lstGames))
 		return;
-	Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString(), core);
-	if (prefix->isPreset())
-	{
-		core->client()->showNotify(tr("Preset"), tr("If you`re want to install application in pre-set, click OK."));
-		return;
-	}
-/*	if (!prefix->hasDBEntry())
-*		return; //нету установленных приложений здесь.
-*/
-	QString exe = QFileDialog::getOpenFileName(0,  tr("Выберите EXE файл"), QDir::homePath(), tr("Windows executables (*.exe)"));
-	if (!exe.isEmpty())
-	 prefix->runApplication(exe);
-	else
-		statusBar()->showMessage(tr("No file selected, aborting"));
+	lauchEngine(item->data(column, Qt::UserRole).toString());
 }
 
 void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)

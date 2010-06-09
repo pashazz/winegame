@@ -121,3 +121,21 @@ void WinegameUi::insertNextCd(bool &result, QString count)
 	else
 		result = false;
 }
+
+void WinegameUi::showUserWaitMessage(const QString &message)
+{
+	waitDialog = new QDialog (0);
+	waitDialog->setModal(true);
+	QHBoxLayout *layout = new QHBoxLayout(waitDialog);
+	QLabel *label = new QLabel (waitDialog);
+	label->setText(message);
+	layout->addWidget(label);
+	waitDialog->setLayout(layout);
+	waitDialog->show();
+
+}
+void WinegameUi::closeWaitMessage()
+{
+	waitDialog->close();
+	delete waitDialog;
+}
