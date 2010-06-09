@@ -127,6 +127,7 @@ if (dir.exists())
     {
    PrefixDialog *dlg = new PrefixDialog(this,pkgpath, core);
   dlg->exec();
+  buildList();
   return;
     }
 }
@@ -153,7 +154,6 @@ bool res  = prefix->runApplication(fileName, "", "");
 buildList();
 if (!res)
 showError(tr("Installation error"));
-
 }
 
 void MainWindow::getFileName(QString &fileName)
