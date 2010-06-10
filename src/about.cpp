@@ -50,3 +50,8 @@ void About::on_label_linkActivated(QString link)
 	//open url
 	QDesktopServices::openUrl(QUrl(link));
 }
+
+void About::on_textBrowser_2_anchorClicked(QUrl url)
+{
+	QDesktopServices::openUrl(url);
+}

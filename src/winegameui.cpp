@@ -65,7 +65,7 @@ void WinegameUi::showProgressBar(QString title)
  connect (progress, SIGNAL(canceled()), this, SIGNAL(cancelOperation()));
  progress->setWindowTitle(title);
  progress->setModal (true);
-
+ progress->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint);
  progress->show();
 }
 
@@ -126,13 +126,13 @@ void WinegameUi::showUserWaitMessage(const QString &message)
 {
 	waitDialog = new QDialog (0);
 	waitDialog->setModal(true);
+	waitDialog->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint);
 	QHBoxLayout *layout = new QHBoxLayout(waitDialog);
 	QLabel *label = new QLabel (waitDialog);
 	label->setText(message);
 	layout->addWidget(label);
 	waitDialog->setLayout(layout);
 	waitDialog->show();
-
 }
 void WinegameUi::closeWaitMessage()
 {

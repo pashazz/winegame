@@ -22,6 +22,7 @@
 
 #include <QDialog>
 #include <QDesktopServices>
+#include <QUrl>
 
 namespace Ui {
     class About;
@@ -42,6 +43,7 @@ private:
 private slots:
 
 private slots:
+	void on_textBrowser_2_anchorClicked(QUrl url);
 	void on_label_linkActivated(QString link);
 };
 

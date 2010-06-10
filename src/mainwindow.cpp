@@ -254,6 +254,11 @@ void MainWindow::on_action_Make_desktop_icon_triggered()
 	if (!checkNodeForPrefix(ui->lstGames))
 		return;
 	Prefix *prefix = new Prefix (this, ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString(),core);
+	if (!prefix->hasDBEntry())
+	{
+		 statusBar()->showMessage(tr("This application isn`t installed"));
+		 return;
+	}
 	ShortCutDialog *dlg = new ShortCutDialog (this, prefix->name(), prefix->prefixPath());
 	if (dlg->exec() == QDialog::Accepted)
 	{

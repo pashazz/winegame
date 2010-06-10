@@ -17,7 +17,7 @@
    <string>Install application</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="res.qrc">
+   <iconset resource="../resources/res.qrc">
     <normaloff>:/desktop/winegame.png</normaloff>:/desktop/winegame.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -80,10 +80,10 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="action_Settings"/>
-    <addaction name="action_Quit"/>
-    <addaction name="separator"/>
     <addaction name="action_Make_desktop_icon"/>
+    <addaction name="action_Settings"/>
+    <addaction name="separator"/>
+    <addaction name="action_Quit"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Help"/>
@@ -94,6 +94,9 @@
    </property>
    <property name="toolTip">
     <string>&amp;Settings</string>
+   </property>
+   <property name="statusTip">
+    <string>Application settings</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -114,15 +117,27 @@
    <property name="text">
     <string>About &amp;Qt</string>
    </property>
+   <property name="statusTip">
+    <string>About Qt</string>
+   </property>
   </action>
   <action name="action_About">
    <property name="text">
     <string>&amp;About</string>
    </property>
+   <property name="statusTip">
+    <string>About WineGame</string>
+   </property>
   </action>
   <action name="action_Make_desktop_icon">
    <property name="text">
-    <string>&amp; Make desktop icon</string>
+    <string>&amp;Make launcher</string>
+   </property>
+   <property name="toolTip">
+    <string>Make launcher pn Desktop</string>
+   </property>
+   <property name="statusTip">
+    <string>Make application launcher on your desktop</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
@@ -131,7 +146,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="res.qrc"/>
+  <include location="../resources/res.qrc"/>
  </resources>
  <connections/>
 </ui>
