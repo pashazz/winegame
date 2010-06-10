@@ -195,7 +195,8 @@ void MainWindow::on_buttonBox_accepted()
 {
 if (!checkNodeForPrefix(ui->lstGames))
 	qApp->quit();
-lauchEngine(ui->lstGames->selectedItems().at(0)->data(0, Qt::UserRole).toString());
+if (!ui->lstGames->selectedItems().isEmpty())
+	lauchEngine(ui->lstGames->selectedItems().at(0)->data(0, Qt::UserRole).toString());
 }
 
 void MainWindow::saveGeom()
