@@ -57,7 +57,8 @@ int main(int argc, char *argv[])
     qt.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     a.installTranslator(&qt);
     QTranslator app;
-	app.load("wg_" + QLocale::system().name(), QDir(a.applicationDirPath() + "/../share/translations").absolutePath());
+	if (!app.load("wg_" + QLocale::system().name(), QDir(a.applicationDirPath() + "/../share/winegame/translations").absolutePath()))
+		qDebug() << "Failed to load translation" << "wg_" + QLocale::system().name() << "in dir" << QDir(a.applicationDirPath() + "/../share/winegame/translations").absolutePath();
 	a.installTranslator(&app);
     //загружаем локализацию для WineStuff
     QTranslator winestuff;
