@@ -70,6 +70,9 @@
     </rect>
    </property>
    <widget class="QMenu" name="menu_Help">
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
+    </property>
     <property name="title">
      <string>&amp;Help</string>
     </property>
@@ -77,6 +80,9 @@
     <addaction name="action_About"/>
    </widget>
    <widget class="QMenu" name="menu_File">
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
+    </property>
     <property name="title">
      <string>&amp;File</string>
     </property>

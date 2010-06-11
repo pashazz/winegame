@@ -115,6 +115,7 @@ void PrefixDialog::on_cmdTest_clicked()
    if (dlg->exec() == QDialog::Accepted)
    {
 	   if (!dlg->fallbackRequested())
-		   pol->setWineVersion(dlg->wineVersion());
+		  if (!pol->setWineVersion(dlg->wineVersion()))
+			  pr->myLib()->client()->error(tr("Error"), tr("Unable to set WINE version"));
    }
 }

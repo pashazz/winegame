@@ -69,6 +69,17 @@ void WinegameUi::showProgressBar(QString title)
  progress->show();
 }
 
+void WinegameUi::showProgressBar(QString title, const char *cancelSlot)
+{
+	qDebug() << "Showing progressbar with a slot" << cancelSlot;
+	progress = new QProgressDialog(0);
+	connect (progress, SIGNAL(canceled()), this, cancelSlot);
+	progress->setWindowTitle(title);
+	progress->setModal (true);
+	progress->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint);
+	progress->show();
+}
+
 void WinegameUi::progressRange(int aval, int total)
 {
 	progress->setMaximum(total);

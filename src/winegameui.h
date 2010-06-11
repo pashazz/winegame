@@ -30,6 +30,7 @@ public:
 	void showNotify (QString title, QString body);
 	void error (QString title, QString text);
 	void showProgressBar (QString title); //показываем прогрессбар с заголовком title
+	void showProgressBar (QString title, const char * cancelSlot);
 	void progressText (QString text) ; //показать текст text на прогрессбаре
 	void progressRange (int, int); //прогресс операции
 	void endProgress (); //закрытие бара.
@@ -41,8 +42,6 @@ public:
 	void insertNextCd(bool &result, QString count);
 	virtual void showUserWaitMessage (const QString &message); //показать модальный диалог (или что-то типа того, чтобы пользователь понял, что идет операция).
 	virtual void closeWaitMessage(); //закрытие диалога
-signals:
-	   void cancelOperation ();
 private:
 	   QProgressDialog *progress;
 	   QDialog *waitDialog;

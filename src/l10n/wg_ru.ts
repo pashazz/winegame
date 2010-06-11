@@ -5,7 +5,7 @@
     <name>GameDialog</name>
     <message>
         <source>A Microsoft Windows(r) application is found on this disc. &lt;br&gt;&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;&lt;br&gt; Would you like to install it? </source>
-        <translation>На этом диске найдено приложение Microsoft Windows.&lt;br&gt;&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;&lt;br&gt;Хотите ли вы установить это приложение?</translation>
+        <translation>Дайте короткое латинское имя вашему приложению.&lt;br&gt; Оно будет установлено в %1/Windows/ИМЯ ПРИЛОЖЕНИЯ/drive_c</translation>
     </message>
 </context>
 <context>
@@ -24,7 +24,7 @@
     </message>
     <message>
         <source>ÐÑÐ±ÐµÑÐ¸ÑÐµ EXE ÑÐ°Ð¹Ð»</source>
-        <translation type="unfinished">ОЛОЛО</translation>
+        <translation>ОЛОЛО</translation>
     </message>
     <message>
         <source>Windows executables (*.exe)</source>
