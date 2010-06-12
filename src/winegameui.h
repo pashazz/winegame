@@ -30,7 +30,7 @@ public:
 	void showNotify (QString title, QString body);
 	void error (QString title, QString text);
 	void showProgressBar (QString title); //показываем прогрессбар с заголовком title
-	void showProgressBar (QString title, const char * cancelSlot);
+	void showProgressBar (QString title,  const char * cancelSlot, QObject *pointer);
 	void progressText (QString text) ; //показать текст text на прогрессбаре
 	void progressRange (int, int); //прогресс операции
 	void endProgress (); //закрытие бара.
