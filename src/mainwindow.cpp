@@ -153,7 +153,7 @@ connect (prefix, SIGNAL(prefixNameNeed(QString&)), this, SLOT (getPrefixName(QSt
 bool res  = prefix->runApplication(fileName, "", "");
 buildList();
 if (!res)
-	statusBar()->showMessage(tr("Installation error"));
+	statusBar()->showMessage(tr("Installation error"), 3000);
 }
 
 void MainWindow::getFileName(QString &fileName)
