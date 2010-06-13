@@ -29,16 +29,20 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	DVDRunner *runner = new DVDRunner (lib, path);
 	if (runner->success())
 	{
+		qDebug() << "rundvd: Success";
 		Prefix *prefix =  runner->prefix();
 		GameDialog *dlg = new GameDialog (0, prefix->projectWorkingDir(), lib);
 		if (dlg->exec() == QDialog::Rejected)
+		{
+			runner->cleanup();
 			return;
+		}
 		qDebug() << "Installing conf " << prefix->name();
 		prefix->runApplication(runner->exe(), runner->diskDirectory(), runner->imageFile());
 	}
 	else
 	{
-		qDebug() << "Not success";
+		qDebug() << "rundvd:Not success";
 		DiskDialog *dlg = new DiskDialog (0, runner, lib);
 		dlg->exec();
 	}

@@ -40,8 +40,9 @@ public:
 	void infoDialog (const QString &title, const QString &text);
 	void selectExe(const QString &title, QString &file, QString home= "");
 	void insertNextCd(bool &result, QString count);
-	virtual void showUserWaitMessage (const QString &message); //показать модальный диалог (или что-то типа того, чтобы пользователь понял, что идет операция).
-	virtual void closeWaitMessage(); //закрытие диалога
+	void showUserWaitMessage (const QString &message); //показать модальный диалог (или что-то типа того, чтобы пользователь понял, что идет операция).
+	void closeWaitMessage(); //закрытие диалога
+	QString directoryDialog(const QString &description, const QString &startDirectory);
 private:
 	   QProgressDialog *progress;
 	   QDialog *waitDialog;

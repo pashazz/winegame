@@ -62,7 +62,6 @@ void WinegameUi::showNotify(QString title, QString body)
 void WinegameUi::showProgressBar(QString title)
 {
  progress = new QProgressDialog(0);
- connect (progress, SIGNAL(canceled()), this, SIGNAL(cancelOperation()));
  progress->setWindowTitle(title);
  progress->setModal (true);
  progress->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint);
@@ -71,7 +70,6 @@ void WinegameUi::showProgressBar(QString title)
 
 void WinegameUi::showProgressBar(QString title, const char *cancelSlot, QObject *pointer)
 {
-	qDebug() << "Showing progressbar with a slot" << cancelSlot;
 	progress = new QProgressDialog(0);
 	connect (progress, SIGNAL(canceled()),  pointer, cancelSlot);
 	progress->setWindowTitle(title);
@@ -149,4 +147,8 @@ void WinegameUi::closeWaitMessage()
 {
 	waitDialog->close();
 	delete waitDialog;
+}
+QString WinegameUi::directoryDialog(const QString &description, const QString &startDirectory)
+{
+	return QFileDialog::getExistingDirectory(0, description, startDirectory);
 }
