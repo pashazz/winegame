@@ -46,7 +46,8 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		DiskDialog *dlg = new DiskDialog (0, runner, lib);
 		dlg->exec();
 	}
-	runner->cleanup();
+//	runner->cleanup();
+	/* Некоторые инсталляторы просто отпускают терминал, поэтому не делаем cleanup... */
 }
 
 int main(int argc, char *argv[])
