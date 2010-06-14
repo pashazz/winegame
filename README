@@ -4,11 +4,12 @@ License: GPLv3
 Site: http://winegame.googlecode.com
 
 ============================================
-Install deps:
+Install dependences:
 Qt 4.6 (Core, Gui and Network modules)
 fuseiso
 notify-send/KDialog
 winetricks
+sha1sum
 =========================================
 Winetricks info:
 Homepage: http://wiki.winehq.org/winetricks
