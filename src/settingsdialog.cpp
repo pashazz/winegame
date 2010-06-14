@@ -31,8 +31,14 @@ SettingsDialog::SettingsDialog(QWidget *parent, corelib *lib) :
 	ui->txtWineDir->setText(core->wineDir());
 	ui->sbMemory->setValue(core->videoMemory().toInt());
 	ui->txtMount->setText(core->mountDir());
-	ui->cbForceFuse->setChecked(core->forceFuseiso());
 	ui->txtDisc->setText(core->discDir());
+	if (lib->whichBin("fuseiso").isEmpty())
+	{
+		ui->cbForceFuse->setVisible(false);
+		ui->lblFuse->setVisible(false);
+	}
+	else
+		ui->cbForceFuse->setChecked(core->forceFuseiso());
 }
 
 SettingsDialog::~SettingsDialog()
