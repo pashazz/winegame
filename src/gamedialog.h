@@ -20,7 +20,7 @@
 #define GAMEDIALOG_H
 
 #include <QtGui>
-#include "prefix.h"
+#include "inireader.h"
 namespace Ui {
     class GameDialog;
 }
@@ -28,13 +28,13 @@ namespace Ui {
 class GameDialog : public QDialog {
     Q_OBJECT
 public:
-	GameDialog(QWidget *parent, QString path, corelib *lib);
+	GameDialog(QWidget *parent, SourceReader *reader, corelib *lib);
     ~GameDialog();
 
 private:
     Ui::GameDialog *ui;
     QPixmap getIcoFromDisc();
-    QString _path;
+	SourceReader *src;
 };
 
 #endif // GAMEDIALOG_H

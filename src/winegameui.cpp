@@ -118,7 +118,7 @@ void WinegameUi::selectExe(const QString &title, QString &file, QString home)
 {
 	if (home.isEmpty())
 		home = QDir::homePath();
-	QString myFile = QFileDialog::getOpenFileName(0, title, home);
+	QString myFile = QFileDialog::getOpenFileName(0, title, home, tr("Windows executables (*.exe)"));
 	file = myFile;
 }
 

@@ -43,7 +43,7 @@ private:
 	bool checkNodeForPrefix (QTreeWidget *widget);
 	void saveGeom();
 	void buildList();
-	void lauchEngine(QString pkgpath);
+	void lauchEngine(QString prefixName);
 	QIcon icon (QString pkgpath);
 private slots:
 	void on_lblNote_linkActivated(QString link);
@@ -61,6 +61,8 @@ private slots:
 	void showError (QString error);
 	void getPrefixName (QString &prefixName);
 	void getFileName (QString &fileName);
+	void getPresetName (QString &name);
+	void getPresetNote (QString &note);
 };
 
 #endif // MAINWINDOW_H

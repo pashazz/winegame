@@ -21,7 +21,7 @@
 MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		QMainWindow(parent),
 		ui(new Ui::MainWindow),
-		core (lib)
+		core (lib), cdMode(false) //because gui
 {
     ui->setupUi(this);
 	QFile f (QDir::homePath() + "/.config/winegame.geom");
@@ -30,19 +30,7 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		restoreGeometry(f.readAll());
 		f.close();
 	}
-    if (qApp->arguments().empty())
-        cdMode = false; //Not to check CD
-    else
-    {
-        if (qApp->arguments().length() > 1) {
-			QString cdpath = qApp->arguments().at(1);
-			QDir td (QDir::rootPath());
-			cdMode = td.exists(cdpath);
-			diskpath = cdpath;
-		}
-        else
-            cdMode = false;
-    }
+
 	//показываем в статусбаре путь к диску
 QLabel * cdlab = new QLabel (diskpath);
 statusBar()->addWidget(cdlab);
@@ -75,7 +63,6 @@ void MainWindow::on_buttonBox_rejected()
 
 void MainWindow::buildList()
 {
-	QDir wdir (core->packageDir());
 	ui->lstGames->clear();
 
     //а тут мы создаем родительский node
@@ -88,13 +75,13 @@ void MainWindow::buildList()
 	QTreeWidgetItem *presetpar = new QTreeWidgetItem (ui->lstGames);
       presetpar->setIcon(0, QIcon(":/desktop/winegame.png"));
        presetpar->setText(0, tr("Pre-Sets (Templates)"));
-    foreach (QString entry, wdir.entryList(QDir::Dirs  | QDir::NoDotAndDotDot))
+	foreach (QString pname, core->prefixes())
     {
-		Prefix myPrefix (this, core->packageDir() + QDir::separator() + entry, core);
+		Prefix myPrefix (this, pname, core);
         QTreeWidgetItem *it = new QTreeWidgetItem (0);
-                it->setData(0, Qt::UserRole, core->packageDir() + QDir::separator() + entry);
+		it->setData(0, Qt::UserRole, pname);
         it->setText(0,  myPrefix.name());
-			   //загружаем icon как значок игры (если есть)
+		//загружаем icon как значок игры (если есть)
 		it->setIcon(0, icon (myPrefix.projectWorkingDir()));
 		//Force adding to installed, if so.
         if (myPrefix.isPreset())
@@ -116,16 +103,16 @@ void MainWindow::buildList()
     }
 
 
-void MainWindow::lauchEngine(QString pkgpath)
+void MainWindow::lauchEngine(QString prefixName)
 {
-	Prefix *prefix = new Prefix (this, pkgpath, core);
+	Prefix *prefix = new Prefix (this, prefixName, core);
     QDir dir (prefix->prefixPath());
 if (dir.exists())
 {
     QStringList list = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     if (list.contains("drive_c") && list.contains("dosdevices"))
     {
-   PrefixDialog *dlg = new PrefixDialog(this,pkgpath, core);
+   PrefixDialog *dlg = new PrefixDialog(this,prefixName, core);
   dlg->exec();
   buildList();
   return;
@@ -143,13 +130,14 @@ if (fileName.isEmpty())
 	return;
 }
 if (filter == filters.at(1)) //MSI
-
 {
 	//prepend "msiexec"
 	fileName.prepend("msiexec ");
 }
 
 connect (prefix, SIGNAL(prefixNameNeed(QString&)), this, SLOT (getPrefixName(QString&)));
+connect(prefix, SIGNAL(presetNameNeed(QString&)), this, SLOT(getPresetName(QString&)));
+connect (prefix, SIGNAL(presetNoteNeed(QString&)), this, SLOT(getPresetNote(QString&)));
 bool res  = prefix->runApplication(fileName, "", "");
 buildList();
 if (!res)
@@ -159,6 +147,23 @@ if (!res)
 void MainWindow::getFileName(QString &fileName)
 {
 	fileName = QFileDialog::getOpenFileName(0,  tr("Выберите EXE файл"), QDir::homePath(), tr("Windows executables (*.exe)"));
+}
+
+void MainWindow::getPresetName(QString &name)
+{
+	QString myPrefix =QInputDialog::getText(0, tr("Give a readable for your application"), tr ("Give a short readable name for your application, for example 'CoolGame v3'"));
+	if (myPrefix.isEmpty())
+	{
+		QMessageBox::critical(0, tr("No name specified"), tr ("Abort. Reason: No application name specified"));
+		name = "";
+		return;
+	}
+	else
+		name = myPrefix;
+}
+void MainWindow::getPresetNote(QString &note)
+{
+	note =QInputDialog::getText(0, tr("Give a readable note about your application"), tr ("Give a short note about your application, for example 'CoolGame v3'"));
 }
 
 void MainWindow::getPrefixName(QString &prefixName)

@@ -21,7 +21,7 @@
 #define DISKDIALOG_H
 
 #include <QtGui>
-#include "prefix.h"
+#include "prefixcollection.h"
 #include "dvdrunner.h"
 
 namespace Ui {
@@ -36,13 +36,12 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
-	QIcon icon (QString pkgpath);
 private:
     Ui::DiskDialog *ui;
 	void buildList();
 	corelib *core;
-	QString path;
 	DVDRunner *dvd;
+	PrefixCollection *coll;
 private slots:
 	void on_buttonBox_accepted();
 };

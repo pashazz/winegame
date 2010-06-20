@@ -20,23 +20,18 @@
 #include "gamedialog.h"
 #include "ui_gamedialog.h"
 
-GameDialog::GameDialog(QWidget *parent, QString path, corelib *lib) :
+GameDialog::GameDialog(QWidget *parent, SourceReader *reader, corelib *lib) :
     QDialog(parent),
-    ui(new Ui::GameDialog),
-    _path (path)
+	ui(new Ui::GameDialog), src(reader)
 {
-	Prefix *prefix = new Prefix (this, path, lib);
     ui->setupUi(this);
-    //setting the UI
     if (qApp->arguments().length() > 1)
-		  ui->lblIcon->setPixmap(QPixmap(path + "/icon"));
+		  ui->lblIcon->setPixmap(QPixmap(reader->icon()));
 	else
 	   ui->lblIcon->setPixmap(getIcoFromDisc());
-
     ui->lblIcon->setText("");
-    ui->lblName->setText(tr("A Microsoft Windows(r) application is found on this disc. <br><br><b>%1</b><br><br> Would you like to install it? ").arg(prefix->name()));
-    ui->lblDesc->setText(prefix->note());
-
+	ui->lblName->setText(tr("A Microsoft Windows(r) application is found on this disc. <br><br><b>%1</b><br><br> Would you like to install it? ").arg(reader->name()));
+	ui->lblDesc->setText(reader->note());
 }
 
 GameDialog::~GameDialog()
@@ -57,7 +52,7 @@ if (qApp->arguments().length() > 1)
     return QPixmap(icon);
 }
     else
-        return QPixmap(_path + "/icon");
+		return QPixmap(src->icon());
 }
-return QPixmap(_path + "/icon");
+return QPixmap(src->icon());
 }

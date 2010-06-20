@@ -20,11 +20,12 @@
 #include "diskdialog.h"
 #include "ui_diskdialog.h"
 
-DiskDialog::DiskDialog(QWidget *parent, DVDRunner *runner,  corelib *lib) :
+DiskDialog::DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib) :
 	QDialog(parent),
 	ui(new Ui::DiskDialog), core (lib), dvd (runner)
 {
     ui->setupUi(this);
+	coll = new PrefixCollection (core->database(), core, this);
 	buildList();
 }
 
@@ -45,44 +46,71 @@ void DiskDialog::changeEvent(QEvent *e)
     }
 }
 void DiskDialog::buildList()
-{
-	QDir dir (core->packageDir());
-	qDebug() << dir.path();
-	foreach (QFileInfo info, dir.entryInfoList(QDir::Dirs | QDir::Readable | QDir::NoDotAndDotDot))
+{ /* TODO: сделать модель для списка */
+	//сначала вытаскиваем все из reader.
+	QTreeWidgetItem *itemReader = new QTreeWidgetItem(0);
+	itemReader->setText(0,tr("Not installled applications"));
+	foreach (QString prefixName, SourceReader::configurations(core->packageDirs()))
 	{
-		//init Prefix object
-		Prefix *prefix = new Prefix (this, info.absoluteFilePath(), core);
-
-		  //add it into this  list
-		  QListWidgetItem *item = new QListWidgetItem (ui->lstPresets, 0);
-		  item->setToolTip(prefix->note());
-		  item->setText(prefix->name());
-		  item->setData(Qt::UserRole, info.absoluteFilePath());
-		  if (!prefix->isPreset())
-			  item->setIcon(icon (prefix->projectWorkingDir()));
-		  ui->lstPresets->addItem(item);  
+		//init Reader object
+		SourceReader reader (prefixName, core, this);
+		 //add it into this  list
+		QTreeWidgetItem *item = new QTreeWidgetItem(0);
+		item->setText(0, reader.name());
+		item->setToolTip(0, reader.note());
+		item->setIcon(0, QIcon(reader.icon()));
+		item->setData(0, 32, prefixName);
+		item->setData(0, 33, true); // true - делаем полную установку данного приложения
+		itemReader->addChild(item);
 	}
-	ui->lstPresets->sortItems(Qt::AscendingOrder);
+	ui->treeApps->addTopLevelItem(itemReader);
+	//а теперь установленные.
+	QTreeWidgetItem *itemInstalled = new QTreeWidgetItem(0);
+	foreach (Prefix *prefix, coll->prefixes())
+	{
+		//add it into this list
+		QTreeWidgetItem *item = new QTreeWidgetItem (0);
+		item->setText(0,prefix->name());
+		item->setData(0, 32, prefix->ID());
+		item->setData(0, 33, false); //false - просто создаем Prefix и запускаем exe без доп. действий.
+		item->setToolTip(0,prefix->note());
+		item->setIcon(0, QIcon(SourceReader(prefix->ID(), core, this).icon())); // тут иконку достаем из sourcereader
+		itemInstalled->addChild(item);
+	}
+	ui->treeApps->addTopLevelItem(itemInstalled);
+	ui->treeApps->sortItems(0, Qt::AscendingOrder);
 }
 
 
 void DiskDialog::on_buttonBox_accepted()
 {
-	if (ui->lstPresets->selectedItems().count() == 0)
+	if (ui->treeApps->selectedItems().count() == 0)
 		return;
-	QString workdir =ui->lstPresets->selectedItems().first()->data(Qt::UserRole).toString();
-	Prefix *prefix = new Prefix (this, workdir, core);
-	qDebug() << "ddlg: lauching....";
-	dvd->setPrefix(prefix);
-	prefix->runApplication(dvd->exe(), dvd->diskDirectory(), dvd->imageFile());
-
+	//проверяем, является ли item - top-level
+	for (int i = 0; i < ui->treeApps->topLevelItemCount(); i++)
+	{
+		if (ui->treeApps->selectedItems().contains(ui->treeApps->topLevelItem(i)))
+			return;
+	}
+	QString prid = ui->treeApps->selectedItems().first()->data(0, 32).toString();
+	bool ist = ui->treeApps->selectedItems().first()->data(0, 33).toBool();
+	if (ist)
+	{
+		SourceReader *reader = new SourceReader (prid, core, this);
+		coll->install(reader, dvd->exe(), dvd->diskDirectory());
+	}
+	else
+	{
+		if (!coll->havePrefix(prid))
+		{
+			QMessageBox::critical(this, tr("Error"), tr("Program error (unusable instruction"));
+			close();
+			return;
+		}
+	Prefix *prefix = coll->getPrefix(prid);
+	prefix->runApplication(dvd->exe());
+	}
+	close();
+	return;
 }
-QIcon DiskDialog::icon(QString pkgpath)
-{
-	if (QFile::exists(pkgpath + "/icon"))
-	  {
-		  QIcon icon (pkgpath + "/icon");
-		  return icon;
-  }
-	  else
-		  return QIcon::fromTheme("application-default-icon");}
+

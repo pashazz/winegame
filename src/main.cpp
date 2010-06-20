@@ -30,15 +30,23 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	if (runner->success())
 	{
 		qDebug() << "rundvd: Success";
-		Prefix *prefix =  runner->prefix();
-		GameDialog *dlg = new GameDialog (0, prefix->projectWorkingDir(), lib);
+		SourceReader *reader = runner->sourceReader();
+		GameDialog *dlg = new GameDialog (0, reader, lib);
 		if (dlg->exec() == QDialog::Rejected)
 		{
 			runner->cleanup();
 			return;
 		}
-		qDebug() << "Installing conf " << prefix->name();
-		prefix->runApplication(runner->exe(), runner->diskDirectory(), runner->imageFile());
+		PrefixCollection collection (lib->database(), lib, 0);
+		if (collection.havePrefix(reader->ID()))
+		{
+		 Prefix *prefix =	collection.getPrefix(reader->ID());
+		 prefix->runApplication(runner->exe());
+		}
+		else
+		{
+			collection.install(reader, runner->exe(), path);
+		}
 	}
 	else
 	{
@@ -75,7 +83,7 @@ int main(int argc, char *argv[])
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
     //Set some refspecs
     a.setApplicationName("WineGame");
-    a.setApplicationVersion("0.1.0");
+	a.setApplicationVersion("0.1.90");
     a.setOrganizationName("Pashazz");
 	a.setOrganizationDomain("org");
 #ifdef Q_WS_WIN

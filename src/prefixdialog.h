@@ -32,7 +32,7 @@ namespace Ui {
 class PrefixDialog : public QDialog {
     Q_OBJECT
 public:
-	PrefixDialog(QWidget *parent, QString path, corelib *core);
+	PrefixDialog(QWidget *parent, QString prefixName, corelib *core);
     ~PrefixDialog();
 
 private:
