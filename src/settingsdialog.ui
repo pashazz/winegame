@@ -17,13 +17,6 @@
    <item row="3" column="1">
     <widget class="QSpinBox" name="sbMemory"/>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Directories for storing WineGame packages:</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
@@ -110,9 +103,6 @@ for mount ISO images</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QListWidget" name="lstPackageDirs"/>
-   </item>
    <item row="0" column="2">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
@@ -123,7 +113,20 @@ for mount ISO images</string>
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="cmdEdit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="cmdDelete">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Delete</string>
        </property>
@@ -131,8 +134,43 @@ for mount ISO images</string>
      </item>
     </layout>
    </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Directories for storing WineGame packages:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QListWidget" name="lstPackageDirs">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::DropOnly</enum>
+     </property>
+     <property name="defaultDropAction">
+      <enum>Qt::CopyAction</enum>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>cbForceFuse</tabstop>
+  <tabstop>sbMemory</tabstop>
+  <tabstop>txtWineDir</tabstop>
+  <tabstop>txtMount</tabstop>
+  <tabstop>txtDisc</tabstop>
+  <tabstop>cmdBrowseDisc</tabstop>
+  <tabstop>cmdBrowseWine</tabstop>
+  <tabstop>cmdAdd</tabstop>
+  <tabstop>cmdDelete</tabstop>
+  <tabstop>cmdEdit</tabstop>
+  <tabstop>cmdBrowseMount</tabstop>
+  <tabstop>lstPackageDirs</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -142,8 +180,8 @@ for mount ISO images</string>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>252</x>
+     <y>474</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -158,8 +196,8 @@ for mount ISO images</string>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>320</x>
+     <y>474</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
