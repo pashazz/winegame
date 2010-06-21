@@ -27,7 +27,6 @@ SettingsDialog::SettingsDialog(QWidget *parent, corelib *lib) :
     ui->setupUi(this);
 	ui->sbMemory->setMinimum(1);
 	ui->sbMemory->setMaximum(4096);
-	ui->txtPkg->setText(core->packageDir());
 	ui->txtWineDir->setText(core->wineDir());
 	ui->sbMemory->setValue(core->videoMemory().toInt());
 	ui->txtMount->setText(core->mountDir());
@@ -39,6 +38,7 @@ SettingsDialog::SettingsDialog(QWidget *parent, corelib *lib) :
 	}
 	else
 		ui->cbForceFuse->setChecked(core->forceFuseiso());
+	ui->lstPackageDirs->addItems(core->packageDirs());
 }
 
 SettingsDialog::~SettingsDialog()
@@ -58,13 +58,6 @@ void SettingsDialog::changeEvent(QEvent *e)
     }
 }
 
-void SettingsDialog::on_cmdBrowseWG_clicked()
-{
-	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame Packages directory"), core->packageDir());
-	if (!newdir.isEmpty())
-		ui->txtPkg->setText(newdir);
-}
-
 void SettingsDialog::on_cmdBrowseWine_clicked()
 {
 	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame Windows storage directory"), core->wineDir());
@@ -77,8 +70,6 @@ void SettingsDialog::on_buttonBox_accepted()
 	if (!ui->txtWineDir->text().isEmpty())
 		core->setWineDir(ui->txtWineDir->text());
 	core->setVideoMemory(ui->sbMemory->value());
-	if (!ui->txtPkg->text().isEmpty())
-		core->setPackageDir(ui->txtPkg->text());
 	if (!ui->txtMount->text().isEmpty())
 		core->setMountDir(ui->txtMount->text());
 	if (!ui->txtDisc->text().isEmpty())
@@ -99,4 +90,9 @@ void SettingsDialog::on_cmdBrowseDisc_clicked()
 	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame directory for copying files from multiple CDs"), core->discDir());
 	if (!newdir.isEmpty())
 		ui->txtWineDir->setText(newdir);
+}
+
+void SettingsDialog::on_cmdAdd_clicked()
+{
+	/* todo */
 }

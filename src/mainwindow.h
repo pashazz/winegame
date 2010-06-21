@@ -36,15 +36,14 @@ protected:
     void changeEvent(QEvent *e);
 private:
     Ui::MainWindow *ui;
-	QString diskpath;
-	bool cdMode;
 	corelib *core;
 	QSqlDatabase db;
+	PrefixCollection *coll;
 	bool checkNodeForPrefix (QTreeWidget *widget);
 	void saveGeom();
 	void buildList();
-	void lauchEngine(QString prefixName);
-	QIcon icon (QString pkgpath);
+	void launchEngine(QString prefixName, bool install);
+
 private slots:
 	void on_lblNote_linkActivated(QString link);
  void on_action_Make_desktop_icon_triggered();

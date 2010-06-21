@@ -19,10 +19,10 @@
 #include "prefixdialog.h"
 #include "ui_prefixdialog.h"
 
-PrefixDialog::PrefixDialog(QWidget *parent, QString prefixName, corelib *core) :
+PrefixDialog::PrefixDialog(QWidget *parent, Prefix *prefix, PrefixCollection *coll) :
     QDialog(parent),
     ui(new Ui::PrefixDialog),
-	pr (new Prefix (this, prefixName, core))
+	pr (prefix), collection(coll)
 {
     ui->setupUi(this);
     ui->toolBox->setCurrentIndex(0);//это если вдруг я забыл переместить страницу в designer
@@ -37,28 +37,22 @@ PrefixDialog::~PrefixDialog()
 
 void PrefixDialog::on_cmdWinecfg_clicked()
 {
-    pr->runProgram("winecfg");
+	pr->runApplication("winecfg");
 }
-
 
 void PrefixDialog::on_cmdReg_clicked()
 {
-    pr->runProgram("regedit");
+	pr->runApplication("regedit");
 }
-
 
 void PrefixDialog::on_cmdFM_clicked()
 {
-    pr->runProgram("winefile");
+	pr->runApplication("winefile");
 }
-
-
-
-
 
 void PrefixDialog::on_cmdTask_clicked()
 {
-    pr->runProgram("taskmgr");
+	pr->runApplication("taskmgr");
 }
 
 void PrefixDialog::on_cmdEXE_clicked()
@@ -66,56 +60,54 @@ void PrefixDialog::on_cmdEXE_clicked()
     QFileDialog *dlg = new QFileDialog (this, tr("Select Windows program to run"), QDir::homePath(), tr("Windows executables (*.exe)"));
     dlg->setFileMode(QFileDialog::ExistingFile);
     if (dlg->exec() == QDialog::Accepted)
-        pr->runProgram(dlg->selectedFiles().at(0));
-
+		pr->runApplication(dlg->selectedFiles().at(0));
 }
 
 void PrefixDialog::on_cmdWP_clicked()
 {
-    pr->runProgram("wordpad");
+	pr->runApplication("wordpad", QDir::homePath());
 }
 
 void PrefixDialog::on_cmdTerm_clicked()
 {
-    pr->runProgram("\"wineconsole cmd\"");
+	pr->runApplication("\"wineconsole cmd\"", QDir::homePath());
 }
 
 void PrefixDialog::on_cmdNotepad_clicked()
 {
-    pr->runProgram("notepad");
+	pr->runApplication("notepad");
 }
 
 void PrefixDialog::on_cmdUninst_clicked()
 {
-    pr->runProgram("uninstaller");
+	pr->runApplication("uninstaller");
 }
-
 
 void PrefixDialog::on_cmdBoot_clicked()
 {
-    pr->runProgram("wineboot");
+	pr->runApplication("wineboot");
 }
 
 void PrefixDialog::on_cmdRemove_clicked()
 {
-pr->removePrefix();
-close();
+	collection->remove(pr->ID());
+	close();
 }
 
 void PrefixDialog::on_cmdControl_clicked()
 {
-     pr->runProgram("control");
+	 pr->runApplication("control");
 }
 
 void PrefixDialog::on_cmdTest_clicked()
 {
-   PolDownloader *pol = new PolDownloader(pr);
+   PolDownloader *pol = new PolDownloader(collection, pr->ID(), pr->lib());
    WineVersionsDialog *dlg = new WineVersionsDialog(this, pol->versionList(), pol->detectCurrentVersion());
    connect (dlg, SIGNAL(fallback()), pol, SLOT(fallback())); //function to restore defaults
    if (dlg->exec() == QDialog::Accepted)
    {
 	   if (!dlg->fallbackRequested())
 		  if (!pol->setWineVersion(dlg->wineVersion()))
-			  pr->myLib()->client()->error(tr("Error"), tr("Unable to set WINE version"));
+			  QMessageBox::warning(this, tr("Error"), tr("Unable to set WINE version"));
    }
 }

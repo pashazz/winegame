@@ -15,13 +15,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/*! Роли в QTreeWidgetItem нашего дерева
+  32 - ID префикса
+  33 - если не установлено, true, наоборот false
+  34 - note (описание)
+  35 - путь к иконке
+
+  */
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "about.h"
 MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		QMainWindow(parent),
 		ui(new Ui::MainWindow),
-		core (lib), cdMode(false) //because gui
+		core (lib), db(lib->database()), coll(new PrefixCollection(lib->database(), lib, this))
 {
     ui->setupUi(this);
 	QFile f (QDir::homePath() + "/.config/winegame.geom");
@@ -31,11 +40,7 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		f.close();
 	}
 
-	//показываем в статусбаре путь к диску
-QLabel * cdlab = new QLabel (diskpath);
-statusBar()->addWidget(cdlab);
 buildList();
-db = QSqlDatabase::database();
 }
 
 MainWindow::~MainWindow()
@@ -72,29 +77,43 @@ void MainWindow::buildList()
 	QTreeWidgetItem  *installed = new QTreeWidgetItem(par);
 	installed->setText(0, tr("Installed applications"));
 	installed->setIcon(0, QIcon(":/desktop/winegame.png"));
-	QTreeWidgetItem *presetpar = new QTreeWidgetItem (ui->lstGames);
-      presetpar->setIcon(0, QIcon(":/desktop/winegame.png"));
-       presetpar->setText(0, tr("Pre-Sets (Templates)"));
-	foreach (QString pname, core->prefixes())
+	QTreeWidgetItem *available = new QTreeWidgetItem(par);
+	available->setText(0, tr("Available applications"));
+	available->setIcon(0, QIcon(":/desktop/winegame.png"));
+	QTreeWidgetItem *presetpar = new QTreeWidgetItem (par);
+	presetpar->setIcon(0, QIcon(":/desktop/winegame.png"));
+	presetpar->setText(0, tr("Pre-Sets (Templates)"));
+	foreach (QString prefixName, SourceReader::configurations(core->packageDirs()))
     {
-		Prefix myPrefix (this, pname, core);
-        QTreeWidgetItem *it = new QTreeWidgetItem (0);
-		it->setData(0, Qt::UserRole, pname);
-        it->setText(0,  myPrefix.name());
-		//загружаем icon как значок игры (если есть)
-		it->setIcon(0, icon (myPrefix.projectWorkingDir()));
-		//Force adding to installed, if so.
-        if (myPrefix.isPreset())
-            presetpar->addChild(it);
-		else if (myPrefix.hasDBEntry())
-		{
-			myPrefix.checkWineDistr();
-			installed->addChild(it);
-		}
+		//init Reader object
+		SourceReader reader (prefixName, core, this);
+		 //add it into this  list
+		QTreeWidgetItem *item = new QTreeWidgetItem(0);
+		item->setText(0, reader.name());
+		item->setToolTip(0, reader.note());
+		item->setIcon(0, QIcon(reader.icon()));
+		item->setData(0, 32, prefixName);
+		item->setData(0, 33, true); // true - делаем полную установку данного приложения
+		item->setData(0, 34, reader.note());
+		item->setData(0, 35, reader.icon());
+		if (reader.preset())
+			presetpar->addChild(item);
 		else
-            par->addChild(it);
-        myPrefix.deleteLater();
-        }
+			available->addChild(item);
+	}
+	foreach (Prefix *prefix, coll->prefixes())
+	{
+		//add it into this list
+		QTreeWidgetItem *item = new QTreeWidgetItem (0);
+		item->setText(0,prefix->name());
+		item->setData(0, 32, prefix->ID());
+		item->setData(0, 33, false); //false - просто создаем Prefix и запускаем exe без доп. действий.
+		item->setToolTip(0,prefix->note());
+		item->setData(0, 34, prefix->note());
+		item->setData(0, 35, SourceReader(prefix->ID(), core, this).icon());
+		item->setIcon(0, QIcon(SourceReader(prefix->ID(), core, this).icon())); // тут иконку достаем из sourcereader
+		installed->addChild(item);
+	}
 	 if (installed->childCount() <= 0)
 	{
 		par->removeChild(installed);
@@ -103,45 +122,45 @@ void MainWindow::buildList()
     }
 
 
-void MainWindow::lauchEngine(QString prefixName)
+void MainWindow::launchEngine(QString prefixName, bool install)
 {
-	Prefix *prefix = new Prefix (this, prefixName, core);
-    QDir dir (prefix->prefixPath());
-if (dir.exists())
-{
-    QStringList list = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    if (list.contains("drive_c") && list.contains("dosdevices"))
-    {
-   PrefixDialog *dlg = new PrefixDialog(this,prefixName, core);
-  dlg->exec();
-  buildList();
-  return;
-    }
-}
-//т.к. запуск идет из MainWindow, мы заранее знаем, что ни о каких исошках не может быть и  реч
-QStringList filters;
-filters.push_back(tr("Windows Executables (*.exe)"));
-filters.push_back(tr("Microsoft Installers (*.msi)"));
-QString filter;
-QString fileName =  QFileDialog::getOpenFileName(this, tr("Select EXE/MSI file"), QDir::homePath(), filters.join(";;"), &filter);
-if (fileName.isEmpty())
-{
-	statusBar()->showMessage(tr("No file selected, aborting"));
-	return;
-}
-if (filter == filters.at(1)) //MSI
-{
-	//prepend "msiexec"
-	fileName.prepend("msiexec ");
-}
-
-connect (prefix, SIGNAL(prefixNameNeed(QString&)), this, SLOT (getPrefixName(QString&)));
-connect(prefix, SIGNAL(presetNameNeed(QString&)), this, SLOT(getPresetName(QString&)));
-connect (prefix, SIGNAL(presetNoteNeed(QString&)), this, SLOT(getPresetNote(QString&)));
-bool res  = prefix->runApplication(fileName, "", "");
-buildList();
-if (!res)
-	statusBar()->showMessage(tr("Installation error"), 3000);
+	if (install && (!coll->havePrefix(prefixName)))
+	{
+		QStringList filters;
+		filters.push_back(tr("Windows Executables (*.exe)"));
+		filters.push_back(tr("Microsoft Installers (*.msi)"));
+		QString filter;
+		QString fileName =  QFileDialog::getOpenFileName(this, tr("Select EXE/MSI file"), QDir::homePath(), filters.join(";;"), &filter);
+		if (fileName.isEmpty())
+		{
+			statusBar()->showMessage(tr("No file selected, aborting"));
+			return;
+		}
+		if (filter == filters.at(1)) //MSI
+		{
+			//prepend "msiexec"
+			fileName.prepend("msiexec ");
+		}
+		SourceReader *reader = new SourceReader(prefixName, core, this);
+		connect (reader, SIGNAL(prefixNameNeed(QString&)), this, SLOT (getPrefixName(QString&)));
+		connect(reader, SIGNAL(presetNameNeed(QString&)), this, SLOT(getPresetName(QString&)));
+		connect (reader, SIGNAL(presetNoteNeed(QString&)), this, SLOT(getPresetNote(QString&)));
+		Prefix *prefix = coll->install(reader,fileName);
+		if (prefix->ID().isEmpty())
+			statusBar()->showMessage(tr("Installation error"), 3000);
+		else if (QMessageBox::question(this, tr("Application installed successfully"), tr("Do you want to configure parameters for this application?")) == QMessageBox::Ok)
+		{
+			PrefixDialog *dlg = new PrefixDialog (this, prefix, coll);
+			dlg->exec();
+		}
+	}
+	else
+	{
+		Prefix *p =  coll->getPrefix(prefixName);
+		PrefixDialog *dlg = new PrefixDialog(this, p, coll);
+		dlg->exec();
+	}
+	buildList();
 }
 
 void MainWindow::getFileName(QString &fileName)
@@ -201,34 +220,33 @@ void MainWindow::on_buttonBox_accepted()
 if (!checkNodeForPrefix(ui->lstGames))
 	qApp->quit();
 if (!ui->lstGames->selectedItems().isEmpty())
-	lauchEngine(ui->lstGames->selectedItems().at(0)->data(0, Qt::UserRole).toString());
+{
+	bool install = ui->lstGames->selectedItems().first()->data(0, 33).toBool();
+	QString conf = ui->lstGames->selectedItems().first()->data(0, 32).toString();
+	launchEngine(conf, install);
+}
 }
 
 void MainWindow::saveGeom()
 {
     QFile f (QDir::homePath() + "/.config/winegame.geom");
     f.open(QIODevice::WriteOnly | QIODevice::Truncate);
-   f.write(saveGeometry());
-   f.close();
+	f.write(saveGeometry());
+	f.close();
 }
 
 void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
 {
 	if (!checkNodeForPrefix(ui->lstGames))
 		return;
-	lauchEngine(item->data(column, Qt::UserRole).toString());
+	bool install = item->data(column, 33).toBool();
+	QString conf = item->data(column, 32).toString();
+	launchEngine(conf, install);
 }
 
 void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
 {
-    if (item->data(column, Qt::UserRole).toString().isEmpty())
-    {
-        ui->lblNote->setText("");
-        return;
-    }
-	Prefix *prefix = new Prefix (this, item->data(column, Qt::UserRole).toString(), core);
-    ui->lblNote->setText(prefix->note());
-    prefix->deleteLater();
+	ui->lblNote->setText(item->data(column, 34).toString());
 }
 
 
@@ -258,33 +276,17 @@ void MainWindow::on_action_Make_desktop_icon_triggered()
 {
 	if (!checkNodeForPrefix(ui->lstGames))
 		return;
-	Prefix *prefix = new Prefix (this, ui->lstGames->selectedItems().first()->data(0, Qt::UserRole).toString(),core);
-	if (!prefix->hasDBEntry())
+	QString id = ui->lstGames->selectedItems().first()->data(0, 32).toString();
+	if (id.isEmpty())
+		return;
+	if (!coll->havePrefix(id))
 	{
-		 statusBar()->showMessage(tr("This application isn`t installed"));
-		 return;
+		statusBar()->showMessage(tr("Application isn`t installed"), 3000);
 	}
-	ShortCutDialog *dlg = new ShortCutDialog (this, prefix->name(), prefix->prefixPath());
-	if (dlg->exec() == QDialog::Accepted)
-	{
-		if (dlg->name().isEmpty() || dlg->path().isEmpty())
-		{
-			QMessageBox::warning(this, tr("warning"), tr("Append all fields"));
-			return;
-		}
-		prefix->makeDesktopIcon(dlg->path(), dlg->name());
-	}
-}
-
-QIcon MainWindow::icon(QString pkgpath)
-{
-	if (QFile::exists(pkgpath + "/icon"))
-	  {
-		  QIcon icon (pkgpath + "/icon");
-		  return icon;
-  }
-	  else
-		  return QIcon::fromTheme("application-default-icon");
+	Prefix *prefix = coll->getPrefix(id);
+	ShortCutDialog *dlg = new ShortCutDialog(this, prefix->name(), prefix->path());
+	dlg->exec();
+	prefix->makeDesktopIcon(dlg->path(), dlg->name(), SourceReader(prefix->ID(),core,this).icon());
 }
 
 void MainWindow::on_lblNote_linkActivated(QString link)
@@ -306,4 +308,3 @@ if (widget->selectedItems().at(0)->data(0,Qt::UserRole).isNull())
 }
 return true;
 }
-

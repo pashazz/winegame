@@ -21,7 +21,8 @@
 
 #include <QDialog>
 #include <QFileDialog>
-#include "prefix.h"
+#include <QMessageBox>
+#include "prefixcollection.h"
 #include "wineversionsdialog.h"
 #include "poldownloader.h"
 
@@ -32,13 +33,13 @@ namespace Ui {
 class PrefixDialog : public QDialog {
     Q_OBJECT
 public:
-	PrefixDialog(QWidget *parent, QString prefixName, corelib *core);
+	PrefixDialog(QWidget *parent, Prefix *prefix, PrefixCollection *coll);
     ~PrefixDialog();
 
 private:
     Ui::PrefixDialog *ui;
-    Prefix *pr;
-
+	Prefix *pr;
+	PrefixCollection *collection;
 private slots:
 	void on_cmdTest_clicked();
 	void on_cmdControl_clicked();
