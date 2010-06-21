@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 	  //Our winegame GUI client
 	WinegameUi *client = new WinegameUi(); //опасные утечки памяти
 	corelib *core = new corelib (0, client);
-	core->init();
+	core->init(QDir::homePath() + "/.winegame");
 	//Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
 	if (a.arguments().length() > 2)
 	{
