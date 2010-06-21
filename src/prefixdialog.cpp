@@ -27,7 +27,7 @@ PrefixDialog::PrefixDialog(QWidget *parent, Prefix *prefix, PrefixCollection *co
     ui->setupUi(this);
     ui->toolBox->setCurrentIndex(0);//это если вдруг я забыл переместить страницу в designer
     setWindowTitle((pr->name()));
-    connect (ui->cmdC, SIGNAL(clicked()), pr, SLOT (lauch_c()));
+	connect (ui->cmdC, SIGNAL(clicked()), pr, SLOT (launch_c()));
 }
 
 PrefixDialog::~PrefixDialog()
@@ -109,5 +109,9 @@ void PrefixDialog::on_cmdTest_clicked()
 	   if (!dlg->fallbackRequested())
 		  if (!pol->setWineVersion(dlg->wineVersion()))
 			  QMessageBox::warning(this, tr("Error"), tr("Unable to set WINE version"));
+	   //update Prefix object.
+	   QString id = pr->ID();
+	   delete pr;
+	  pr = collection->getPrefix(id);
    }
 }

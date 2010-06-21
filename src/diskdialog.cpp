@@ -56,8 +56,8 @@ void DiskDialog::buildList()
 		SourceReader reader (prefixName, core, this);
 		 //add it into this  list
 		QTreeWidgetItem *item = new QTreeWidgetItem(0);
-		item->setText(0, reader.name());
-		item->setToolTip(0, reader.note());
+		item->setText(0, reader.realName());
+		item->setToolTip(0, reader.realNote());
 		item->setIcon(0, QIcon(reader.icon()));
 		item->setData(0, 32, prefixName);
 		item->setData(0, 33, true); // true - делаем полную установку данного приложения

@@ -89,8 +89,8 @@ void MainWindow::buildList()
 		SourceReader reader (prefixName, core, this);
 		 //add it into this  list
 		QTreeWidgetItem *item = new QTreeWidgetItem(0);
-		item->setText(0, reader.name());
-		item->setToolTip(0, reader.note());
+		item->setText(0, reader.realName());
+		item->setToolTip(0, reader.realNote());
 		item->setIcon(0, QIcon(reader.icon()));
 		item->setData(0, 32, prefixName);
 		item->setData(0, 33, true); // true - делаем полную установку данного приложения
@@ -142,13 +142,13 @@ void MainWindow::launchEngine(QString prefixName, bool install)
 			fileName.prepend("msiexec ");
 		}
 		SourceReader *reader = new SourceReader(prefixName, core, this);
-		connect (reader, SIGNAL(prefixNameNeed(QString&)), this, SLOT (getPrefixName(QString&)));
+		connect (reader, SIGNAL(presetPrefixNeed(QString&)), this, SLOT (getPrefixName(QString&)));
 		connect(reader, SIGNAL(presetNameNeed(QString&)), this, SLOT(getPresetName(QString&)));
 		connect (reader, SIGNAL(presetNoteNeed(QString&)), this, SLOT(getPresetNote(QString&)));
 		Prefix *prefix = coll->install(reader,fileName);
 		if (prefix->ID().isEmpty())
 			statusBar()->showMessage(tr("Installation error"), 3000);
-		else if (QMessageBox::question(this, tr("Application installed successfully"), tr("Do you want to configure parameters for this application?")) == QMessageBox::Ok)
+		else if (QMessageBox::question(this, tr("Application installed successfully"), tr("Do you want to configure parameters for this application?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
 		{
 			PrefixDialog *dlg = new PrefixDialog (this, prefix, coll);
 			dlg->exec();
