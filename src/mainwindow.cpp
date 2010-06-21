@@ -282,6 +282,7 @@ void MainWindow::on_action_Make_desktop_icon_triggered()
 	if (!coll->havePrefix(id))
 	{
 		statusBar()->showMessage(tr("Application isn`t installed"), 3000);
+		return;
 	}
 	Prefix *prefix = coll->getPrefix(id);
 	ShortCutDialog *dlg = new ShortCutDialog(this, prefix->name(), prefix->path());

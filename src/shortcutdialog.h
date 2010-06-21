@@ -31,7 +31,7 @@ namespace Ui {
 class ShortCutDialog : public QDialog {
     Q_OBJECT
 public:
-	ShortCutDialog(QWidget *parent, QString name, QString prefix);
+	ShortCutDialog(QWidget *parent, QString name, QString prefix, QString defaultPath = "");
     ~ShortCutDialog();
 	QString name();
 	QString path ();

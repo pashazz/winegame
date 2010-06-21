@@ -20,12 +20,13 @@
 #include "shortcutdialog.h"
 #include "ui_shortcutdialog.h"
 
-ShortCutDialog::ShortCutDialog(QWidget *parent, QString name, QString prefix) :
+ShortCutDialog::ShortCutDialog(QWidget *parent, QString name, QString prefix, QString defaultPath) :
 	QDialog(parent),
 	ui(new Ui::ShortCutDialog), _prefix (prefix)
 {
 	ui->setupUi(this);
 	ui->txtName->setText(name);
+	ui->txtPath->setText(defaultPath);
 }
 
 ShortCutDialog::~ShortCutDialog()

@@ -17,6 +17,7 @@
 */
 
 #include "prefixdialog.h"
+#include "shortcutdialog.h"
 #include "ui_prefixdialog.h"
 
 PrefixDialog::PrefixDialog(QWidget *parent, Prefix *prefix, PrefixCollection *coll) :
@@ -57,10 +58,19 @@ void PrefixDialog::on_cmdTask_clicked()
 
 void PrefixDialog::on_cmdEXE_clicked()
 {
-    QFileDialog *dlg = new QFileDialog (this, tr("Select Windows program to run"), QDir::homePath(), tr("Windows executables (*.exe)"));
+	QFileDialog *dlg = new QFileDialog (this, tr("Select Windows program to run"), pr->path() + "/drive_c", tr("Windows executables (*.exe)"));
     dlg->setFileMode(QFileDialog::ExistingFile);
     if (dlg->exec() == QDialog::Accepted)
+	{
+		if (QMessageBox::question(this, tr("Desktop icon"), tr("Do you want to create desktop icon for this application?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+		{
+			//open shortcut dialog
+			ShortCutDialog *scut = new ShortCutDialog(this, pr->name(), pr->path(), dlg->selectedFiles().at(0));
+			scut->exec();
+			pr->makeDesktopIcon(scut->name(), scut->path(), "");
+		}
 		pr->runApplication(dlg->selectedFiles().at(0));
+	}
 }
 
 void PrefixDialog::on_cmdWP_clicked()
