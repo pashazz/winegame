@@ -46,7 +46,7 @@ private:
 
 private slots:
 	void on_lblNote_linkActivated(QString link);
- void on_action_Make_desktop_icon_triggered();
+	void on_action_Make_desktop_icon_triggered();
 	void on_action_About_triggered();
 	void on_actionAbout_Qt_triggered();
 	void on_action_Quit_triggered();
@@ -57,7 +57,6 @@ private slots:
     void on_buttonBox_rejected();
 
 	//Обработчики событий prefix
-	void showError (QString error);
 	void getPrefixName (QString &prefixName);
 	void getFileName (QString &fileName);
 	void getPresetName (QString &name);

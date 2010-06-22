@@ -146,7 +146,7 @@ void MainWindow::launchEngine(QString prefixName, bool install)
 		connect(reader, SIGNAL(presetNameNeed(QString&)), this, SLOT(getPresetName(QString&)));
 		connect (reader, SIGNAL(presetNoteNeed(QString&)), this, SLOT(getPresetNote(QString&)));
 		Prefix *prefix = coll->install(reader,fileName);
-		if (prefix->ID().isEmpty())
+		if (!prefix)
 			statusBar()->showMessage(tr("Installation error"), 3000);
 		else if (QMessageBox::question(this, tr("Application installed successfully"), tr("Do you want to configure parameters for this application?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
 		{
@@ -208,11 +208,6 @@ void MainWindow::getPrefixName(QString &prefixName)
 		goto dialog;
 	prefixName = myPrefix;
 	return;
-}
-
-void MainWindow::showError(QString error)
-{
-	QMessageBox::critical(this, tr("Engine execution error"), error);
 }
 
 void MainWindow::on_buttonBox_accepted()

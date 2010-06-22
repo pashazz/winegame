@@ -1,5 +1,4 @@
 cmake_minimum_required( VERSION 2.6 )
-
 project (winegame)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES Linux)
@@ -59,8 +58,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set (RESDIR ${CMAKE_SOURCE_DIR}/resources)
 
 # Sources, UIs & HEADERS
-set (SOURCES about.cpp  diskdialog.cpp  gamedialog.cpp  main.cpp  mainwindow.cpp  prefixdialog.cpp  settingsdialog.cpp  shortcutdialog.cpp  winegameui.cpp  wineversionsdialog.cpp)
-set (QOBJ_HEADERS about.h  diskdialog.h  gamedialog.h  mainwindow.h  prefixdialog.h  settingsdialog.h  shortcutdialog.h  winegameui.h  wineversionsdialog.h)
+set (SOURCES about.cpp  diskdialog.cpp  gamedialog.cpp  main.cpp  mainwindow.cpp  prefixdialog.cpp  settingsdialog.cpp  shortcutdialog.cpp  winegameui.cpp  wineversionsdialog.cpp messagehandler.cpp)
+set (QOBJ_HEADERS about.h  diskdialog.h  gamedialog.h  mainwindow.h  prefixdialog.h  settingsdialog.h  shortcutdialog.h  winegameui.h  wineversionsdialog.h messagehandler.h)
 
 #Генерируем формы
 set (UIS about.ui  diskdialog.ui  gamedialog.ui  mainwindow.ui  prefixdialog.ui  settingsdialog.ui  shortcutdialog.ui  wineversionsdialog.ui)
@@ -91,7 +90,7 @@ MAIN_DEPENDENCY ${TS})
 endforeach()
 add_custom_target (
 translations
-COMMAND ${QT_LUPDATE_EXECUTABLE} ${HEADERS} ${SOURCES} -ts ${TRANSLATIONS}
+COMMAND ${QT_LUPDATE_EXECUTABLE} ${QOBJ_HEADERS} ${SOURCES} ${UI_SOURCES} -ts ${TRANSLATIONS}
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 add_custom_command (
 TARGET translations

@@ -19,11 +19,6 @@
 
 #include "winegameui.h"
 
-WinegameUi::WinegameUi()
-{
-
-}
-
 WinegameUi::~WinegameUi()
 {
 	if (progress != 0)
@@ -32,36 +27,30 @@ WinegameUi::~WinegameUi()
 
 void WinegameUi::error(QString title, QString text)
 {
-	QMessageBox::critical(0, title, text);
+	QMessageBox::critical(qApp->desktop(), title, text);
 }
 
 void WinegameUi::showNotify(QString title, QString body)
 {
 	/// знаю что тупизм,но никто не хочет помогать
-		if (QProcessEnvironment::systemEnvironment().contains("KDE_FULL_SESSION")) //пока кеды юзают KDialog
-			//вся земля юзает notify-send
-			//чезез kdialog:
-		{
-								 QStringList arguments;
-								arguments << "--passivepopup" <<body;
-								arguments << "--title"<<title;
-								QProcess::startDetached("/usr/bin/kdialog",arguments);
-										  }
-
-
-			//Через notify-send:
-		else
-		{
-								 QStringList arguments;
-								arguments << title << body;
-								QProcess::startDetached("/usr/bin/notify-send",arguments);
-							}
-
+	if (QProcessEnvironment::systemEnvironment().contains("KDE_FULL_SESSION")) //пока кеды юзают KDialog
+	{
+		QStringList arguments;
+		arguments << "--passivepopup" <<body;
+		arguments << "--title"<<title;
+		QProcess::startDetached("/usr/bin/kdialog",arguments);
+	}
+	else
+	{
+		QStringList arguments;
+		arguments << title << body;
+		QProcess::startDetached("/usr/bin/notify-send",arguments);
+	}
 }
 
 void WinegameUi::showProgressBar(QString title)
 {
- progress = new QProgressDialog(0);
+ progress = new QProgressDialog(qApp->desktop());
  progress->setWindowTitle(title);
  progress->setModal (true);
  progress->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint);
@@ -70,7 +59,7 @@ void WinegameUi::showProgressBar(QString title)
 
 void WinegameUi::showProgressBar(QString title, const char *cancelSlot, QObject *pointer)
 {
-	progress = new QProgressDialog(0);
+	progress = new QProgressDialog(qApp->desktop());
 	connect (progress, SIGNAL(canceled()),  pointer, cancelSlot);
 	progress->setWindowTitle(title);
 	progress->setModal (true);
@@ -87,9 +76,9 @@ void WinegameUi::progressRange(int aval, int total)
 int WinegameUi::getVideoMemory()
 {
 	int mem = 0;
-	 mem= QInputDialog::getInt(0, QObject::tr("WineGame"), QObject::tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
-	if (mem == 0)
-			mem = 128;
+	 mem= QInputDialog::getInt(qApp->desktop(),tr("WineGame"), tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
+	 if (mem == 0)
+		 mem = 128;
 	return mem;
 	}
 
@@ -105,12 +94,12 @@ void WinegameUi::progressText(QString text)
 
 bool WinegameUi::questionDialog(const QString &title, const QString &text)
 {
-	return QMessageBox::question(0, title, text) == QMessageBox::Yes;
+	return QMessageBox::question(qApp->desktop(), title, text) == QMessageBox::Yes;
 }
 
 void WinegameUi::infoDialog(const QString &title, const QString &text)
 {
-	QMessageBox::information(0, title, text);
+	QMessageBox::information(qApp->desktop(), title, text);
 	return;
 }
 
@@ -118,13 +107,13 @@ void WinegameUi::selectExe(const QString &title, QString &file, QString home)
 {
 	if (home.isEmpty())
 		home = QDir::homePath();
-	QString myFile = QFileDialog::getOpenFileName(0, title, home, tr("Windows executables (*.exe)"));
+	QString myFile = QFileDialog::getOpenFileName(qApp->desktop(), title, home, tr("Windows executables (*.exe)"));
 	file = myFile;
 }
 
 void WinegameUi::insertNextCd(bool &result, QString count)
 {
-	int res = QMessageBox::question(0, tr("Insert next CD"), tr("Insert program CD %1").arg(QString(count)), QMessageBox::Ok, QMessageBox::Ignore);
+	int res = QMessageBox::question(qApp->desktop(), tr("Insert next CD"), tr("Insert program CD %1").arg(QString(count)), QMessageBox::Ok, QMessageBox::Ignore);
 	if (res == QMessageBox::Ok)
 		result = true;
 	else

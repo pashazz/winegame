@@ -23,6 +23,7 @@
 #include "winegameui.h"
 #include "dvdrunner.h"
 #include "gamedialog.h"
+#include "messagehandler.h"
 
 void runDVD (QString path, corelib *lib) //запуск с DVD
 {
@@ -31,6 +32,10 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	{
 		qDebug() << "rundvd: Success";
 		SourceReader *reader = runner->sourceReader();
+		MessageHandler *handler = new MessageHandler(lib);
+		QObject::connect(reader, SIGNAL(presetNameNeed(QString&)), handler, SLOT(prefixName(QString&)));
+		QObject::connect(reader, SIGNAL(presetPrefixNeed(QString&)), handler, SLOT(prefixID(QString&)));
+		QObject::connect(reader, SIGNAL(presetNoteNeed(QString&)), handler, SLOT(prefixNote(QString&)));
 		GameDialog *dlg = new GameDialog (0, reader, lib);
 		if (dlg->exec() == QDialog::Rejected)
 		{
@@ -47,6 +52,7 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		{
 			collection.install(reader, runner->exe(), path);
 		}
+		delete handler;
 	}
 	else
 	{
@@ -54,8 +60,6 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		DiskDialog *dlg = new DiskDialog (0, runner, lib);
 		dlg->exec();
 	}
-//	runner->cleanup();
-	/* Некоторые инсталляторы просто отпускают терминал, поэтому не делаем cleanup... */
 }
 
 int main(int argc, char *argv[])
@@ -90,16 +94,15 @@ int main(int argc, char *argv[])
 	QMessageBox::critical(0, tr("Proprietary OS detected"), tr("Winegame will not work  when Ballmer sees."));
 	return 0;
 #endif
-
 #ifdef Q_WS_MAC
 	QMessageBox::critical(tr("Proprietary OS detected"), tr("Winegame will not work  when Jobs sees."));
 	return 0;
 #endif
 	if (!QSqlDatabase::drivers().contains("QSQLITE"))
-	  {
+	{
 		QMessageBox::critical(0, QObject::tr("Initialization error"), QObject::tr("Qt`s SQLite module not found"));
 		return -5;
-	  }
+	}
 	  //Our winegame GUI client
 	WinegameUi *client = new WinegameUi(); //опасные утечки памяти
 	corelib *core = new corelib (0, client);
@@ -113,24 +116,28 @@ int main(int argc, char *argv[])
 			  exe.removeFirst();
 			  exe.removeOne("-r");
 			  core->runSingleExe(exe);
-			  qApp->quit();
+			  delete core;
+			  return 0;
 		  }
 	  }
 	
 	if (a.arguments().length() > 1) {
 		QFileInfo info (a.arguments().at(1));
 		if (!info.exists())
-			  {
+		{
 			QMessageBox::critical(0,QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
+			delete core;
 			return -3;
 		}
 		runDVD(a.arguments().at(1), core);
+		delete core;
 		return 0;
 	}
 	
 	client->showNotify(QObject::tr("Hello!"),QObject::tr("Please connect to internet :)"));
 	MainWindow w(core);
 	w.show();
+	delete core;
 	return a.exec();
 
 }

@@ -25,7 +25,7 @@ class WinegameUi : public UiClient
 {
 	Q_OBJECT
 public:
-	WinegameUi();
+	WinegameUi() {}
 	~WinegameUi();
 	void showNotify (QString title, QString body);
 	void error (QString title, QString text);

@@ -49,7 +49,11 @@ void DiskDialog::buildList()
 { /* TODO: сделать модель для списка */
 	//сначала вытаскиваем все из reader.
 	QTreeWidgetItem *itemReader = new QTreeWidgetItem(0);
-	itemReader->setText(0,tr("Not installled applications"));
+	itemReader->setText(0,tr("Available applications"));
+	itemReader->setIcon(0,QIcon::fromTheme(qApp->applicationName().toLower()));
+	QTreeWidgetItem *presetItem = new QTreeWidgetItem (itemReader,0);
+	presetItem->setText(0,tr("Pre-Sets/Templates"));
+	presetItem->setIcon(0,QIcon::fromTheme(qApp->applicationName().toLower()));
 	foreach (QString prefixName, SourceReader::configurations(core->packageDirs()))
 	{
 		//init Reader object
@@ -61,11 +65,15 @@ void DiskDialog::buildList()
 		item->setIcon(0, QIcon(reader.icon()));
 		item->setData(0, 32, prefixName);
 		item->setData(0, 33, true); // true - делаем полную установку данного приложения
-		itemReader->addChild(item);
+		if (reader.preset())
+			presetItem->addChild(item);
+		else
+			itemReader->addChild(item);
 	}
 	ui->treeApps->addTopLevelItem(itemReader);
 	//а теперь установленные.
 	QTreeWidgetItem *itemInstalled = new QTreeWidgetItem(0);
+	itemInstalled->setText(0,tr("Installed applications"));
 	foreach (Prefix *prefix, coll->prefixes())
 	{
 		//add it into this list
@@ -79,6 +87,7 @@ void DiskDialog::buildList()
 	}
 	ui->treeApps->addTopLevelItem(itemInstalled);
 	ui->treeApps->sortItems(0, Qt::AscendingOrder);
+	ui->treeApps->expandAll();
 }
 
 
@@ -96,8 +105,10 @@ void DiskDialog::on_buttonBox_accepted()
 	bool ist = ui->treeApps->selectedItems().first()->data(0, 33).toBool();
 	if (ist)
 	{
-		SourceReader *reader = new SourceReader (prid, core, this);
-		coll->install(reader, dvd->exe(), dvd->diskDirectory());
+		SourceReader reader (prid, core, this);
+		dvd->setReader(&reader);
+		if (!dvd->exe().isEmpty())
+			coll->install(&reader, dvd->exe(), dvd->diskDirectory());
 	}
 	else
 	{
