@@ -106,6 +106,10 @@ void DiskDialog::on_buttonBox_accepted()
 	if (ist)
 	{
 		SourceReader reader (prid, core, this);
+		MessageHandler *handler = new MessageHandler(this, core);
+		connect (&reader, SIGNAL(presetNameNeed(QString&)), handler, SLOT(prefixName(QString&)));
+		connect (&reader, SIGNAL(presetNoteNeed(QString&)), handler, SLOT(prefixNote(QString&)));
+		connect(&reader, SIGNAL(presetPrefixNeed(QString&)), handler, SLOT(prefixID(QString&)));
 		dvd->setReader(&reader);
 		if (!dvd->exe().isEmpty())
 			coll->install(&reader, dvd->exe(), dvd->diskDirectory());

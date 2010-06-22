@@ -23,6 +23,7 @@
 #include <QtGui>
 #include "prefixcollection.h"
 #include "dvdrunner.h"
+#include "messagehandler.h"
 
 namespace Ui {
     class DiskDialog;
