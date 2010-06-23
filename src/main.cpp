@@ -32,7 +32,7 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	{
 		qDebug() << "rundvd: Success";
 		SourceReader *reader = runner->sourceReader();
-		MessageHandler *handler = new MessageHandler(lib);
+		MessageHandler *handler = new MessageHandler(0,lib);
 		QObject::connect(reader, SIGNAL(presetNameNeed(QString&)), handler, SLOT(prefixName(QString&)));
 		QObject::connect(reader, SIGNAL(presetPrefixNeed(QString&)), handler, SLOT(prefixID(QString&)));
 		QObject::connect(reader, SIGNAL(presetNoteNeed(QString&)), handler, SLOT(prefixNote(QString&)));
@@ -40,6 +40,7 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		if (dlg->exec() == QDialog::Rejected)
 		{
 			runner->cleanup();
+			delete runner;
 			return;
 		}
 		PrefixCollection collection (lib->database(), lib, 0);
@@ -59,6 +60,7 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		DiskDialog *dlg = new DiskDialog (0, runner, lib);
 		dlg->exec();
 	}
+    delete runner;
 }
 
 int main(int argc, char *argv[])
@@ -82,8 +84,8 @@ int main(int argc, char *argv[])
 		qDebug() << "No Loaded Localization for winestuff" << "PREFIX/share/winestuff/l10n/lwg_" + QLocale::system().name();
     a.installTranslator(&winestuff);
     //set Linux console encoding to UTF-8
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
     //Set some refspecs
     a.setApplicationName("WineGame");
 	a.setApplicationVersion("0.1.90");
@@ -105,7 +107,7 @@ int main(int argc, char *argv[])
 	  //Our winegame GUI client
 	WinegameUi *client = new WinegameUi(); //опасные утечки памяти
 	corelib *core = new corelib (0, client);
-	core->init(QDir::homePath() + "/.winegame");
+	core->init(QDir::homePath() + "/." + a.applicationName ().toLower ());
 	//Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
 	if (a.arguments().length() > 2)
 	{
@@ -130,7 +132,6 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	
-	client->showNotify(QObject::tr("Hello!"),QObject::tr("Please connect to internet :)"));
 	MainWindow w(core);
 	w.show();
 	return a.exec();

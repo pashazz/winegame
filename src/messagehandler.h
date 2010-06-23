@@ -26,7 +26,7 @@ class MessageHandler : public QObject
 {
 	Q_OBJECT
 public:
-	MessageHandler(corelib *lib):core(lib) {}
+	MessageHandler(QObject *parent, corelib *lib):QObject (parent),core(lib) {}
 	virtual ~MessageHandler() {}
 public slots:
 	void prefixName(QString &name);
