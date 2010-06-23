@@ -52,7 +52,6 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		{
 			collection.install(reader, runner->exe(), path);
 		}
-		delete handler;
 	}
 	else
 	{
@@ -116,7 +115,6 @@ int main(int argc, char *argv[])
 			  exe.removeFirst();
 			  exe.removeOne("-r");
 			  core->runSingleExe(exe);
-			  delete core;
 			  return 0;
 		  }
 	  }
@@ -126,18 +124,14 @@ int main(int argc, char *argv[])
 		if (!info.exists())
 		{
 			QMessageBox::critical(0,QObject::tr("Error"), QObject::tr("Incorrect commandline arguments"));
-			delete core;
 			return -3;
 		}
 		runDVD(a.arguments().at(1), core);
-		delete core;
 		return 0;
 	}
 	
 	client->showNotify(QObject::tr("Hello!"),QObject::tr("Please connect to internet :)"));
 	MainWindow w(core);
 	w.show();
-	delete core;
 	return a.exec();
-
 }
