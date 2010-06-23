@@ -40,7 +40,6 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		if (dlg->exec() == QDialog::Rejected)
 		{
 			runner->cleanup();
-			delete runner;
 			return;
 		}
 		PrefixCollection collection (lib->database(), lib, 0);
@@ -56,11 +55,14 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	}
 	else
 	{
-		qDebug() << "rundvd:Not success";
+		if (runner->isMounted())
+		{
 		DiskDialog *dlg = new DiskDialog (0, runner, lib);
 		dlg->exec();
 	}
-    delete runner;
+	}
+if (runner->isMounted())
+	runner->cleanup();
 }
 
 int main(int argc, char *argv[])

@@ -25,7 +25,13 @@ DiskDialog::DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib) :
 	ui(new Ui::DiskDialog), core (lib), dvd (runner)
 {
     ui->setupUi(this);
+	if (!dvd->isMounted())
+	{
+		close();
+		return;
+	}
 	coll = new PrefixCollection (core->database(), core, this);
+	connect (this, SIGNAL(rejected()), dvd, SLOT(cancel()));
 	buildList();
 }
 
@@ -118,7 +124,7 @@ void DiskDialog::on_buttonBox_accepted()
 	{
 		if (!coll->havePrefix(prid))
 		{
-			QMessageBox::critical(this, tr("Error"), tr("Program error (unusable instruction"));
+			QMessageBox::critical(this, tr("Error"), tr("Program error (unusable instruction)"));
 			close();
 			return;
 		}
@@ -128,4 +134,5 @@ void DiskDialog::on_buttonBox_accepted()
 	close();
 	return;
 }
+
 

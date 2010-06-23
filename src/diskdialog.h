@@ -44,7 +44,7 @@ private:
 	DVDRunner *dvd;
 	PrefixCollection *coll;
 private slots:
-	void on_buttonBox_accepted();
+ void on_buttonBox_accepted();
 };
 
 #endif // DISKDIALOG_H
