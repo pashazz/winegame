@@ -14,26 +14,21 @@
    <string>Dialog</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../resources/res.qrc">
     <normaloff>:/desktop/winegame.png</normaloff>:/desktop/winegame.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QToolBox" name="toolBox">
+    <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="page">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>867</width>
-        <height>283</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Manage virtual Windows system</string>
+     <property name="movable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="tabWidgetPage1" native="true">
+      <attribute name="title">
+       <string>General</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -91,16 +86,8 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>867</width>
-        <height>283</height>
-       </rect>
-      </property>
-      <attribute name="label">
+     <widget class="QWidget" name="tabWidgetPage2" native="true">
+      <attribute name="title">
        <string>System programs</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
@@ -196,16 +183,8 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_3">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>867</width>
-        <height>283</height>
-       </rect>
-      </property>
-      <attribute name="label">
+     <widget class="QWidget" name="tabWidgetPage3" native="true">
+      <attribute name="title">
        <string>Administration</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
@@ -258,7 +237,9 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
