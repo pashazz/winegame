@@ -31,6 +31,7 @@ SettingsDialog::SettingsDialog(QWidget *parent, corelib *lib) :
 	ui->sbMemory->setValue(core->videoMemory().toInt());
 	ui->txtMount->setText(core->mountDir());
 	ui->txtDisc->setText(core->discDir());
+	ui->cbUpdates->setChecked(core->autoSync());
 	if (lib->whichBin("fuseiso").isEmpty())
 	{
 		ui->cbForceFuse->setVisible(false);
@@ -74,6 +75,7 @@ void SettingsDialog::on_buttonBox_accepted()
 		core->setMountDir(ui->txtMount->text());
 	if (!ui->txtDisc->text().isEmpty())
 		core->setDiscDir(ui->txtDisc->text());
+	core->setAutosync(ui->cbUpdates->isChecked());
 	core->setForceFuseiso(ui->cbForceFuse->isChecked());
 	core->setPackageDirs(generateTexts());
 	core->syncSettings();

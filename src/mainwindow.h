@@ -45,7 +45,8 @@ private:
 	void launchEngine(QString prefixName, bool install);
 
 private slots:
-	void on_lblNote_linkActivated(QString link);
+	void on_actUpdate_triggered();
+ void on_lblNote_linkActivated(QString link);
 	void on_action_Make_desktop_icon_triggered();
 	void on_action_About_triggered();
 	void on_actionAbout_Qt_triggered();

@@ -212,14 +212,17 @@ void MainWindow::getPrefixName(QString &prefixName)
 
 void MainWindow::on_buttonBox_accepted()
 {
-if (!checkNodeForPrefix(ui->lstGames))
-	qApp->quit();
-if (!ui->lstGames->selectedItems().isEmpty())
-{
-	bool install = ui->lstGames->selectedItems().first()->data(0, 33).toBool();
-	QString conf = ui->lstGames->selectedItems().first()->data(0, 32).toString();
-	launchEngine(conf, install);
-}
+	if (!checkNodeForPrefix(ui->lstGames))
+	{
+		saveGeom();
+		qApp->quit();
+	}
+	if (!ui->lstGames->selectedItems().isEmpty())
+	{
+		bool install = ui->lstGames->selectedItems().first()->data(0, 33).toBool();
+		QString conf = ui->lstGames->selectedItems().first()->data(0, 32).toString();
+		launchEngine(conf, install);
+	}
 }
 
 void MainWindow::saveGeom()
@@ -303,4 +306,9 @@ if (widget->selectedItems().at(0)->data(0,Qt::UserRole).isNull())
 	return false;
 }
 return true;
+}
+
+void MainWindow::on_actUpdate_triggered()
+{
+	core->syncPackages();
 }
