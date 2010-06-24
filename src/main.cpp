@@ -30,7 +30,6 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	DVDRunner *runner = new DVDRunner (lib, path);
 	if (runner->success())
 	{
-		qDebug() << "rundvd: Success";
 		SourceReader *reader = runner->sourceReader();
 		MessageHandler *handler = new MessageHandler(0,lib);
 		QObject::connect(reader, SIGNAL(presetNameNeed(QString&)), handler, SLOT(prefixName(QString&)));

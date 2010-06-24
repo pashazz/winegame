@@ -14,7 +14,7 @@
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>Install application</string>
+   <string>WineGame</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources/res.qrc">

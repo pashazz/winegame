@@ -32,7 +32,7 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		ui(new Ui::MainWindow),
 		core (lib), db(lib->database()), coll(new PrefixCollection(lib->database(), lib, this))
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 	QFile f (QDir::homePath() + "/.config/winegame.geom");
     if (f.open(QIODevice::ReadOnly))
     {
@@ -224,7 +224,7 @@ if (!ui->lstGames->selectedItems().isEmpty())
 
 void MainWindow::saveGeom()
 {
-    QFile f (QDir::homePath() + "/.config/winegame.geom");
+	QFile f (QDir::homePath() + "/.config/winegame.geom");
     f.open(QIODevice::WriteOnly | QIODevice::Truncate);
 	f.write(saveGeometry());
 	f.close();

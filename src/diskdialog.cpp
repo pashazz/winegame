@@ -56,10 +56,10 @@ void DiskDialog::buildList()
 	//сначала вытаскиваем все из reader.
 	QTreeWidgetItem *itemReader = new QTreeWidgetItem(0);
 	itemReader->setText(0,tr("Available applications"));
-	itemReader->setIcon(0,QIcon::fromTheme(qApp->applicationName().toLower()));
-	QTreeWidgetItem *presetItem = new QTreeWidgetItem (itemReader,0);
+	itemReader->setIcon(0, QIcon(":/desktop/winegame.png"));
+	QTreeWidgetItem *presetItem = new QTreeWidgetItem (ui->treeApps,0);
 	presetItem->setText(0,tr("Pre-Sets/Templates"));
-	presetItem->setIcon(0,QIcon::fromTheme(qApp->applicationName().toLower()));
+	presetItem->setIcon(0,QIcon(":/desktop/winegame.png"));
 	foreach (QString prefixName, SourceReader::configurations(core->packageDirs()))
 	{
 		//init Reader object
@@ -80,6 +80,7 @@ void DiskDialog::buildList()
 	//а теперь установленные.
 	QTreeWidgetItem *itemInstalled = new QTreeWidgetItem(0);
 	itemInstalled->setText(0,tr("Installed applications"));
+	itemInstalled->setIcon(0, QIcon(":/desktop/winegame.png"));
 	foreach (Prefix *prefix, coll->prefixes())
 	{
 		//add it into this list
@@ -92,6 +93,8 @@ void DiskDialog::buildList()
 		itemInstalled->addChild(item);
 	}
 	ui->treeApps->addTopLevelItem(itemInstalled);
+	itemReader->sortChildren(0, Qt::AscendingOrder);
+	itemInstalled->sortChildren(0, Qt::AscendingOrder);
 	ui->treeApps->sortItems(0, Qt::AscendingOrder);
 	ui->treeApps->expandAll();
 }
