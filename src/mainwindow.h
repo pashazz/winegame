@@ -23,6 +23,8 @@
 #include "prefixdialog.h"
 #include "settingsdialog.h"
 #include "shortcutdialog.h"
+#include "treemodel.h"
+
 namespace Ui {
     class MainWindow;
 }
@@ -42,18 +44,18 @@ private:
 	bool checkNodeForPrefix (QTreeWidget *widget);
 	void saveGeom();
 	void buildList();
-	void launchEngine(QString prefixName, bool install);
+	void launchEngine(QString prefixName);
 
 private slots:
+	void on_treeGames_activated(QModelIndex index);
+	void on_treeGames_doubleClicked(QModelIndex index);
 	void on_actUpdate_triggered();
- void on_lblNote_linkActivated(QString link);
+	void on_lblNote_linkActivated(QString link);
 	void on_action_Make_desktop_icon_triggered();
 	void on_action_About_triggered();
 	void on_actionAbout_Qt_triggered();
 	void on_action_Quit_triggered();
 	void on_action_Settings_triggered();
-	void on_lstGames_itemClicked(QTreeWidgetItem* item, int column);
-    void on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column);
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 

@@ -17,35 +17,59 @@
 */
 
 
-#ifndef DISKDIALOG_H
-#define DISKDIALOG_H
+#include "packagemodel.h"
 
-#include <QtGui>
-#include "prefixcollection.h"
-#include "dvdrunner.h"
-#include "messagehandler.h"
-#include "treemodel.h"
-
-namespace Ui {
-    class DiskDialog;
+PackageModel::PackageModel()
+{
 }
 
-class DiskDialog : public QDialog {
-    Q_OBJECT
-public:
-	DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib);
-    ~DiskDialog();
+/* Thank to Nokia :) */
 
-protected:
-    void changeEvent(QEvent *e);
-private:
-    Ui::DiskDialog *ui;
-	void buildList();
-	corelib *core;
-	DVDRunner *dvd;
-	PrefixCollection *coll;
-private slots:
- void on_buttonBox_accepted();
-};
+TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
+{
+	parentItem = parent;
+	itemData = data;
+}
 
-#endif // DISKDIALOG_H
+TreeItem::~TreeItem()
+{
+	qDeleteAll(childItems);
+}
+
+void TreeItem::appendChild(TreeItem *item)
+{
+	childItems.append(item);
+}
+
+TreeItem *TreeItem::child(int row)
+{
+	return childItems.value(row);
+}
+
+int TreeItem::childCount() const
+{
+	return childItems.count();
+}
+
+int TreeItem::columnCount() const
+{
+	return itemData.count();
+}
+
+QVariant TreeItem::data(int column) const
+{
+	return itemData.value(column);
+}
+
+TreeItem *TreeItem::parent()
+{
+	return parentItem;
+}
+
+int TreeItem::row() const
+{
+	if (parentItem)
+		return parentItem->childItems.indexOf(const_cast<TreeItem*>(this));
+
+	return 0;
+}

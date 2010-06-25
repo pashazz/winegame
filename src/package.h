@@ -17,35 +17,34 @@
 */
 
 
-#ifndef DISKDIALOG_H
-#define DISKDIALOG_H
+#ifndef PACKAGE_H
+#define PACKAGE_H
+#include "prefix.h"
 
-#include <QtGui>
-#include "prefixcollection.h"
-#include "dvdrunner.h"
-#include "messagehandler.h"
-#include "treemodel.h"
-
-namespace Ui {
-    class DiskDialog;
-}
-
-class DiskDialog : public QDialog {
-    Q_OBJECT
+class Package
+{
 public:
-	DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib);
-    ~DiskDialog();
+	Package(Prefix *prefix, Package *parent = 0); //For package item
+	Package (const QString &category, Package *parent = 0); //for category item
+	virtual ~Package() {}
+	void addPackage (Package *package);
+	Package *child (int row);
+	int childCount() const;
+	int columnCount() const {return 1;}
+	 QVariant data(int column) const;
+	 int row() const;
+	 Package *parent() {return parentItem;}
 
-protected:
-    void changeEvent(QEvent *e);
-private:
-    Ui::DiskDialog *ui;
-	void buildList();
-	corelib *core;
-	DVDRunner *dvd;
-	PrefixCollection *coll;
-private slots:
- void on_buttonBox_accepted();
+	 //Access func
+	 Prefix*  prefix () {return _prefix;}
+	 QString category () {return _category;}
+	 bool havePrefix () {return _prefix != 0;}
+	 void setParent (Package *parent) {parentItem = parent;}
+ private:
+	 QList<Package*> childItems;
+	 Package *parentItem;
+	 Prefix *_prefix;
+	 QString _category;
 };
 
-#endif // DISKDIALOG_H
+#endif // PACKAGE_H

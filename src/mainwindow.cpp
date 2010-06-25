@@ -16,14 +16,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*! Роли в QTreeWidgetItem нашего дерева
-  32 - ID префикса
-  33 - если не установлено, true, наоборот false
-  34 - note (описание)
-  35 - путь к иконке
-
-  */
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "about.h"
@@ -39,8 +31,9 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		restoreGeometry(f.readAll());
 		f.close();
 	}
-
-buildList();
+	TreeModel *model = new TreeModel(this, coll);
+	ui->treeGames->setModel(model);
+	ui->treeGames->expandAll();
 }
 
 MainWindow::~MainWindow()
@@ -68,63 +61,15 @@ void MainWindow::on_buttonBox_rejected()
 
 void MainWindow::buildList()
 {
-	ui->lstGames->clear();
-
-    //а тут мы создаем родительский node
-    QTreeWidgetItem *par = new QTreeWidgetItem (ui->lstGames);
-    par->setIcon(0, QIcon(":/desktop/winegame.png"));
-    par->setText(0, tr("Applications"));
-	QTreeWidgetItem  *installed = new QTreeWidgetItem(par);
-	installed->setText(0, tr("Installed applications"));
-	installed->setIcon(0, QIcon(":/desktop/winegame.png"));
-	QTreeWidgetItem *available = new QTreeWidgetItem(par);
-	available->setText(0, tr("Available applications"));
-	available->setIcon(0, QIcon(":/desktop/winegame.png"));
-	QTreeWidgetItem *presetpar = new QTreeWidgetItem (par);
-	presetpar->setIcon(0, QIcon(":/desktop/winegame.png"));
-	presetpar->setText(0, tr("Pre-Sets (Templates)"));
-	foreach (QString prefixName, SourceReader::configurations(core->packageDirs()))
-    {
-		//init Reader object
-		SourceReader reader (prefixName, core, this);
-		 //add it into this  list
-		QTreeWidgetItem *item = new QTreeWidgetItem(0);
-		item->setText(0, reader.realName());
-		item->setToolTip(0, reader.realNote());
-		item->setIcon(0, QIcon(reader.icon()));
-		item->setData(0, 32, prefixName);
-		item->setData(0, 33, true); // true - делаем полную установку данного приложения
-		item->setData(0, 34, reader.note());
-		item->setData(0, 35, reader.icon());
-		if (reader.preset())
-			presetpar->addChild(item);
-		else
-			available->addChild(item);
-	}
-	foreach (Prefix *prefix, coll->prefixes())
-	{
-		//add it into this list
-		QTreeWidgetItem *item = new QTreeWidgetItem (0);
-		item->setText(0,prefix->name());
-		item->setData(0, 32, prefix->ID());
-		item->setData(0, 33, false); //false - просто создаем Prefix и запускаем exe без доп. действий.
-		item->setToolTip(0,prefix->note());
-		item->setData(0, 34, prefix->note());
-		item->setData(0, 35, SourceReader(prefix->ID(), core, this).icon());
-		item->setIcon(0, QIcon(SourceReader(prefix->ID(), core, this).icon())); // тут иконку достаем из sourcereader
-		installed->addChild(item);
-	}
-	 if (installed->childCount() <= 0)
-	{
-		par->removeChild(installed);
-	}
-	ui->lstGames->expandAll();
-    }
+	TreeModel *model = static_cast<TreeModel*>(ui->treeGames->model());
+	model->resetDatas();
+	ui->treeGames->expandAll();
+}
 
 
-void MainWindow::launchEngine(QString prefixName, bool install)
+void MainWindow::launchEngine(QString prefixName)
 {
-	if (install && (!coll->havePrefix(prefixName)))
+	if ((!coll->havePrefix(prefixName)))
 	{
 		QStringList filters;
 		filters.push_back(tr("Windows Executables (*.exe)"));
@@ -161,6 +106,7 @@ void MainWindow::launchEngine(QString prefixName, bool install)
 		PrefixDialog *dlg = new PrefixDialog(this, p, coll);
 		dlg->exec();
 	}
+	buildList();
 }
 
 void MainWindow::getFileName(QString &fileName)
@@ -198,8 +144,8 @@ void MainWindow::getPrefixName(QString &prefixName)
 	//проверим, есть ли такой префикс уже.
 	QDir dir;
 	dir.setPath(core->wineDir() + QDir::separator() + myPrefix);
-	if (dir.exists()){
-
+	if (dir.exists())
+	{
 		QMessageBox::warning(0, tr("Application with this name is already installed."), tr("To force installation process, remove directory %1.").arg(core->wineDir() +QDir::separator() + myPrefix));
 		//я знаю, это плохо
 		goto dialog;
@@ -212,17 +158,15 @@ void MainWindow::getPrefixName(QString &prefixName)
 
 void MainWindow::on_buttonBox_accepted()
 {
-	if (!checkNodeForPrefix(ui->lstGames))
-	{
-		saveGeom();
+if (ui->treeGames->currentIndex() == QModelIndex())
+	qApp->quit();
+else
+{
+	QString id = ui->treeGames->currentIndex().data(32).toString();
+	if (id.isEmpty())
 		qApp->quit();
-	}
-	if (!ui->lstGames->selectedItems().isEmpty())
-	{
-		bool install = ui->lstGames->selectedItems().first()->data(0, 33).toBool();
-		QString conf = ui->lstGames->selectedItems().first()->data(0, 32).toString();
-		launchEngine(conf, install);
-	}
+	launchEngine(id);
+}
 }
 
 void MainWindow::saveGeom()
@@ -232,21 +176,6 @@ void MainWindow::saveGeom()
 	f.write(saveGeometry());
 	f.close();
 }
-
-void MainWindow::on_lstGames_itemDoubleClicked(QTreeWidgetItem* item, int column)
-{
-	if (!checkNodeForPrefix(ui->lstGames))
-		return;
-	bool install = item->data(column, 33).toBool();
-	QString conf = item->data(column, 32).toString();
-	launchEngine(conf, install);
-}
-
-void MainWindow::on_lstGames_itemClicked(QTreeWidgetItem* item, int column)
-{
-	ui->lblNote->setText(item->data(column, 34).toString());
-}
-
 
 void MainWindow::on_action_Settings_triggered()
 {
@@ -272,9 +201,7 @@ void MainWindow::on_action_About_triggered()
 
 void MainWindow::on_action_Make_desktop_icon_triggered()
 {
-	if (!checkNodeForPrefix(ui->lstGames))
-		return;
-	QString id = ui->lstGames->selectedItems().first()->data(0, 32).toString();
+	QString id = ui->treeGames->currentIndex().data(32).toString();
 	if (id.isEmpty())
 		return;
 	if (!coll->havePrefix(id))
@@ -293,22 +220,21 @@ void MainWindow::on_lblNote_linkActivated(QString link)
 	QDesktopServices::openUrl(QUrl(link));
 }
 
-bool  MainWindow::checkNodeForPrefix(QTreeWidget *widget)
-{
-if (widget->selectedItems().isEmpty())
-{
-	statusBar()->showMessage(tr("No item selected"), 3000);
-	return false;
-}
-if (widget->selectedItems().at(0)->data(0,Qt::UserRole).isNull())
-{
-	statusBar()->showMessage(tr("No prefix associated with this node"), 3000);
-	return false;
-}
-return true;
-}
-
 void MainWindow::on_actUpdate_triggered()
 {
 	core->syncPackages();
+}
+
+void MainWindow::on_treeGames_doubleClicked(QModelIndex index)
+{
+	QString id = index.data(32).toString();
+	launchEngine(id);
+}
+
+
+void MainWindow::on_treeGames_activated(QModelIndex index)
+{
+	QString note = index.data(34).toString();
+	if (!note.isEmpty())
+		ui->lblNote->setText(note);
 }

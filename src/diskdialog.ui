@@ -15,18 +15,13 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeWidget" name="treeApps">
-     <attribute name="headerVisible">
-      <bool>false</bool>
+    <widget class="QTreeView" name="treeApps">
+     <attribute name="headerDefaultSectionSize">
+      <number>0</number>
      </attribute>
-     <attribute name="headerVisible">
-      <bool>false</bool>
+     <attribute name="headerDefaultSectionSize">
+      <number>0</number>
      </attribute>
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
     </widget>
    </item>
    <item>

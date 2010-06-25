@@ -17,35 +17,37 @@
 */
 
 
-#ifndef DISKDIALOG_H
-#define DISKDIALOG_H
+#include "package.h"
 
-#include <QtGui>
-#include "prefixcollection.h"
-#include "dvdrunner.h"
-#include "messagehandler.h"
-#include "treemodel.h"
+Package::Package(const QString &category, Package *parent)
+	:_category(category), parentItem(parent)
+{}
 
-namespace Ui {
-    class DiskDialog;
+Package::Package(Prefix *prefix, Package *parent)
+	:_prefix(prefix), parentItem (parent)
+{}
+
+void Package::addPackage(Package *package)
+{
+	if (package->parent() != this)
+		package->setParent(this);
+	childItems.append(package);
 }
 
-class DiskDialog : public QDialog {
-    Q_OBJECT
-public:
-	DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib);
-    ~DiskDialog();
+Package* Package::child(int row)
+{
+	return childItems.value(row);
+}
 
-protected:
-    void changeEvent(QEvent *e);
-private:
-    Ui::DiskDialog *ui;
-	void buildList();
-	corelib *core;
-	DVDRunner *dvd;
-	PrefixCollection *coll;
-private slots:
- void on_buttonBox_accepted();
-};
+int Package::childCount() const
+{
+	return childItems.count();
+}
 
-#endif // DISKDIALOG_H
+int Package::row() const
+{
+	if (parentItem)
+		return parentItem->childItems.indexOf(const_cast<Package*>(this));
+
+	return 0;
+}

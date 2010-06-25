@@ -32,7 +32,8 @@ DiskDialog::DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib) :
 	}
 	coll = new PrefixCollection (core->database(), core, this);
 	connect (this, SIGNAL(rejected()), dvd, SLOT(cancel()));
-	buildList();
+	TreeModel *model = new TreeModel(this, coll);
+	ui->treeApps->setModel(model);
 }
 
 DiskDialog::~DiskDialog()
@@ -51,68 +52,13 @@ void DiskDialog::changeEvent(QEvent *e)
         break;
     }
 }
-void DiskDialog::buildList()
-{ /* TODO: сделать модель для списка */
-	//сначала вытаскиваем все из reader.
-	QTreeWidgetItem *itemReader = new QTreeWidgetItem(0);
-	itemReader->setText(0,tr("Available applications"));
-	itemReader->setIcon(0, QIcon(":/desktop/winegame.png"));
-	QTreeWidgetItem *presetItem = new QTreeWidgetItem (ui->treeApps,0);
-	presetItem->setText(0,tr("Pre-Sets/Templates"));
-	presetItem->setIcon(0,QIcon(":/desktop/winegame.png"));
-	foreach (QString prefixName, SourceReader::configurations(core->packageDirs()))
-	{
-		//init Reader object
-		SourceReader reader (prefixName, core, this);
-		 //add it into this  list
-		QTreeWidgetItem *item = new QTreeWidgetItem(0);
-		item->setText(0, reader.realName());
-		item->setToolTip(0, reader.realNote());
-		item->setIcon(0, QIcon(reader.icon()));
-		item->setData(0, 32, prefixName);
-		item->setData(0, 33, true); // true - делаем полную установку данного приложения
-		if (reader.preset())
-			presetItem->addChild(item);
-		else
-			itemReader->addChild(item);
-	}
-	ui->treeApps->addTopLevelItem(itemReader);
-	//а теперь установленные.
-	QTreeWidgetItem *itemInstalled = new QTreeWidgetItem(0);
-	itemInstalled->setText(0,tr("Installed applications"));
-	itemInstalled->setIcon(0, QIcon(":/desktop/winegame.png"));
-	foreach (Prefix *prefix, coll->prefixes())
-	{
-		//add it into this list
-		QTreeWidgetItem *item = new QTreeWidgetItem (0);
-		item->setText(0,prefix->name());
-		item->setData(0, 32, prefix->ID());
-		item->setData(0, 33, false); //false - просто создаем Prefix и запускаем exe без доп. действий.
-		item->setToolTip(0,prefix->note());
-		item->setIcon(0, QIcon(SourceReader(prefix->ID(), core, this).icon())); // тут иконку достаем из sourcereader
-		itemInstalled->addChild(item);
-	}
-	ui->treeApps->addTopLevelItem(itemInstalled);
-	itemReader->sortChildren(0, Qt::AscendingOrder);
-	itemInstalled->sortChildren(0, Qt::AscendingOrder);
-	ui->treeApps->sortItems(0, Qt::AscendingOrder);
-	ui->treeApps->expandAll();
-}
-
 
 void DiskDialog::on_buttonBox_accepted()
 {
-	if (ui->treeApps->selectedItems().count() == 0)
-		return;
-	//проверяем, является ли item - top-level
-	for (int i = 0; i < ui->treeApps->topLevelItemCount(); i++)
-	{
-		if (ui->treeApps->selectedItems().contains(ui->treeApps->topLevelItem(i)))
-			return;
-	}
-	QString prid = ui->treeApps->selectedItems().first()->data(0, 32).toString();
-	bool ist = ui->treeApps->selectedItems().first()->data(0, 33).toBool();
-	if (ist)
+	if (ui->treeApps->currentIndex() == QModelIndex())
+		qApp->quit();
+	QString prid = ui->treeApps->currentIndex().data(32).toString();
+	if (!coll->havePrefix(prid))
 	{
 		SourceReader reader (prid, core, this);
 		MessageHandler *handler = new MessageHandler(this, core);
@@ -125,14 +71,8 @@ void DiskDialog::on_buttonBox_accepted()
 	}
 	else
 	{
-		if (!coll->havePrefix(prid))
-		{
-			QMessageBox::critical(this, tr("Error"), tr("Program error (unusable instruction)"));
-			close();
-			return;
-		}
-	Prefix *prefix = coll->getPrefix(prid);
-	prefix->runApplication(dvd->exe());
+		Prefix *prefix = coll->getPrefix(prid);
+		prefix->runApplication(dvd->exe());
 	}
 	close();
 	return;
