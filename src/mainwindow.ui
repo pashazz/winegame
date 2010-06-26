@@ -34,6 +34,12 @@
       <property name="text">
        <string>To install new application in existing virtual windows (&quot;Installed&quot; list), just double-click on it.</string>
       </property>
+      <property name="textFormat">
+       <enum>Qt::RichText</enum>
+      </property>
+      <property name="textInteractionFlags">
+       <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse</set>
+      </property>
      </widget>
     </item>
     <item>
