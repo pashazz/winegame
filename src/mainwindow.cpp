@@ -69,6 +69,8 @@ void MainWindow::buildList()
 
 void MainWindow::launchEngine(QString prefixName)
 {
+	if (prefixName.isEmpty())
+		return;
 	if ((!coll->havePrefix(prefixName)))
 	{
 		QStringList filters;

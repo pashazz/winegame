@@ -5,45 +5,45 @@
     <name>DiskDialog</name>
     <message>
         <source>Available applications</source>
-        <translation>Имеющиеся приложения</translation>
+        <translation type="obsolete">Имеющиеся приложения</translation>
     </message>
     <message>
         <source>Pre-Sets/Templates</source>
-        <translation>Шаблоны</translation>
+        <translation type="obsolete">Шаблоны</translation>
     </message>
     <message>
         <source>Installed applications</source>
-        <translation>Установленные приложения</translation>
+        <translation type="obsolete">Установленные приложения</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Ошибка</translation>
+        <translation type="obsolete">Ошибка</translation>
     </message>
     <message>
         <source>Program error (unusable instruction</source>
-        <translation>Ошибка программы (неправильная инструкция)</translation>
+        <translation type="obsolete">Ошибка программы (неправильная инструкция)</translation>
     </message>
 </context>
 <context>
     <name>GameDialog</name>
     <message>
         <source>A Microsoft Windows(r) application is found on this disc. &lt;br&gt;&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;&lt;br&gt; Would you like to install it? </source>
-        <translation>Дайте короткое латинское имя вашему приложению.&lt;br&gt; Оно будет установлено в %1/Windows/ИМЯ ПРИЛОЖЕНИЯ/drive_c</translation>
+        <translation>Приложение Microsoft Windows найдено на этом диске. &lt;br&gt;&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;&lt;br&gt; Хотите установить его?</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <source>Applications</source>
-        <translation>Приложения</translation>
+        <translation type="obsolete">Приложения</translation>
     </message>
     <message>
         <source>Pre-Sets (Templates)</source>
-        <translation>Шаблоны</translation>
+        <translation type="obsolete">Шаблоны</translation>
     </message>
     <message>
         <source>Installed applications</source>
-        <translation>Установленные приложения</translation>
+        <translation type="obsolete">Установленные приложения</translation>
     </message>
     <message>
         <source>ÐÑÐ±ÐµÑÐ¸ÑÐµ EXE ÑÐ°Ð¹Ð»</source>
@@ -55,7 +55,7 @@
     </message>
     <message>
         <source>No item selected</source>
-        <translation>Ничего не выбрано</translation>
+        <translation type="obsolete">Ничего не выбрано</translation>
     </message>
     <message>
         <source>warning</source>
@@ -111,11 +111,11 @@
     </message>
     <message>
         <source>Engine execution error</source>
-        <translation>Ошибка выполнения движка</translation>
+        <translation type="obsolete">Ошибка выполнения движка</translation>
     </message>
     <message>
         <source>No prefix associated with this node</source>
-        <translation>Не могу найти префикс для этого элемента</translation>
+        <translation type="obsolete">Не могу найти префикс для этого элемента</translation>
     </message>
     <message>
         <source>This application isn`t installed</source>
@@ -123,7 +123,7 @@
     </message>
     <message>
         <source>Available applications</source>
-        <translation>Имеющиеся приложения</translation>
+        <translation type="obsolete">Имеющиеся приложения</translation>
     </message>
     <message>
         <source>Application installed successfully</source>
@@ -164,6 +164,38 @@
         <source>Give a short note about your application, for example &apos;CoolGame v3&apos;</source>
         <translation>Дайте читабельное описание для вашего приложению, например &apos;СoolGame v3&apos;</translation>
     </message>
+    <message>
+        <source>Give a name for your application</source>
+        <translation>Дайте имя вашему приложению</translation>
+    </message>
+    <message>
+        <source>Give a short latin name for your application. &lt;br&gt; It will be installed in %1/Windows/APPLICATION NAME/drive_c</source>
+        <translation>Дайте короткое латинское имя вашему приложению.&lt;br&gt; Оно будет установлено в %1/Windows/ИМЯ ПРИЛОЖЕНИЯ/drive_c</translation>
+    </message>
+    <message>
+        <source>No name specified</source>
+        <translation>Не указано имя</translation>
+    </message>
+    <message>
+        <source>Abort. Reason: No application name specified</source>
+        <translation>Прерывание: Причина: Не задано имя приложения</translation>
+    </message>
+    <message>
+        <source>Application with this name is already installed.</source>
+        <translation>Приложение с этим именем уже установлено.</translation>
+    </message>
+    <message>
+        <source>To force installation process, remove directory %1.</source>
+        <translation>Чтобы все равно установить программу, удалите папку %1.</translation>
+    </message>
+    <message>
+        <source>Give a readable for your application</source>
+        <translation>Дайте читабельное имя вашему приложению</translation>
+    </message>
+    <message>
+        <source>Give a short readable name for your application, for example &apos;CoolGame v3&apos;</source>
+        <translation>Дайте читабельное имя вашему приложению, например &apos;СoolGame v3&apos;</translation>
+    </message>
 </context>
 <context>
     <name>PrefixDialog</name>
@@ -181,7 +213,7 @@
     </message>
     <message>
         <source>Do you want to create desktop icon for this application?</source>
-        <translation>Хотите ли вы создать ярлык на рабочем столе для этой программы</translation>
+        <translation>Хотите ли вы создать ярлык на рабочем столе для этой программы?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -189,7 +221,7 @@
     </message>
     <message>
         <source>Unable to set WINE version</source>
-        <translation>Не могу установить эту версию Wine.</translation>
+        <translation>Не могу установить эту версию Wine</translation>
     </message>
 </context>
 <context>
@@ -220,11 +252,11 @@
     </message>
     <message>
         <source>Hello!</source>
-        <translation>Привет!</translation>
+        <translation type="obsolete">Привет!</translation>
     </message>
     <message>
         <source>Please connect to internet :)</source>
-        <translation>Пожалуйста, подключитесь к Интернету :)</translation>
+        <translation type="obsolete">Пожалуйста, подключитесь к Интернету :)</translation>
     </message>
 </context>
 <context>
@@ -262,6 +294,25 @@
     </message>
 </context>
 <context>
+    <name>TreeModel</name>
+    <message>
+        <source>Available applications</source>
+        <translation>Имеющиеся приложения</translation>
+    </message>
+    <message>
+        <source>Installed applications</source>
+        <translation>Установленные приложения</translation>
+    </message>
+    <message>
+        <source>Templates/Presets</source>
+        <translation>Шаблоны</translation>
+    </message>
+    <message>
+        <source>Applications</source>
+        <translation>Приложения</translation>
+    </message>
+</context>
+<context>
     <name>WineVersionsDialog</name>
     <message>
         <source>Using Default wine version</source>
@@ -269,7 +320,7 @@
     </message>
     <message>
         <source>Using %1 wine version</source>
-        <translation>Используется версия Wine %1.</translation>
+        <translation>Используется версия Wine-%1</translation>
     </message>
 </context>
 <context>
