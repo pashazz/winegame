@@ -158,7 +158,7 @@ void MainWindow::getPrefixName(QString &prefixName)
 
 void MainWindow::on_buttonBox_accepted()
 {
-if (ui->treeGames->currentIndex() == QModelIndex())
+if (!ui->treeGames->currentIndex().isValid())
 	qApp->quit();
 else
 {
