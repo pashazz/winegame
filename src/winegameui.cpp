@@ -141,3 +141,8 @@ QString WinegameUi::directoryDialog(const QString &description, const QString &s
 {
 	return QFileDialog::getExistingDirectory(0, description, startDirectory);
 }
+
+void WinegameUi::getText(const QString &title, const QString &message, QString &result)
+{
+	result = QInputDialog::getText(qApp->desktop(), title, message);
+}

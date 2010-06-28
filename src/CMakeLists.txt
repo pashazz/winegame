@@ -58,8 +58,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set (RESDIR ${CMAKE_SOURCE_DIR}/resources)
 
 # Sources, UIs & HEADERS
-set (SOURCES about.cpp  diskdialog.cpp  gamedialog.cpp  main.cpp  mainwindow.cpp  prefixdialog.cpp  settingsdialog.cpp  shortcutdialog.cpp  winegameui.cpp  wineversionsdialog.cpp messagehandler.cpp treemodel.cpp package.cpp)
-set (QOBJ_HEADERS about.h  diskdialog.h  gamedialog.h  mainwindow.h  prefixdialog.h  settingsdialog.h  shortcutdialog.h  winegameui.h  wineversionsdialog.h messagehandler.h treemodel.h)
+set (SOURCES about.cpp  diskdialog.cpp  gamedialog.cpp  main.cpp  mainwindow.cpp  prefixdialog.cpp  settingsdialog.cpp  shortcutdialog.cpp  winegameui.cpp  wineversionsdialog.cpp treemodel.cpp package.cpp)
+set (QOBJ_HEADERS about.h  diskdialog.h  gamedialog.h  mainwindow.h  prefixdialog.h  settingsdialog.h  shortcutdialog.h  winegameui.h  wineversionsdialog.h treemodel.h)
 set (HEADERS package.h)
 
 #Генерируем формы

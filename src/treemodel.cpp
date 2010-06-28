@@ -24,8 +24,8 @@
   */
 #include "treemodel.h"
 
-TreeModel::TreeModel(QObject *parent, PrefixCollection *pcoll) :
-	QAbstractItemModel(parent), collection(pcoll), core(pcoll->library())
+TreeModel::TreeModel(QObject *parent, PrefixCollection *pcoll, PluginList list, bool includeDvdPackages) :
+	QAbstractItemModel(parent), collection(pcoll), core(pcoll->library()), plugins(list), includeDvd(includeDvdPackages)
 {
 	updateDatas();
 }
@@ -123,7 +123,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 			if (!package->category().isEmpty())
 				return QIcon(":/desktop/winegame.png");
 			if (package->havePrefix())
-				return QIcon(SourceReader(package->prefix()->ID(), core, qApp).icon());
+				return iconById(package->prefix()->ID());
 			else
 				return QIcon(":/desktop/winegame.png");
 		}
@@ -141,15 +141,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 		else
 			return QVariant();
 		break;
-		case 35:
-		if (!package->category().isEmpty())
-			return QVariant();
-		if (package->havePrefix())
-			return SourceReader(package->prefix()->ID(), core, qApp).icon();
-		else
-			return QVariant();
-		break;
-		default:
+	default:
 		return QVariant();
 		//return QAbstractItemModel::data(index, role);
 
@@ -160,32 +152,29 @@ void TreeModel::updateDatas()
 {
 	available = new Package(tr("Available applications"));
 	installed = new Package (tr("Installed applications"));
-	presets = new Package (tr("Templates/Presets"));
 	foreach (Prefix *prefix, collection->prefixes())
 	{
 		//add it into this list
 		Package *package = new Package (prefix, installed);
 		installed->addPackage(package);
 	}
-	foreach (QString conf, SourceReader::configurations(core->packageDirs()))
+	foreach (FormatInterface  *plugin, plugins)
 	{
-		SourceReader *reader = new SourceReader(conf, core, qApp);
-		//construct prefix
-		Prefix *prefix = new Prefix(reader->ID(), reader->realName(), reader->realNote(),
-									reader->prefixPath(), reader->wine(), qApp, core);
-		Package *package = new Package (prefix);
-	if (reader->preset())
-		presets->addPackage(package);
-	else
-		available->addPackage(package);
+		foreach (SourceReader *reader, plugin->readers(core, includeDvd))
+		{
+			Prefix *prefix = new Prefix(reader->ID(), reader->realName(), reader->realNote(),
+										"", reader->wine(), qApp, core); //We don`t need a path here, really.
+			Package *package = new Package (prefix);
+			available->addPackage(package);
+			readers.insert(package->row(), reader);
+		}
 	}
 	rootItem = new Package (tr("Applications"));
 	if (installed->childCount() > 0)
 		rootItem->addPackage(installed);
 	if (available->childCount() > 0)
 		rootItem->addPackage(available);
-}
-
+	}
 
 bool TreeModel::hasChildren(const QModelIndex &parent) const
 {
@@ -206,7 +195,6 @@ void TreeModel::resetDatas()
 	beginResetModel();
 	delete installed;
 	delete available;
-	delete presets;
 	delete rootItem;
 	endResetModel();
 	updateDatas();
@@ -216,10 +204,25 @@ TreeModel::~TreeModel()
 {
 	if (available)
 		delete available;
-	if (presets)
-		delete presets;
 	if (installed)
 		delete installed;
 	if (rootItem)
 		delete rootItem;
+}
+
+SourceReader * TreeModel::readerFor(const QModelIndex &index)
+{
+	SourceReader *reader = readers.value(index.row(), 0);
+	return reader;
+}
+
+QIcon TreeModel::iconById(const QString &id) const
+{
+	foreach (FormatInterface *plugin, plugins)
+	{
+		SourceReader *reader = plugin->readerById(id, core);
+		if (reader)
+			return QIcon(reader->icon());
+	}
+	return QIcon::fromTheme("application-default-icon");
 }

@@ -23,7 +23,6 @@
 #include <QtGui>
 #include "prefixcollection.h"
 #include "dvdrunner.h"
-#include "messagehandler.h"
 #include "treemodel.h"
 
 namespace Ui {
@@ -44,6 +43,7 @@ private:
 	corelib *core;
 	DVDRunner *dvd;
 	PrefixCollection *coll;
+	PluginWorker *worker;
 private slots:
  void on_buttonBox_accepted();
 };

@@ -31,7 +31,8 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		restoreGeometry(f.readAll());
 		f.close();
 	}
-	TreeModel *model = new TreeModel(this, coll);
+	worker = new PluginWorker(this, lib);
+	model = new TreeModel(this, coll, worker->plugins(), false);
 	ui->treeGames->setModel(model);
 	ui->treeGames->expandAll();
 }
@@ -67,11 +68,12 @@ void MainWindow::buildList()
 }
 
 
-void MainWindow::launchEngine(QString prefixName)
+void MainWindow::launchEngine(const QModelIndex &index)
 {
+	QString prefixName = index.data(32).toString();
 	if (prefixName.isEmpty())
 		return;
-	if ((!coll->havePrefix(prefixName)))
+	if (!coll->havePrefix(prefixName))
 	{
 		QStringList filters;
 		filters.push_back(tr("Windows Executables (*.exe)"));
@@ -88,10 +90,7 @@ void MainWindow::launchEngine(QString prefixName)
 			//prepend "msiexec"
 			fileName.prepend("msiexec ");
 		}
-		SourceReader *reader = new SourceReader(prefixName, core, this);
-		connect (reader, SIGNAL(presetPrefixNeed(QString&)), this, SLOT (getPrefixName(QString&)));
-		connect(reader, SIGNAL(presetNameNeed(QString&)), this, SLOT(getPresetName(QString&)));
-		connect (reader, SIGNAL(presetNoteNeed(QString&)), this, SLOT(getPresetNote(QString&)));
+		SourceReader *reader = model->readerFor(index);
 		Prefix *prefix = coll->install(reader,fileName);
 		buildList();
 		if (!prefix)
@@ -111,11 +110,7 @@ void MainWindow::launchEngine(QString prefixName)
 	buildList();
 }
 
-void MainWindow::getFileName(QString &fileName)
-{
-	fileName = QFileDialog::getOpenFileName(0,  tr("Выберите EXE файл"), QDir::homePath(), tr("Windows executables (*.exe)"));
-}
-
+/*
 void MainWindow::getPresetName(QString &name)
 {
 	QString myPrefix =QInputDialog::getText(0, tr("Give a readable for your application"), tr ("Give a short readable name for your application, for example 'CoolGame v3'"));
@@ -157,7 +152,7 @@ void MainWindow::getPrefixName(QString &prefixName)
 	prefixName = myPrefix;
 	return;
 }
-
+*/
 void MainWindow::on_buttonBox_accepted()
 {
 if (!ui->treeGames->currentIndex().isValid())
@@ -167,7 +162,7 @@ else
 	QString id = ui->treeGames->currentIndex().data(32).toString();
 	if (id.isEmpty())
 		qApp->quit();
-	launchEngine(id);
+	launchEngine(ui->treeGames->currentIndex());
 }
 }
 
@@ -214,7 +209,7 @@ void MainWindow::on_action_Make_desktop_icon_triggered()
 	Prefix *prefix = coll->getPrefix(id);
 	ShortCutDialog *dlg = new ShortCutDialog(this, prefix->name(), prefix->path());
 	dlg->exec();
-	prefix->makeDesktopIcon(dlg->path(), dlg->name(), SourceReader(prefix->ID(),core,this).icon());
+	prefix->makeDesktopIcon(dlg->path(), dlg->name(), "");
 }
 
 void MainWindow::on_lblNote_linkActivated(QString link)
@@ -229,8 +224,7 @@ void MainWindow::on_actUpdate_triggered()
 
 void MainWindow::on_treeGames_doubleClicked(QModelIndex index)
 {
-	QString id = index.data(32).toString();
-	launchEngine(id);
+	launchEngine(index);
 }
 
 

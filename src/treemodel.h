@@ -22,12 +22,16 @@
 
 #include "prefixcollection.h"
 #include "package.h"
+#include "plugincore.h"
+#include <QIcon>
+
+typedef QList <FormatInterface *> PluginList;
 
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-	explicit TreeModel(QObject *parent, PrefixCollection *pcoll);
+	explicit TreeModel(QObject *parent, PrefixCollection *pcoll,  PluginList list, bool includeDvdPackages);
 	~TreeModel();
 	QVariant data(const QModelIndex &index, int role) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -40,19 +44,25 @@ public:
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	bool hasChildren(const QModelIndex &parent) const;
 	void resetDatas();
+	SourceReader * readerFor (const QModelIndex &index);
 	void setCollection (PrefixCollection *coll) {delete collection; collection = coll; updateDatas();}
+
 private:
 	Package *rootItem;
 	//Installed, Pre-Sets & Available
 	Package *installed;
 	Package *available;
-	Package *presets;
 	PrefixCollection *collection;
 	corelib *core;
+	PluginList plugins;
+	bool includeDvd;
+
+	QIcon iconById (const QString &id) const;
 protected:
 	Package* getPackage (const QModelIndex &index) const;
 	void updateDatas();
 
+	QMap <int, SourceReader *> readers;
 };
 
 #endif // TREEMODEL_H

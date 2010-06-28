@@ -20,7 +20,7 @@
 #define GAMEDIALOG_H
 
 #include <QtGui>
-#include "inireader.h"
+#include "sourcereader.h"
 namespace Ui {
     class GameDialog;
 }

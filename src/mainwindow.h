@@ -41,10 +41,12 @@ private:
 	corelib *core;
 	QSqlDatabase db;
 	PrefixCollection *coll;
-	bool checkNodeForPrefix (QTreeWidget *widget);
 	void saveGeom();
 	void buildList();
-	void launchEngine(QString prefixName);
+	void launchEngine(const QModelIndex &index);
+	TreeModel *model;
+	PluginWorker *worker;
+
 
 private slots:
 	void on_treeGames_activated(QModelIndex index);
@@ -60,10 +62,6 @@ private slots:
     void on_buttonBox_rejected();
 
 	//Обработчики событий prefix
-	void getPrefixName (QString &prefixName);
-	void getFileName (QString &fileName);
-	void getPresetName (QString &name);
-	void getPresetNote (QString &note);
-};
+	};
 
 #endif // MAINWINDOW_H

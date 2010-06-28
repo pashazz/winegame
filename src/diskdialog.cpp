@@ -25,6 +25,9 @@ DiskDialog::DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib) :
 	ui(new Ui::DiskDialog), core (lib), dvd (runner)
 {
     ui->setupUi(this);
+	/* Get a plugins list */
+	worker = new PluginWorker(this, lib);
+	PluginList list = worker->plugins();
 	if (!dvd->isMounted())
 	{
 		close();
@@ -32,7 +35,7 @@ DiskDialog::DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib) :
 	}
 	coll = new PrefixCollection (core->database(), core, this);
 	connect (this, SIGNAL(rejected()), dvd, SLOT(cancel()));
-	TreeModel *model = new TreeModel(this, coll);
+	TreeModel *model = new TreeModel(this, coll, list, true);
 	ui->treeApps->setModel(model);
 }
 
@@ -60,14 +63,16 @@ void DiskDialog::on_buttonBox_accepted()
 	QString prid = ui->treeApps->currentIndex().data(32).toString();
 	if (!coll->havePrefix(prid))
 	{
-		SourceReader reader (prid, core, this);
-		MessageHandler *handler = new MessageHandler(this, core);
-		connect (&reader, SIGNAL(presetNameNeed(QString&)), handler, SLOT(prefixName(QString&)));
-		connect (&reader, SIGNAL(presetNoteNeed(QString&)), handler, SLOT(prefixNote(QString&)));
-		connect(&reader, SIGNAL(presetPrefixNeed(QString&)), handler, SLOT(prefixID(QString&)));
-		dvd->setReader(&reader);
+		TreeModel *model = static_cast<TreeModel*>(ui->treeApps->model());
+		SourceReader *reader = model->readerFor(ui->treeApps->currentIndex());
+		if (!reader)
+		{
+			QMessageBox::warning(this, tr("Cannot retreive SourceReader for this item"), tr("Hehehe, one of us is looser..."));
+			return;
+		}
+		dvd->setReader(reader);
 		if (!dvd->exe().isEmpty())
-			coll->install(&reader, dvd->exe(), dvd->diskDirectory());
+			coll->install(reader, dvd->exe(), dvd->diskDirectory());
 	}
 	else
 	{

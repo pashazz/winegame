@@ -23,18 +23,14 @@
 #include "winegameui.h"
 #include "dvdrunner.h"
 #include "gamedialog.h"
-#include "messagehandler.h"
 
 void runDVD (QString path, corelib *lib) //запуск с DVD
 {
-	DVDRunner *runner = new DVDRunner (lib, path);
+	PluginWorker *worker = new PluginWorker(qApp, lib);
+	DVDRunner *runner = new DVDRunner (lib, path, worker);
 	if (runner->success())
 	{
 		SourceReader *reader = runner->sourceReader();
-		MessageHandler *handler = new MessageHandler(0,lib);
-		QObject::connect(reader, SIGNAL(presetNameNeed(QString&)), handler, SLOT(prefixName(QString&)));
-		QObject::connect(reader, SIGNAL(presetPrefixNeed(QString&)), handler, SLOT(prefixID(QString&)));
-		QObject::connect(reader, SIGNAL(presetNoteNeed(QString&)), handler, SLOT(prefixNote(QString&)));
 		GameDialog *dlg = new GameDialog (0, reader, lib);
 		if (dlg->exec() == QDialog::Rejected)
 		{
