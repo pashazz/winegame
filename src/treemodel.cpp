@@ -160,7 +160,7 @@ void TreeModel::updateDatas()
 	}
 	foreach (FormatInterface  *plugin, plugins)
 	{
-		foreach (SourceReader *reader, plugin->readers(core, includeDvd))
+		foreach (SourceReader *reader, plugin->readers(includeDvd))
 		{
 			Prefix *prefix = new Prefix(reader->ID(), reader->realName(), reader->realNote(),
 										"", reader->wine(), qApp, core); //We don`t need a path here, really.
@@ -220,7 +220,7 @@ QIcon TreeModel::iconById(const QString &id) const
 {
 	foreach (FormatInterface *plugin, plugins)
 	{
-		SourceReader *reader = plugin->readerById(id, core);
+		SourceReader *reader = plugin->readerById(id);
 		if (reader)
 			return QIcon(reader->icon());
 	}

@@ -220,7 +220,8 @@ void MainWindow::on_lblNote_linkActivated(QString link)
 
 void MainWindow::on_actUpdate_triggered()
 {
-	core->syncPackages();
+	foreach (FormatInterface *plugin, worker->plugins())
+		plugin->updateAllWines();
 }
 
 void MainWindow::on_treeGames_doubleClicked(QModelIndex index)

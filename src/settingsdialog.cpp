@@ -39,7 +39,7 @@ SettingsDialog::SettingsDialog(QWidget *parent, corelib *lib) :
 	}
 	else
 		ui->cbForceFuse->setChecked(core->forceFuseiso());
-	ui->lstPackageDirs->addItems(core->packageDirs());
+
 }
 
 SettingsDialog::~SettingsDialog()
@@ -77,7 +77,6 @@ void SettingsDialog::on_buttonBox_accepted()
 		core->setDiscDir(ui->txtDisc->text());
 	core->setAutosync(ui->cbUpdates->isChecked());
 	core->setForceFuseiso(ui->cbForceFuse->isChecked());
-	core->setPackageDirs(generateTexts());
 	core->syncSettings();
 }
 
@@ -93,55 +92,4 @@ void SettingsDialog::on_cmdBrowseDisc_clicked()
 	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame directory for copying files from multiple CDs"), core->discDir());
 	if (!newdir.isEmpty())
 		ui->txtWineDir->setText(newdir);
-}
-
-void SettingsDialog::on_cmdAdd_clicked()
-{
-	QString dir = QFileDialog::getExistingDirectory(this, tr("Select directory for Winegame packages"), QDir::homePath());
-	if (!dir.isEmpty())
-		ui->lstPackageDirs->addItem(dir);
-}
-
-void SettingsDialog::on_cmdDelete_clicked()
-{
-	foreach (QListWidgetItem *item, ui->lstPackageDirs->selectedItems())
-	{
-		ui->lstPackageDirs->takeItem(ui->lstPackageDirs->row(item));
-		delete item;
-	}
-}
-
-
-void SettingsDialog::on_lstPackageDirs_itemSelectionChanged()
-{
-	if (ui->lstPackageDirs->selectedItems().isEmpty())
-	{
-		ui->cmdDelete->setEnabled(false);
-		ui->cmdEdit->setEnabled(false);
-	}
-	else
-	{
-		ui->cmdDelete->setEnabled(true);
-		ui->cmdEdit->setEnabled(true);
-	}
-}
-
-void SettingsDialog::on_cmdEdit_clicked()
-{
-	QString oldDir = ui->lstPackageDirs->selectedItems().first()->text();
-	if (!QDir(oldDir).exists())
-		oldDir = QDir::homePath();
-	QString dir = QFileDialog::getExistingDirectory(this, tr("Select directory for Winegame packages"), oldDir);
-	if (!dir.isEmpty())
-		ui->lstPackageDirs->selectedItems().first()->setText(dir);
-}
-
-QStringList SettingsDialog::generateTexts()
-{
-	QStringList list;
-	for (int i = 0; i <= ui->lstPackageDirs->count() -1; i++)
-	{
-		list.append(ui->lstPackageDirs->item(i)->text());
-	}
-	return list;
 }

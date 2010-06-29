@@ -108,64 +108,13 @@ for mount ISO images</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Directories for storing WineGame packages:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QListWidget" name="lstPackageDirs">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="dragDropMode">
-          <enum>QAbstractItemView::DropOnly</enum>
-         </property>
-         <property name="defaultDropAction">
-          <enum>Qt::CopyAction</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QPushButton" name="cmdAdd">
-           <property name="text">
-            <string>Add</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="cmdEdit">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Edit</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="cmdDelete">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Delete</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
         <widget class="QLabel" name="label_5">
          <property name="text">
           <string>Sync updates automatically</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="0" column="1">
         <widget class="QCheckBox" name="cbUpdates">
          <property name="text">
           <string/>
@@ -193,9 +142,6 @@ for mount ISO images</string>
  </widget>
  <tabstops>
   <tabstop>buttonBox</tabstop>
-  <tabstop>cmdAdd</tabstop>
-  <tabstop>cmdDelete</tabstop>
-  <tabstop>cmdEdit</tabstop>
  </tabstops>
  <resources/>
  <connections>
