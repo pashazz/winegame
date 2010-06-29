@@ -17,35 +17,17 @@
 */
 
 
-#ifndef DISKDIALOG_H
-#define DISKDIALOG_H
+#include "plugindialog.h"
+#include "ui_plugindialog.h"
 
-#include <QtGui>
-#include "prefixcollection.h"
-#include "dvdrunner.h"
-#include "treemodel.h"
-
-namespace Ui {
-    class DiskDialog;
+PluginDialog::PluginDialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::PluginDialog)
+{
+    ui->setupUi(this);
 }
 
-class DiskDialog : public QDialog {
-    Q_OBJECT
-public:
-	DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib, PluginWorker *wrk);
-    ~DiskDialog();
-
-protected:
-    void changeEvent(QEvent *e);
-private:
-    Ui::DiskDialog *ui;
-	void buildList();
-	corelib *core;
-	DVDRunner *dvd;
-	PrefixCollection *coll;
-	PluginWorker *worker;
-private slots:
- void on_buttonBox_accepted();
-};
-
-#endif // DISKDIALOG_H
+PluginDialog::~PluginDialog()
+{
+    delete ui;
+}

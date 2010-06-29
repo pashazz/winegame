@@ -40,15 +40,15 @@ private:
     Ui::MainWindow *ui;
 	corelib *core;
 	QSqlDatabase db;
+	PluginWorker *worker;
 	PrefixCollection *coll;
 	void saveGeom();
 	void buildList();
 	void launchEngine(const QModelIndex &index);
 	TreeModel *model;
-	PluginWorker *worker;
-
 
 private slots:
+	void on_actAboutPlugins_triggered();
 	void on_treeGames_activated(QModelIndex index);
 	void on_treeGames_doubleClicked(QModelIndex index);
 	void on_actUpdate_triggered();

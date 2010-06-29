@@ -20,23 +20,23 @@
 #include "diskdialog.h"
 #include "ui_diskdialog.h"
 
-DiskDialog::DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib) :
+DiskDialog::DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib, PluginWorker *wrk) :
 	QDialog(parent),
-	ui(new Ui::DiskDialog), core (lib), dvd (runner)
+	ui(new Ui::DiskDialog), core (lib), dvd (runner),worker(wrk)
 {
     ui->setupUi(this);
 	/* Get a plugins list */
-	worker = new PluginWorker(this, lib);
 	PluginList list = worker->plugins();
 	if (!dvd->isMounted())
 	{
 		close();
 		return;
 	}
-	coll = new PrefixCollection (core->database(), core, this);
+	coll = new PrefixCollection (core->database(), core, wrk, this);
 	connect (this, SIGNAL(rejected()), dvd, SLOT(cancel()));
 	TreeModel *model = new TreeModel(this, coll, list, true);
 	ui->treeApps->setModel(model);
+	ui->treeApps->expandAll();
 }
 
 DiskDialog::~DiskDialog()

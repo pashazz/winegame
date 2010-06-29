@@ -19,10 +19,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "about.h"
+#include "plugindialog.h"
+
 MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		QMainWindow(parent),
 		ui(new Ui::MainWindow),
-		core (lib), db(lib->database()), coll(new PrefixCollection(lib->database(), lib, this))
+		core (lib), db(lib->database()), worker(new PluginWorker(this, lib)), coll(new PrefixCollection(lib->database(), lib, worker, this))
 {
 	ui->setupUi(this);
 	QFile f (QDir::homePath() + "/.config/winegame.geom");
@@ -31,7 +33,6 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		restoreGeometry(f.readAll());
 		f.close();
 	}
-	worker = new PluginWorker(this, lib);
 	model = new TreeModel(this, coll, worker->plugins(), false);
 	ui->treeGames->setModel(model);
 	ui->treeGames->expandAll();
@@ -233,4 +234,10 @@ void MainWindow::on_treeGames_activated(QModelIndex index)
 	QString note = index.data(34).toString();
 	if (!note.isEmpty())
 		ui->lblNote->setText(note);
+}
+
+void MainWindow::on_actAboutPlugins_triggered()
+{
+	PluginDialog *dlg = new PluginDialog(this, worker);
+	dlg->exec();
 }

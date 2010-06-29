@@ -61,16 +61,6 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_Help">
-    <property name="locale">
-     <locale language="C" country="AnyCountry"/>
-    </property>
-    <property name="title">
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout_Qt"/>
-    <addaction name="action_About"/>
-   </widget>
    <widget class="QMenu" name="menu_Packages">
     <property name="title">
      <string>&amp;Packages</string>
@@ -88,6 +78,17 @@
     <addaction name="action_Settings"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
+   </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
+    </property>
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout_Qt"/>
+    <addaction name="action_About"/>
+    <addaction name="actAboutPlugins"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Help"/>
@@ -154,6 +155,11 @@
    </property>
    <property name="toolTip">
     <string>Sync Packages ftom winegame server</string>
+   </property>
+  </action>
+  <action name="actAboutPlugins">
+   <property name="text">
+    <string>About &amp;plugins</string>
    </property>
   </action>
  </widget>

@@ -52,7 +52,7 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	{
 		if (runner->isMounted())
 		{
-		DiskDialog *dlg = new DiskDialog (0, runner, lib);
+		DiskDialog *dlg = new DiskDialog (0, runner, lib, worker);
 		dlg->exec();
 	}
 	}
