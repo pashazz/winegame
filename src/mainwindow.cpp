@@ -33,6 +33,15 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		restoreGeometry(f.readAll());
 		f.close();
 	}
+	//Update packages
+	if (core->autoSync())
+	{
+		foreach (FormatInterface *plugin, worker->plugins())
+		{
+			plugin->updateAllWines(coll);
+		}
+	}
+
 	model = new TreeModel(this, coll, worker->plugins(), false);
 	ui->treeGames->setModel(model);
 	ui->treeGames->expandAll();
@@ -221,7 +230,7 @@ void MainWindow::on_lblNote_linkActivated(QString link)
 void MainWindow::on_actUpdate_triggered()
 {
 	foreach (FormatInterface *plugin, worker->plugins())
-		plugin->updateAllWines();
+		plugin->updateAllWines(coll);
 }
 
 void MainWindow::on_treeGames_doubleClicked(QModelIndex index)
