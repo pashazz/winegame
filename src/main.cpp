@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
      QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
     //Set some refspecs
     a.setApplicationName("WineGame");
-	a.setApplicationVersion("0.1.90");
+	a.setApplicationVersion("0.1.91");
     a.setOrganizationName("Pashazz");
 	a.setOrganizationDomain("org");
 #ifdef Q_WS_WIN
