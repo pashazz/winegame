@@ -56,8 +56,7 @@ private:
 	corelib *core;
 	PluginList plugins;
 	bool includeDvd;
-
-	QIcon iconById (const QString &id) const;
+	QString iconById (const QString &id) const;
 protected:
 	Package* getPackage (const QModelIndex &index) const;
 	void updateDatas();

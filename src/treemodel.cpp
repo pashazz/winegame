@@ -123,7 +123,12 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 			if (!package->category().isEmpty())
 				return QIcon(":/desktop/winegame.png");
 			if (package->havePrefix())
-				return iconById(package->prefix()->ID());
+			{
+				if (iconById(package->prefix()->ID()).isEmpty())
+					return QIcon::fromTheme("application-default-icon");
+				else
+					return QIcon(iconById(package->prefix()->ID()));
+			}
 			else
 				return QIcon(":/desktop/winegame.png");
 		}
@@ -141,6 +146,11 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 		else
 			return QVariant();
 		break;
+	case 35:
+		if (!package->category().isEmpty())
+			return QVariant();
+		if (package->havePrefix())
+			return iconById(package->prefix()->ID());
 	default:
 		return QVariant();
 		//return QAbstractItemModel::data(index, role);
@@ -216,13 +226,14 @@ SourceReader * TreeModel::readerFor(const QModelIndex &index)
 	return reader;
 }
 
-QIcon TreeModel::iconById(const QString &id) const
+QString TreeModel::iconById(const QString &id) const
 {
 	foreach (FormatInterface *plugin, plugins)
 	{
 		SourceReader *reader = plugin->readerById(id);
 		if (reader)
-			return QIcon(reader->icon());
+			return reader->icon();
 	}
-	return QIcon::fromTheme("application-default-icon");
+	return "";
 }
+

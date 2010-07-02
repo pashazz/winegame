@@ -120,49 +120,6 @@ void MainWindow::launchEngine(const QModelIndex &index)
 	buildList();
 }
 
-/*
-void MainWindow::getPresetName(QString &name)
-{
-	QString myPrefix =QInputDialog::getText(0, tr("Give a readable for your application"), tr ("Give a short readable name for your application, for example 'CoolGame v3'"));
-	if (myPrefix.isEmpty())
-	{
-		QMessageBox::critical(0, tr("No name specified"), tr ("Abort. Reason: No application name specified"));
-		name = "";
-		return;
-	}
-	else
-		name = myPrefix;
-}
-void MainWindow::getPresetNote(QString &note)
-{
-	note =QInputDialog::getText(0, tr("Give a readable note about your application"), tr ("Give a short note about your application, for example 'CoolGame v3'"));
-}
-
-void MainWindow::getPrefixName(QString &prefixName)
-{
-	dialog:
-	QString myPrefix =QInputDialog::getText(0, tr("Give a name for your application"), tr ("Give a short latin name for your application. <br> It will be installed in %1/Windows/APPLICATION NAME/drive_c").arg(QDir::homePath()));
-	if (myPrefix.isEmpty())
-	{
-		QMessageBox::critical(0, tr("No name specified"), tr ("Abort. Reason: No application name specified"));
-		prefixName = "";
-		return;
-	}
-	//проверим, есть ли такой префикс уже.
-	QDir dir;
-	dir.setPath(core->wineDir() + QDir::separator() + myPrefix);
-	if (dir.exists())
-	{
-		QMessageBox::warning(0, tr("Application with this name is already installed."), tr("To force installation process, remove directory %1.").arg(core->wineDir() +QDir::separator() + myPrefix));
-		//я знаю, это плохо
-		goto dialog;
-	}
-	if (!corelib::checkPrefixName(myPrefix))
-		goto dialog;
-	prefixName = myPrefix;
-	return;
-}
-*/
 void MainWindow::on_buttonBox_accepted()
 {
 if (!ui->treeGames->currentIndex().isValid())
@@ -219,7 +176,7 @@ void MainWindow::on_action_Make_desktop_icon_triggered()
 	Prefix *prefix = coll->getPrefix(id);
 	ShortCutDialog *dlg = new ShortCutDialog(this, prefix->name(), prefix->path());
 	dlg->exec();
-	prefix->makeDesktopIcon(dlg->path(), dlg->name(), "");
+	prefix->makeDesktopIcon(dlg->name(), dlg->path(), ui->treeGames->currentIndex().data(35).toString());
 }
 
 void MainWindow::on_lblNote_linkActivated(QString link)
