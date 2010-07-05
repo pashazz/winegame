@@ -80,7 +80,7 @@ void PrefixDialog::on_cmdWP_clicked()
 
 void PrefixDialog::on_cmdTerm_clicked()
 {
-	pr->runApplication("\"wineconsole cmd\"", QDir::homePath());
+	pr->runApplication("wineconsole cmd", QDir::homePath());
 }
 
 void PrefixDialog::on_cmdNotepad_clicked()

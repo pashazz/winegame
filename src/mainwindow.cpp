@@ -85,23 +85,23 @@ void MainWindow::launchEngine(const QModelIndex &index)
 		return;
 	if (!coll->havePrefix(prefixName))
 	{
+		SourceReader *reader = model->readerFor(index);
+		QString fileName;
+		if (reader->needFile())
+		{
 		QStringList filters;
 		filters.push_back(tr("Windows Executables (*.exe)"));
 		filters.push_back(tr("Microsoft Installers (*.msi)"));
+		filters.push_back(tr("Windows CMD Scripts (*.bat)"));
 		QString filter;
-		QString fileName =  QFileDialog::getOpenFileName(this, tr("Select EXE/MSI file"), QDir::homePath(), filters.join(";;"), &filter);
+		fileName =  QFileDialog::getOpenFileName(this, tr("Select EXE/MSI file"), QDir::currentPath(), filters.join(";;"), &filter);
 		if (fileName.isEmpty())
 		{
 			statusBar()->showMessage(tr("No file selected, aborting"));
 			return;
 		}
-		if (filter == filters.at(1)) //MSI
-		{
-			//prepend "msiexec"
-			fileName.prepend("msiexec ");
-		}
-		SourceReader *reader = model->readerFor(index);
-		Prefix *prefix = coll->install(reader,fileName);
+	}
+		Prefix *prefix = coll->install(reader, fileName);
 		buildList();
 		if (!prefix)
 			statusBar()->showMessage(tr("Installation error"), 3000);
