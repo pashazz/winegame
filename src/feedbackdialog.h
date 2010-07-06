@@ -17,36 +17,30 @@
 */
 
 
-#ifndef DISKDIALOG_H
-#define DISKDIALOG_H
+#ifndef FEEDBACKDIALOG_H
+#define FEEDBACKDIALOG_H
 
 #include <QtGui>
-#include "prefixcollection.h"
-#include "dvdrunner.h"
-#include "feedbackdialog.h"
-#include "treemodel.h"
 
 namespace Ui {
-    class DiskDialog;
+    class FeedbackDialog;
 }
 
-class DiskDialog : public QDialog {
+class FeedbackDialog : public QDialog
+{
     Q_OBJECT
-public:
-	DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib, PluginWorker *wrk);
-    ~DiskDialog();
 
-protected:
-    void changeEvent(QEvent *e);
+public:
+	explicit FeedbackDialog(QWidget *parent, const QStringList &fileList, const QString &confName);
+    ~FeedbackDialog();
+
 private:
-    Ui::DiskDialog *ui;
-	void buildList();
-	corelib *core;
-	DVDRunner *dvd;
-	PrefixCollection *coll;
-	PluginWorker *worker;
+    Ui::FeedbackDialog *ui;
+	QString cname;
+	QStringList list;
 private slots:
- void on_buttonBox_accepted();
+	void on_buttonBox_accepted();
+ void on_cmdBrowse_clicked();
 };
 
-#endif // DISKDIALOG_H
+#endif // FEEDBACKDIALOG_H

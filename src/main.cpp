@@ -45,7 +45,8 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		}
 		else
 		{
-			collection.install(reader, runner->exe(), path);
+			QStringList obj = QStringList () << runner->diskDirectory() << runner->device();
+			collection.install(reader, runner->exe(), obj);
 		}
 	}
 	else

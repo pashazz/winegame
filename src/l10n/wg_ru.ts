@@ -23,6 +23,14 @@
         <source>Program error (unusable instruction</source>
         <translation type="obsolete">Ошибка программы (неправильная инструкция)</translation>
     </message>
+    <message>
+        <source>Cannot retreive SourceReader for this item</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Hehehe, one of us is looser...</source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>GameDialog</name>
@@ -47,11 +55,11 @@
     </message>
     <message>
         <source>ÐÑÐ±ÐµÑÐ¸ÑÐµ EXE ÑÐ°Ð¹Ð»</source>
-        <translation>ОЛОЛО</translation>
+        <translation type="obsolete">ОЛОЛО</translation>
     </message>
     <message>
         <source>Windows executables (*.exe)</source>
-        <translation>Исполняемые файлы Windows (*.exe)</translation>
+        <translation type="obsolete">Исполняемые файлы Windows (*.exe)</translation>
     </message>
     <message>
         <source>No item selected</source>
@@ -87,27 +95,27 @@
     </message>
     <message>
         <source>Give a name for your application</source>
-        <translation>Дайте имя вашему приложению</translation>
+        <translation type="obsolete">Дайте имя вашему приложению</translation>
     </message>
     <message>
         <source>Give a short latin name for your application. &lt;br&gt; It will be installed in %1/Windows/APPLICATION NAME/drive_c</source>
-        <translation>Дайте короткое латинское имя вашему приложению.&lt;br&gt; Оно будет установлено в %1/Windows/ИМЯ ПРИЛОЖЕНИЯ/drive_c</translation>
+        <translation type="obsolete">Дайте короткое латинское имя вашему приложению.&lt;br&gt; Оно будет установлено в %1/Windows/ИМЯ ПРИЛОЖЕНИЯ/drive_c</translation>
     </message>
     <message>
         <source>No name specified</source>
-        <translation>Не указано имя</translation>
+        <translation type="obsolete">Не указано имя</translation>
     </message>
     <message>
         <source>Abort. Reason: No application name specified</source>
-        <translation>Прерывание: Причина: Не задано имя приложения</translation>
+        <translation type="obsolete">Прерывание: Причина: Не задано имя приложения</translation>
     </message>
     <message>
         <source>Application with this name is already installed.</source>
-        <translation>Приложение с этим именем уже установлено.</translation>
+        <translation type="obsolete">Приложение с этим именем уже установлено.</translation>
     </message>
     <message>
         <source>To force installation process, remove directory %1.</source>
-        <translation>Чтобы все равно установить программу, удалите папку %1.</translation>
+        <translation type="obsolete">Чтобы все равно установить программу, удалите папку %1.</translation>
     </message>
     <message>
         <source>Engine execution error</source>
@@ -135,66 +143,70 @@
     </message>
     <message>
         <source>Give a readable for your application</source>
-        <translation>Дайте читабельное имя вашему приложению</translation>
+        <translation type="obsolete">Дайте читабельное имя вашему приложению</translation>
     </message>
     <message>
         <source>Give a short readable name for your application, for example &apos;CoolGame v3&apos;</source>
-        <translation>Дайте читабельное имя вашему приложению, например &apos;СoolGame v3&apos;</translation>
+        <translation type="obsolete">Дайте читабельное имя вашему приложению, например &apos;СoolGame v3&apos;</translation>
     </message>
     <message>
         <source>Give a readable note about your application</source>
-        <translation>Напишите примечание для вашего приложения</translation>
+        <translation type="obsolete">Напишите примечание для вашего приложения</translation>
     </message>
     <message>
         <source>Give a short note about your application, for example &apos;CoolGame v3&apos;</source>
-        <translation>Дайте читабельное описание для вашего приложению, например &apos;СoolGame v3&apos;</translation>
+        <translation type="obsolete">Дайте читабельное описание для вашего приложению, например &apos;СoolGame v3&apos;</translation>
     </message>
     <message>
         <source>Application isn`t installed</source>
         <translation>Приложение не установлено</translation>
+    </message>
+    <message>
+        <source>Windows CMD Scripts (*.bat)</source>
+        <translation>Командные скрипты Windows (*.bat)</translation>
     </message>
 </context>
 <context>
     <name>MessageHandler</name>
     <message>
         <source>Give a readable note about your application</source>
-        <translation>Напишите примечание для вашего приложения</translation>
+        <translation type="obsolete">Напишите примечание для вашего приложения</translation>
     </message>
     <message>
         <source>Give a short note about your application, for example &apos;CoolGame v3&apos;</source>
-        <translation>Дайте читабельное описание для вашего приложению, например &apos;СoolGame v3&apos;</translation>
+        <translation type="obsolete">Дайте читабельное описание для вашего приложению, например &apos;СoolGame v3&apos;</translation>
     </message>
     <message>
         <source>Give a name for your application</source>
-        <translation>Дайте имя вашему приложению</translation>
+        <translation type="obsolete">Дайте имя вашему приложению</translation>
     </message>
     <message>
         <source>Give a short latin name for your application. &lt;br&gt; It will be installed in %1/Windows/APPLICATION NAME/drive_c</source>
-        <translation>Дайте короткое латинское имя вашему приложению.&lt;br&gt; Оно будет установлено в %1/Windows/ИМЯ ПРИЛОЖЕНИЯ/drive_c</translation>
+        <translation type="obsolete">Дайте короткое латинское имя вашему приложению.&lt;br&gt; Оно будет установлено в %1/Windows/ИМЯ ПРИЛОЖЕНИЯ/drive_c</translation>
     </message>
     <message>
         <source>No name specified</source>
-        <translation>Не указано имя</translation>
+        <translation type="obsolete">Не указано имя</translation>
     </message>
     <message>
         <source>Abort. Reason: No application name specified</source>
-        <translation>Прерывание: Причина: Не задано имя приложения</translation>
+        <translation type="obsolete">Прерывание: Причина: Не задано имя приложения</translation>
     </message>
     <message>
         <source>Application with this name is already installed.</source>
-        <translation>Приложение с этим именем уже установлено.</translation>
+        <translation type="obsolete">Приложение с этим именем уже установлено.</translation>
     </message>
     <message>
         <source>To force installation process, remove directory %1.</source>
-        <translation>Чтобы все равно установить программу, удалите папку %1.</translation>
+        <translation type="obsolete">Чтобы все равно установить программу, удалите папку %1.</translation>
     </message>
     <message>
         <source>Give a readable for your application</source>
-        <translation>Дайте читабельное имя вашему приложению</translation>
+        <translation type="obsolete">Дайте читабельное имя вашему приложению</translation>
     </message>
     <message>
         <source>Give a short readable name for your application, for example &apos;CoolGame v3&apos;</source>
-        <translation>Дайте читабельное имя вашему приложению, например &apos;СoolGame v3&apos;</translation>
+        <translation type="obsolete">Дайте читабельное имя вашему приложению, например &apos;СoolGame v3&apos;</translation>
     </message>
 </context>
 <context>
@@ -279,7 +291,7 @@
     </message>
     <message>
         <source>Select directory for Winegame packages</source>
-        <translation>Выберите папку с пакетами Winegame</translation>
+        <translation type="obsolete">Выберите папку с пакетами Winegame</translation>
     </message>
 </context>
 <context>
@@ -305,7 +317,7 @@
     </message>
     <message>
         <source>Templates/Presets</source>
-        <translation>Шаблоны</translation>
+        <translation type="obsolete">Шаблоны</translation>
     </message>
     <message>
         <source>Applications</source>

@@ -20,6 +20,7 @@
 #include "diskdialog.h"
 #include "ui_diskdialog.h"
 
+
 DiskDialog::DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib, PluginWorker *wrk) :
 	QDialog(parent),
 	ui(new Ui::DiskDialog), core (lib), dvd (runner),worker(wrk)
@@ -71,14 +72,33 @@ void DiskDialog::on_buttonBox_accepted()
 			return;
 		}
 		dvd->setReader(reader);
-		if (!dvd->exe().isEmpty())
-			coll->install(reader, dvd->exe(), dvd->diskDirectory());
+		QStringList obj = QStringList() << dvd->diskDirectory() << dvd->device();
+
+		coll->install(reader, dvd->exe(), obj);
+		//About creating report
+		/*Т.к. сейчас мало игр поддерживается, спрашиваем feedback.
+		  (хотя и вне зависимости от того, используется ли Native или нет)
+	 */
+		qDebug() << "DiskDialog: making feedback;";
+		if (QMessageBox::question(this, tr("Feedback"), tr("Do you want to provide a small feedback report? It will help us improving WineGame"), QMessageBox::Yes, QMessageBox::No)
+										  == QMessageBox::Yes)
+		{
+			QDir dir (dvd->diskDirectory());
+			QStringList list = dir.entryList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
+			FeedbackDialog *dlg = new FeedbackDialog(this, list, dvd->sourceReader()->realName());
+			dlg->exec();
+		}
+
 	}
 	else
 	{
 		Prefix *prefix = coll->getPrefix(prid);
-		prefix->runApplication(dvd->exe());
+		if (dvd->exe().isEmpty())
+			prefix->runApplication(QFileDialog::getOpenFileName(this, tr("Select EXE file"), QDir::currentPath(), tr("Windows executables (*.exe)")));
+		else
+			prefix->runApplication(dvd->exe());
 	}
+
 	close();
 	return;
 }

@@ -36,7 +36,7 @@ find_package( Qt4 REQUIRED )
 include( ${QT_USE_FILE} )
 
 find_program( FUSEISO_BIN NAMES fuseiso )
-MESSAGE(STATUS "Searching for fuseiso binary --\n")
+#MESSAGE(STATUS "Searching for fuseiso binary --\n")
 IF (${FUSEISO_BIN} MATCHES FUSEISO_BIN-NOTFOUND)
     MESSAGE(STATUS "    fuseiso : NOT FOUND!\n")
     MESSAGE(STATUS "    WARNING: To have ability to mount and umount ISO9660 images")
@@ -46,24 +46,24 @@ ENDIF (${FUSEISO_BIN} MATCHES FUSEISO_BIN-NOTFOUND)
 
 #Ищем winestuff
 find_package(WineStuff REQUIRED)
-message(STATUS "Searching for WineStuff")
+#message(STATUS "Searching for WineStuff")
 find_package(WineStuff REQUIRED)
-message(STATUS "WineStuff Include Dir: ${WINESTUFF_INCLUDE_DIR}")
-message(STATUS "WineStuff Library: ${WINESTUFF_LIBRARIES}")
+#message(STATUS "WineStuff Include Dir: ${WINESTUFF_INCLUDE_DIR}")
+#message(STATUS "WineStuff Library: ${WINESTUFF_LIBRARIES}")
 set (CMAKE_BUILD_TYPE Debug)
 include_directories(${WINESTUFF_INCLUDE_DIR})
-message (STATUS "Files will be compiled in: ${CMAKE_CURRENT_BINARY_DIR}")
+#message (STATUS "Files will be compiled in: ${CMAKE_CURRENT_BINARY_DIR}")
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set (RESDIR ${CMAKE_SOURCE_DIR}/resources)
 
 # Sources, Headers
-set (SOURCES about.cpp  diskdialog.cpp  gamedialog.cpp  main.cpp  mainwindow.cpp  prefixdialog.cpp  settingsdialog.cpp  shortcutdialog.cpp  winegameui.cpp  wineversionsdialog.cpp treemodel.cpp package.cpp plugindialog.cpp)
-set (QOBJ_HEADERS about.h  diskdialog.h  gamedialog.h  mainwindow.h  prefixdialog.h  settingsdialog.h  shortcutdialog.h  winegameui.h  wineversionsdialog.h treemodel.h plugindialog.h)
+set (SOURCES about.cpp  diskdialog.cpp  gamedialog.cpp  main.cpp  mainwindow.cpp  prefixdialog.cpp  settingsdialog.cpp  shortcutdialog.cpp  winegameui.cpp  wineversionsdialog.cpp treemodel.cpp package.cpp plugindialog.cpp feedbackdialog.cpp)
+set (QOBJ_HEADERS about.h  diskdialog.h  gamedialog.h  mainwindow.h  prefixdialog.h  settingsdialog.h  shortcutdialog.h  winegameui.h  wineversionsdialog.h treemodel.h plugindialog.h feedbackdialog.h)
 set (HEADERS package.h)
 
 #Генерируем формы
-set (UIS about.ui  diskdialog.ui  gamedialog.ui  mainwindow.ui  prefixdialog.ui  settingsdialog.ui  shortcutdialog.ui  wineversionsdialog.ui plugindialog.ui)
+set (UIS about.ui  diskdialog.ui  gamedialog.ui  mainwindow.ui  prefixdialog.ui  settingsdialog.ui  shortcutdialog.ui  wineversionsdialog.ui plugindialog.ui feedbackdialog.ui)
 qt4_wrap_ui (UI_HEADERS ${UIS})
 
 #Генерируем ресурсы
@@ -91,14 +91,12 @@ MAIN_DEPENDENCY ${TS})
 endforeach()
 add_custom_target (
 translations
-COMMAND ${QT_LUPDATE_EXECUTABLE} ${QOBJ_HEADERS} ${SOURCES} ${UI_SOURCES} -ts ${TRANSLATIONS}
+COMMAND ${QT_LUPDATE_EXECUTABLE} ${MOC_SOURCES} ${SOURCES} ${UI_SOURCES} -ts ${TRANSLATIONS} -I${CMAKE_CURRENT_BINARY_DIR}
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 add_custom_command (
 TARGET translations
 COMMAND ${QT_LRELEASE_EXECUTABLE} ${TRANSLATIONS}
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
-#Добавляем директорию, где расп. UI_blabla.h
 
 add_executable (winegame ${SOURCES} ${HEADERS} ${MOC_SOURCES} ${UI_HEADERS} ${QRC_SOURCES} ${TRANS})
 
