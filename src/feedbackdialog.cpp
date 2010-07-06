@@ -26,7 +26,6 @@ FeedbackDialog::FeedbackDialog(QWidget *parent, const QStringList &fileList, con
 {
     ui->setupUi(this);
 	ui->txtSave->setText(QString("%1/report-%2.txt").arg(QDir::homePath(), confName));
-	qDebug() << "File list" << fileList;
 }
 
 FeedbackDialog::~FeedbackDialog()
@@ -57,7 +56,7 @@ void FeedbackDialog::on_buttonBox_accepted()
 	QTextStream stream(&file);
 	stream << QString("Winegame install report: %1\n").arg(QDateTime::currentDateTime().toString(Qt::SystemLocaleDate));
 	stream << "\n\n";
-	stream << QString("Disc file list: %1\n").arg(list.join("\n"));
+	stream << QString("Disc file list:\n %1").arg(list.join("\n"));
 	stream << QString("Configuration name: %1").arg(cname);
 	stream << "\n";
 	stream << QString ("Comment:%1\n").arg(ui->txtComment->toPlainText());
