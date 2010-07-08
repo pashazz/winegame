@@ -34,6 +34,7 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		GameDialog *dlg = new GameDialog (0, reader, lib);
 		if (dlg->exec() == QDialog::Rejected)
 		{
+			runner->cancel();
 			runner->cleanup();
 			return;
 		}
