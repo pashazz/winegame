@@ -83,7 +83,7 @@ void DiskDialog::on_buttonBox_accepted()
 										  == QMessageBox::Yes)
 		{
 			QDir dir (dvd->diskDirectory());
-			QStringList list = dir.entryList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
+			QStringList list = dirList(dir);
 			FeedbackDialog *dlg = new FeedbackDialog(this, list, dvd->sourceReader()->realName());
 			dlg->exec();
 		}
@@ -102,4 +102,15 @@ void DiskDialog::on_buttonBox_accepted()
 	return;
 }
 
-
+QStringList DiskDialog::dirList(QDir dir)
+{
+	static QDir mainPath = dir; //присваивается только 1 раз.
+	QStringList myList = QStringList();
+	foreach (QFileInfo directory, dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name))
+	{
+		myList.append(mainPath.relativeFilePath(directory.absoluteFilePath()));
+		if (directory.isDir())
+			myList.append(dirList(QDir(directory.absoluteFilePath())));
+	}
+	return myList;
+}

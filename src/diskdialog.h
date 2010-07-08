@@ -38,6 +38,7 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
+	QStringList dirList (QDir dir);
 private:
     Ui::DiskDialog *ui;
 	void buildList();
