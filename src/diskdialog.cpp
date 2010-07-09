@@ -87,7 +87,6 @@ void DiskDialog::on_buttonBox_accepted()
 			FeedbackDialog *dlg = new FeedbackDialog(this, list, dvd->sourceReader()->realName());
 			dlg->exec();
 		}
-
 	}
 	else
 	{
