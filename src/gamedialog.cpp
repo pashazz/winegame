@@ -48,7 +48,6 @@ if (qApp->arguments().length() > 1)
 		QSettings stg (corelib::autorun(droot),  QSettings::IniFormat, this);
     stg.beginGroup("autorun");
     QString icon = qApp->arguments().at(1) + QDir::separator() + stg.value("Icon").toString();
-    qDebug() << "engine: ico file detected" << icon;
     return QPixmap(icon);
 }
     else
