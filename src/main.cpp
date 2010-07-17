@@ -28,6 +28,11 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 {
 	PluginWorker *worker = new PluginWorker(qApp, lib);
 	DVDRunner *runner = new DVDRunner (lib, path, worker);
+	if (lib->autorun(runner->diskDirectory()).isEmpty())
+	{
+		if (QMessageBox::warning(0, QObject::tr("Incorrect path"), QObject::tr("This does not like a disc with software: no autorun.inf found."), QMessageBox::Cancel, QMessageBox::Ignore) == QMessageBox::Cancel)
+			return;
+	}
 	if (runner->success())
 	{
 		SourceReader *reader = runner->sourceReader();

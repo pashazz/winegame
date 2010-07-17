@@ -71,10 +71,6 @@ void DiskDialog::on_buttonBox_accepted()
 			QMessageBox::warning(this, tr("Cannot retreive SourceReader for this item"), tr("Hehehe, one of us is looser..."));
 			return;
 		}
-		dvd->setReader(reader);
-		QStringList obj = QStringList() << dvd->diskDirectory() << dvd->device();
-
-		coll->install(reader, dvd->exe(), obj);
 		//About creating report
 		/*Т.к. сейчас мало игр поддерживается, спрашиваем feedback.
 		  (хотя и вне зависимости от того, используется ли Native или нет)
@@ -87,7 +83,12 @@ void DiskDialog::on_buttonBox_accepted()
 			FeedbackDialog *dlg = new FeedbackDialog(this, list, dvd->sourceReader()->realName());
 			dlg->exec();
 		}
-	}
+
+		dvd->setReader(reader);
+		QStringList obj = QStringList() << dvd->diskDirectory() << dvd->device();
+
+		coll->install(reader, dvd->exe(), obj);
+}
 	else
 	{
 		Prefix *prefix = coll->getPrefix(prid);
