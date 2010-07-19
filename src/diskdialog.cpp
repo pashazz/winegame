@@ -96,10 +96,10 @@ void DiskDialog::on_buttonBox_accepted()
 	else
 	{
 		Prefix *prefix = coll->getPrefix(prid);
-		disconnect(dvd, SLOT(eject(bool&)));
+		disconnect(dlg, SIGNAL(ejectRequested(bool&)), dvd, SLOT(eject(bool&)));
 		prefix->setDiscAttributes(dvd->diskDirectory(), dvd->device());
 		if (dvd->exe().isEmpty())
-			prefix->runApplication(QFileDialog::getOpenFileName(this, tr("Select EXE file"), QDir::currentPath(), tr("Windows executables (*.exe)")));
+			prefix->runApplication(QFileDialog::getOpenFileName(this, tr("Select EXE file"), dvd->diskDirectory(), tr("Windows executables (*.exe)")));
 		else
 			prefix->runApplication(dvd->exe());
 	}
