@@ -39,7 +39,6 @@ private:
 	corelib *core;
     Ui::SettingsDialog *ui;
 private slots:
-	void on_cmdBrowseDisc_clicked();
 	void on_cmdBrowseMount_clicked();
 	void on_buttonBox_accepted();
 	void on_cmdBrowseWine_clicked();

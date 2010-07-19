@@ -111,15 +111,6 @@ void WinegameUi::selectExe(const QString &title, QString &file, QString home)
 	file = myFile;
 }
 
-void WinegameUi::insertNextCd(bool &result, QString count)
-{
-	int res = QMessageBox::question(qApp->desktop(), tr("Insert next CD"), tr("Insert program CD %1").arg(QString(count)), QMessageBox::Ok, QMessageBox::Ignore);
-	if (res == QMessageBox::Ok)
-		result = true;
-	else
-		result = false;
-}
-
 void WinegameUi::showUserWaitMessage(const QString &message)
 {
 	waitDialog = new QDialog (0);
@@ -145,4 +136,37 @@ QString WinegameUi::directoryDialog(const QString &description, const QString &s
 void WinegameUi::getText(const QString &title, const QString &message, QString &result)
 {
 	result = QInputDialog::getText(qApp->desktop(), title, message);
+}
+
+bool WinegameUi::selectNextDisc(bool &isDir, QString &file, const QString &dir)
+{
+	NextDisc *dlg = new NextDisc();
+	if (dlg->exec() != QDialog::Accepted)
+		return false;
+	if (dlg->source == Pashazz::Mountpoint)
+	{
+		//Return a directory.
+		isDir = true;
+		select:
+		file = QFileDialog::getExistingDirectory(0, tr("Select mount point"), QDir::rootPath());
+		if (file.isEmpty())
+			return false;
+		else if (QDir (file).entryList(QDir::AllEntries | QDir::NoDotAndDotDot).count() == 0)
+		{
+			QMessageBox::warning(0, tr("Directory is empty"), tr("Directory is empty. Select ahother directory."));
+			goto select;
+		}
+		return true;
+	}
+	else if (dlg->source == Pashazz::DiskImage)
+	{
+		isDir = false;
+		QStringList filters;
+		filters << tr("ISO images (*.iso)"); //ядро должно поддерживать ISO9660
+		filters << tr("Alcohol images (*.mdf)");
+		filters << tr("Mac OS X images (*.dmg)"); //ядро должно поддерживать HFS
+		filters << tr("All files (*.*)");
+		file = QFileDialog::getOpenFileName(0, tr("Select disc image"), dir, filters.join(";;"));
+		return !file.isEmpty();
+	}
 }

@@ -20,6 +20,7 @@
 #ifndef WINEGAMEUI_H
 #define WINEGAMEUI_H
 #include "uiclient.h"
+#include "nextdisc.h"
 #include <QtGui>
 class WinegameUi : public UiClient
 {
@@ -39,11 +40,11 @@ public:
 	bool questionDialog(const QString &title, const QString &text);
 	void infoDialog (const QString &title, const QString &text);
 	void selectExe(const QString &title, QString &file, QString home= "");
-	void insertNextCd(bool &result, QString count);
 	void showUserWaitMessage (const QString &message); //показать модальный диалог (или что-то типа того, чтобы пользователь понял, что идет операция).
 	void closeWaitMessage(); //закрытие диалога
 	void getText(const QString &title, const QString &message, QString &result);
 	QString directoryDialog(const QString &description, const QString &startDirectory);
+	bool selectNextDisc(bool &isDir, QString &file, const QString &dir);
 private:
 	   QProgressDialog *progress;
 	   QDialog *waitDialog;

@@ -62,6 +62,22 @@ void DiskDialog::on_buttonBox_accepted()
 	if (ui->treeApps->currentIndex() == QModelIndex())
 		qApp->quit();
 	QString prid = ui->treeApps->currentIndex().data(32).toString();
+	//About creating report
+	/*Т.к. сейчас мало игр поддерживается, спрашиваем feedback.
+	  (хотя и вне зависимости от того, используется ли Native или нет)
+ */
+	if (QMessageBox::question(this, tr("Feedback"), tr("Do you want to provide a small feedback report? It will help us improving WineGame"), QMessageBox::Yes, QMessageBox::No)
+									  == QMessageBox::Yes)
+	{
+		QDir dir (dvd->diskDirectory());
+		QStringList list = dirList(dir);
+		FeedbackDialog *dlg = new FeedbackDialog(this, list, dvd->sourceReader()->realName());
+		dlg->exec();
+	}
+	EjectDialog *dlg = new EjectDialog (this);
+	connect(dlg, SIGNAL(ejectRequested(bool&)), dvd, SLOT(eject(bool&)));
+	//dlg->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowTitleHint | Qt::WindowStaysOnTopHint);
+	dlg->show();
 	if (!coll->havePrefix(prid))
 	{
 		TreeModel *model = static_cast<TreeModel*>(ui->treeApps->model());
@@ -69,35 +85,25 @@ void DiskDialog::on_buttonBox_accepted()
 		if (!reader)
 		{
 			QMessageBox::warning(this, tr("Cannot retreive SourceReader for this item"), tr("Hehehe, one of us is looser..."));
+			dlg->close();
 			return;
 		}
-		//About creating report
-		/*Т.к. сейчас мало игр поддерживается, спрашиваем feedback.
-		  (хотя и вне зависимости от того, используется ли Native или нет)
-	 */
-		if (QMessageBox::question(this, tr("Feedback"), tr("Do you want to provide a small feedback report? It will help us improving WineGame"), QMessageBox::Yes, QMessageBox::No)
-										  == QMessageBox::Yes)
-		{
-			QDir dir (dvd->diskDirectory());
-			QStringList list = dirList(dir);
-			FeedbackDialog *dlg = new FeedbackDialog(this, list, dvd->sourceReader()->realName());
-			dlg->exec();
-		}
-
 		dvd->setReader(reader);
 		QStringList obj = QStringList() << dvd->diskDirectory() << dvd->device();
 
-		coll->install(reader, dvd->exe(), obj);
+		coll->install(reader, dvd->exe(), obj, false);
 }
 	else
 	{
 		Prefix *prefix = coll->getPrefix(prid);
+		disconnect(dvd, SLOT(eject(bool&)));
+		prefix->setDiscAttributes(dvd->diskDirectory(), dvd->device());
 		if (dvd->exe().isEmpty())
 			prefix->runApplication(QFileDialog::getOpenFileName(this, tr("Select EXE file"), QDir::currentPath(), tr("Windows executables (*.exe)")));
 		else
 			prefix->runApplication(dvd->exe());
 	}
-
+	dlg->close();
 	close();
 	return;
 }

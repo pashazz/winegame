@@ -17,38 +17,30 @@
 */
 
 
-#ifndef DISKDIALOG_H
-#define DISKDIALOG_H
+#include "nextdisc.h"
+#include "ui_nextdisc.h"
 
-#include <QtGui>
-#include "prefixcollection.h"
-#include "dvdrunner.h"
-#include "feedbackdialog.h"
-#include "treemodel.h"
-#include "ejectdialog.h"
-
-namespace Ui {
-    class DiskDialog;
+NextDisc::NextDisc(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::NextDisc)
+{
+    ui->setupUi(this);
+	setWindowFlags(Qt::CustomizeWindowHint);
 }
 
-class DiskDialog : public QDialog {
-    Q_OBJECT
-public:
-	DiskDialog(QWidget *parent, DVDRunner *runner, corelib *lib, PluginWorker *wrk);
-    ~DiskDialog();
+NextDisc::~NextDisc()
+{
+    delete ui;
+}
 
-protected:
-    void changeEvent(QEvent *e);
-	QStringList dirList (QDir dir);
-private:
-    Ui::DiskDialog *ui;
-	void buildList();
-	corelib *core;
-	DVDRunner *dvd;
-	PrefixCollection *coll;
-	PluginWorker *worker;
-private slots:
- void on_buttonBox_accepted();
-};
+void NextDisc::on_cmdImage_clicked()
+{
+	source = Pashazz::DiskImage;
+	accept();
+}
 
-#endif // DISKDIALOG_H
+void NextDisc::on_cmdPath_clicked()
+{
+	source = Pashazz::Mountpoint;
+	accept();
+}

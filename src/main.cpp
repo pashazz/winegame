@@ -23,6 +23,7 @@
 #include "winegameui.h"
 #include "dvdrunner.h"
 #include "gamedialog.h"
+#include "ejectdialog.h"
 
 void runDVD (QString path, corelib *lib) //запуск с DVD
 {
@@ -43,17 +44,26 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 			runner->cleanup();
 			return;
 		}
+
+		/* о возможности сменить диск*/
+		EjectDialog *edlg = new EjectDialog ();
+		QObject::connect(edlg, SIGNAL(ejectRequested(bool&)), runner, SLOT(eject(bool&)));
+		edlg->show();
+
 		PrefixCollection collection (lib->database(), lib, 0);
 		if (collection.havePrefix(reader->ID()))
 		{
 		 Prefix *prefix =	collection.getPrefix(reader->ID());
+		 prefix->setDiscAttributes(runner->diskDirectory(), runner->device());
 		 prefix->runApplication(runner->exe());
 		}
 		else
 		{
 			QStringList obj = QStringList () << runner->diskDirectory() << runner->device();
-			collection.install(reader, runner->exe(), obj);
+			collection.install(reader, runner->exe(), obj, false);
 		}
+		edlg->close();
+		edlg->deleteLater();
 	}
 	else
 	{

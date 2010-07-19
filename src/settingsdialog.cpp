@@ -30,7 +30,6 @@ SettingsDialog::SettingsDialog(QWidget *parent, corelib *lib) :
 	ui->txtWineDir->setText(core->wineDir());
 	ui->sbMemory->setValue(core->videoMemory().toInt());
 	ui->txtMount->setText(core->mountDir());
-	ui->txtDisc->setText(core->discDir());
 	ui->cbUpdates->setChecked(core->autoSync());
 	if (lib->whichBin("fuseiso").isEmpty())
 	{
@@ -73,8 +72,6 @@ void SettingsDialog::on_buttonBox_accepted()
 	core->setVideoMemory(ui->sbMemory->value());
 	if (!ui->txtMount->text().isEmpty())
 		core->setMountDir(ui->txtMount->text());
-	if (!ui->txtDisc->text().isEmpty())
-		core->setDiscDir(ui->txtDisc->text());
 	core->setAutosync(ui->cbUpdates->isChecked());
 	core->setForceFuseiso(ui->cbForceFuse->isChecked());
 	core->syncSettings();
@@ -83,13 +80,6 @@ void SettingsDialog::on_buttonBox_accepted()
 void SettingsDialog::on_cmdBrowseMount_clicked()
 {
 	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame directory for mounting ISOs"), core->mountDir());
-	if (!newdir.isEmpty())
-		ui->txtWineDir->setText(newdir);
-}
-
-void SettingsDialog::on_cmdBrowseDisc_clicked()
-{
-	QString newdir = QFileDialog::getExistingDirectory(this, tr("Select Winegame directory for copying files from multiple CDs"), core->discDir());
 	if (!newdir.isEmpty())
 		ui->txtWineDir->setText(newdir);
 }
