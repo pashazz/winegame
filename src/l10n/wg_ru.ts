@@ -5,11 +5,11 @@
     <name>About</name>
     <message>
         <source>About WineGame</source>
-        <translation type="unfinished"></translation>
+        <translation>О WineGame</translation>
     </message>
     <message>
         <source>Developers</source>
-        <translation type="unfinished"></translation>
+        <translation>Разработчики</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -19,11 +19,11 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Pavel Zinin &amp;lt;pzinin@gmail.com&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Main Developer&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline;&quot;&gt;From: Sergiev Posad, Russia&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Art</source>
-        <translation type="unfinished"></translation>
+        <translation>Иконки (оформление)</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -33,11 +33,11 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Matthias Exhumed &amp;lt;&lt;/span&gt;&lt;a href=&quot;http://3xhumed.deviantart.com/&quot;&gt;&lt;span style=&quot; font-size:16pt; text-decoration: underline; color:#0057ae;&quot;&gt;http://3xhumed.deviantart.com/&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Software &amp;amp; Game Icons&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline;&quot;&gt;From: Germany&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Translators</source>
-        <translation type="unfinished"></translation>
+        <translation>Переводчики</translation>
     </message>
     <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -47,7 +47,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Pavel Zinin &amp;lt;pzinin@gmail.com&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Russian translation (Русская локализация)&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline;&quot;&gt;From: Sergiev Posad, Russia&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -57,7 +57,13 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;WineGame - utility for installing Windows programs and games in Linux&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Version 0.1.91&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://winegame.googlecode.com&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0057ae;&quot;&gt;http://winegame.googlecode.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;WineGame - утилита для установки Windows-приложений и игр в Linux&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Версия 0.1.91&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://winegame.googlecode.com&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0057ae;&quot;&gt;http://winegame.googlecode.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -91,82 +97,83 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <source>Select application type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Feedback</source>
-        <translation type="unfinished"></translation>
+        <translation>Отчет</translation>
     </message>
     <message>
         <source>Do you want to provide a small feedback report? It will help us improving WineGame</source>
-        <translation type="unfinished"></translation>
+        <translation>Хотите передать небольшой отчет об инсталляции игры? Это поможет нам улучшать WineGame&lt;br&gt;
+Если вы сделаете отчет, то ваш диск в скором времени будет определяться в WineGame автоматически.</translation>
     </message>
     <message>
         <source>Select EXE file</source>
-        <translation type="unfinished">Выберите EXE файл</translation>
+        <translation>Выберите EXE файл</translation>
     </message>
     <message>
         <source>Windows executables (*.exe)</source>
-        <translation type="unfinished">Исполняемые файлы Windows (*.exe)</translation>
+        <translation>Исполняемые файлы Windows (*.exe)</translation>
+    </message>
+    <message>
+        <source>Select application/game</source>
+        <translation>Выберите приложение или игру</translation>
     </message>
 </context>
 <context>
     <name>EjectDialog</name>
     <message>
         <source>Press this button to switch disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите эту кнопку (ниже), чтобы сменить диск</translation>
     </message>
     <message>
         <source>Switch disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Сменить диск</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <source>Failed to switch disc. Maybe device is busy?</source>
-        <translation type="unfinished"></translation>
+        <translation>Диск не может быть сменен. Может быть, устройство занято?</translation>
     </message>
 </context>
 <context>
     <name>FeedbackDialog</name>
     <message>
         <source>Provide feedback.</source>
-        <translation type="unfinished"></translation>
+        <translation>Составление отчета</translation>
     </message>
     <message>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий</translation>
     </message>
     <message>
         <source>Save file in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить файл в:</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Обзор</translation>
     </message>
     <message>
         <source>Save report file and send it to pzinin@gmail.com :)</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохраните файл отчета и отправьте его на pzinin@gmail.com :)</translation>
     </message>
     <message>
         <source>Where to save report file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Где сохранить файл отчета?</translation>
     </message>
     <message>
         <source>Report Creator</source>
-        <translation type="unfinished"></translation>
+        <translation>Создатель отчетов</translation>
     </message>
     <message>
         <source>Report file name is empty. Exit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пустое имя файла отчета, выход.</translation>
     </message>
     <message>
         <source>Unable to open report file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Не могу открыть файл отчета...</translation>
     </message>
 </context>
 <context>
@@ -177,19 +184,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Install Windows application from CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить Windows-приложение с CD/DVD</translation>
     </message>
     <message>
         <source>Some game</source>
-        <translation type="unfinished"></translation>
+        <translation>игра</translation>
     </message>
     <message>
         <source>This game has no notes</source>
-        <translation type="unfinished"></translation>
+        <translation>нет описания</translation>
     </message>
     <message>
         <source>Some text</source>
-        <translation type="unfinished"></translation>
+        <translation>текст</translation>
     </message>
 </context>
 <context>
@@ -320,91 +327,91 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>WineGame</source>
-        <translation type="unfinished">WineGame</translation>
+        <translation>WineGame</translation>
     </message>
     <message>
         <source>To install new application in existing virtual windows (&quot;Installed&quot; list), just double-click on it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Чтобы установить новое приложение в существующую виртуальную Windows (список установленных приложений), просто cделайте двойной щелчок по нему.</translation>
     </message>
     <message>
         <source>&amp;Packages</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Пакеты</translation>
     </message>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Помощь</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Настройки</translation>
     </message>
     <message>
         <source>Application settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки приложения</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Выход</translation>
     </message>
     <message>
         <source>Quits the application</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходит из приложения</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>О &amp;Qt</translation>
     </message>
     <message>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>О Qt</translation>
     </message>
     <message>
         <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;О Winegame</translation>
     </message>
     <message>
         <source>About WineGame</source>
-        <translation type="unfinished"></translation>
+        <translation>О WineGame</translation>
     </message>
     <message>
         <source>&amp;Make launcher</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Make launcher pn Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Создать ярлык</translation>
     </message>
     <message>
         <source>Make application launcher on your desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать ярлык для запуска приложения на рабочем столе</translation>
     </message>
     <message>
         <source>Ctrl+I</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&amp;Update packages</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Обновить пакеты</translation>
     </message>
     <message>
         <source>Sync Packages ftom winegame server</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновлять пакеты с сервера Winegame</translation>
     </message>
     <message>
         <source>About &amp;plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>О &amp;плагинах</translation>
+    </message>
+    <message>
+        <source>Make launcher on Desktop</source>
+        <translation>Создать ярлык на рабочем столе</translation>
     </message>
 </context>
 <context>
@@ -454,7 +461,7 @@ p, li { white-space: pre-wrap; }
     <name>NextDisc</name>
     <message>
         <source>Select disc type</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите тип диска</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -462,34 +469,34 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Select disc source:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Откуда монтировать диск?</translation>
     </message>
     <message>
         <source>Direct path to files (mount point)</source>
-        <translation type="unfinished"></translation>
+        <translation>Прямой путь к файлам (точка монтирования)</translation>
     </message>
     <message>
         <source>Disk image</source>
-        <translation type="unfinished"></translation>
+        <translation>Образ диска</translation>
     </message>
 </context>
 <context>
     <name>PluginDialog</name>
     <message>
         <source>About plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>О плагинах</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Описание</translation>
     </message>
     <message>
         <source>Author info</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация об авторе</translation>
     </message>
 </context>
 <context>
@@ -520,11 +527,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Главное</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -540,71 +547,83 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Click &amp;quot;&lt;span style=&quot; font-weight:600;&quot;&gt;Administration&lt;/span&gt;&amp;quot;, if you want to delete this Windows with your app, or back up it.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Click &lt;span style=&quot; font-weight:600;&quot;&gt;buttons right&lt;/span&gt; to run your Linux file manager with drive C, or run EXE in this virtual&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Этот диалог поможет вам управлять вашей виртуальной Windows (то место, где установлена данная программа).&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Нажмите &amp;quot;&lt;span style=&quot; font-weight:600;&quot;&gt;Cистемные программы&lt;/span&gt;&amp;quot;,если вы хотите запустить:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* Панель управления&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* Редактор реестра&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* Конфигуратор (winecfg)&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* Файловый менеджер Windows&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Нажмите &amp;quot;&lt;span style=&quot; font-weight:600;&quot;&gt;Администрирование&lt;/span&gt;&amp;quot;, если хотите удалить эту Windows с вашим приложением.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Нажмите &lt;span style=&quot; font-weight:600;&quot;&gt;кнопки справа&lt;/span&gt;, чтобы запустить ваш файловый менеджер Linux на диске C, или запустить EXE в этой виртуальной системе.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Run EXE</source>
-        <translation type="unfinished"></translation>
+        <translation>Запустить EXE</translation>
     </message>
     <message>
         <source>View C: drive</source>
-        <translation type="unfinished"></translation>
+        <translation>Просмотр диска C:</translation>
     </message>
     <message>
         <source>System programs</source>
-        <translation type="unfinished"></translation>
+        <translation>Системные программы</translation>
     </message>
     <message>
         <source>Configurator (aka winecfg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Конфигуратор</translation>
     </message>
     <message>
         <source>Registry Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор реестра</translation>
     </message>
     <message>
         <source>File Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Менеджер файлов</translation>
     </message>
     <message>
         <source>Control Panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель управления</translation>
     </message>
     <message>
         <source>Task Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Диспетчер задач</translation>
     </message>
     <message>
         <source>Install/Remove programs</source>
-        <translation type="unfinished"></translation>
+        <translation>Установка/Удаление программ</translation>
     </message>
     <message>
         <source>WordPad</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Command Line Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Командная строка (терминал)</translation>
     </message>
     <message>
         <source>Notepad</source>
-        <translation type="unfinished"></translation>
+        <translation>Блокнот</translation>
     </message>
     <message>
         <source>Administration</source>
-        <translation type="unfinished"></translation>
+        <translation>Администрирование</translation>
     </message>
     <message>
         <source>Reboot virtual Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезагрузить виртуальную Windows</translation>
     </message>
     <message>
         <source>Ahother Wine Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Другая версия Wine</translation>
     </message>
     <message>
         <source>Remove this system and close dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить эту систему и закрыть диалог</translation>
     </message>
 </context>
 <context>
@@ -643,11 +662,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Incorrect path</source>
-        <translation type="unfinished"></translation>
+        <translation>Некорректнектный путь</translation>
     </message>
     <message>
         <source>This does not like a disc with software: no autorun.inf found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Это не похоже на диск с программами: не найдено autorun.inf.</translation>
     </message>
 </context>
 <context>
@@ -674,40 +693,40 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Главное</translation>
     </message>
     <message>
         <source>Directory for storing all virtual systems and files:</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка для сохранения всех виртуальных систем и файлов:</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Обзор</translation>
     </message>
     <message>
         <source>Video memory size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер видеопамяти:</translation>
     </message>
     <message>
         <source>Directory for mounting ISO files</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка для подключения ISO/MDF файлов</translation>
     </message>
     <message>
         <source>Force using FuseISO (don`t ask for password)
 for mount ISO images</source>
-        <translation type="unfinished"></translation>
+        <translation>Всегда использовать FuseISO (не спрашивать пароль) для подключения ISO образов</translation>
     </message>
     <message>
         <source>Packages</source>
-        <translation type="unfinished"></translation>
+        <translation>Пакеты</translation>
     </message>
     <message>
         <source>Sync updates automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновлять автоматически</translation>
     </message>
 </context>
 <context>
@@ -722,19 +741,19 @@ for mount ISO images</source>
     </message>
     <message>
         <source>Create shortcut on desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать ярлык на рабочем столе</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Путь</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Обзор</translation>
     </message>
     <message>
         <source>Display name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Образ диска:</translation>
     </message>
 </context>
 <context>
@@ -768,7 +787,7 @@ for mount ISO images</source>
     </message>
     <message>
         <source>Select Wine version</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать версию Wine</translation>
     </message>
 </context>
 <context>
@@ -795,35 +814,35 @@ for mount ISO images</source>
     </message>
     <message>
         <source>Select mount point</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите точку монтирования</translation>
     </message>
     <message>
         <source>Directory is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка пуста</translation>
     </message>
     <message>
         <source>Directory is empty. Select ahother directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка пуста. Выберите другую папку.</translation>
     </message>
     <message>
         <source>ISO images (*.iso)</source>
-        <translation type="unfinished"></translation>
+        <translation>Образы ISO (*.iso)</translation>
     </message>
     <message>
         <source>Alcohol images (*.mdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Образы Alcohol (*.mdf)</translation>
     </message>
     <message>
         <source>Mac OS X images (*.dmg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Образы Mac OS X (*.dmg)</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Все файлы (*.*)</translation>
     </message>
     <message>
         <source>Select disc image</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите образ диска</translation>
     </message>
 </context>
 </TS>

@@ -67,6 +67,17 @@
     </property>
     <addaction name="actUpdate"/>
    </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
+    </property>
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout_Qt"/>
+    <addaction name="action_About"/>
+    <addaction name="actAboutPlugins"/>
+   </widget>
    <widget class="QMenu" name="menu_File">
     <property name="locale">
      <locale language="C" country="AnyCountry"/>
@@ -78,17 +89,6 @@
     <addaction name="action_Settings"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
-   </widget>
-   <widget class="QMenu" name="menu_Help">
-    <property name="locale">
-     <locale language="C" country="AnyCountry"/>
-    </property>
-    <property name="title">
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout_Qt"/>
-    <addaction name="action_About"/>
-    <addaction name="actAboutPlugins"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Help"/>
@@ -140,7 +140,7 @@
     <string>&amp;Make launcher</string>
    </property>
    <property name="toolTip">
-    <string>Make launcher pn Desktop</string>
+    <string>Make launcher on Desktop</string>
    </property>
    <property name="statusTip">
     <string>Make application launcher on your desktop</string>
