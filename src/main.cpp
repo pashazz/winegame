@@ -47,6 +47,8 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 
 		/* о возможности сменить диск*/
 		EjectDialog *edlg = new EjectDialog ();
+		edlg->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint | Qt::Tool);
+
 		QObject::connect(edlg, SIGNAL(ejectRequested(bool&)), runner, SLOT(eject(bool&)));
 		edlg->show();
 

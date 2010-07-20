@@ -26,6 +26,7 @@ EjectDialog::EjectDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 	connect(ui->cmdSwitch, SIGNAL(clicked()),this, SLOT(switchDisc()));
+	setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint | Qt::Tool);
 }
 
 EjectDialog::~EjectDialog()
@@ -35,10 +36,12 @@ EjectDialog::~EjectDialog()
 
 void EjectDialog::switchDisc()
 {
+	hide();
 	bool result;
 	emit ejectRequested(result);
 	if (!result)
 	{
 		QMessageBox::warning(this, tr("Error"), tr("Failed to switch disc. Maybe device is busy?"));
 	}
+	show();
 }

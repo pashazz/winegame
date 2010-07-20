@@ -25,7 +25,7 @@ NextDisc::NextDisc(QWidget *parent) :
     ui(new Ui::NextDisc)
 {
     ui->setupUi(this);
-	setWindowFlags(Qt::CustomizeWindowHint);
+	setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
 }
 
 NextDisc::~NextDisc()
