@@ -76,7 +76,6 @@ void DiskDialog::on_buttonBox_accepted()
 	}
 	EjectDialog *dlg = new EjectDialog (this);
 	connect(dlg, SIGNAL(ejectRequested(bool&)), dvd, SLOT(eject(bool&)));
-	dlg->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint | Qt::Tool);
 	dlg->show();
 	if (!coll->havePrefix(prid))
 	{
