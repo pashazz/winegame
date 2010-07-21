@@ -55,9 +55,9 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		PrefixCollection collection (lib->database(), lib, 0);
 		if (collection.havePrefix(reader->ID()))
 		{
-		 Prefix *prefix =	collection.getPrefix(reader->ID());
-		 prefix->setDiscAttributes(runner->diskDirectory(), runner->device());
-		 prefix->runApplication(runner->exe());
+			Prefix *prefix =	collection.getPrefix(reader->ID());
+			prefix->setDiscAttributes(runner->diskDirectory(), runner->device());
+			prefix->runApplication(runner->exe());
 		}
 		else
 		{

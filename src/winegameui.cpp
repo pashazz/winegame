@@ -127,7 +127,7 @@ void WinegameUi::showUserWaitMessage(const QString &message)
 	waitDialog->setLayout(layout);
 	waitDialog->show();
 	waitDialog->move((qApp->desktop()->width() - waitDialog->width()) / 2,
-				  (qApp->desktop()->screen(0)->height() - waitDialog->height()) / 2 );
+				  (qApp->desktop()->height() - waitDialog->height()) / 2 );
 }
 void WinegameUi::closeWaitMessage()
 {
@@ -147,6 +147,9 @@ void WinegameUi::getText(const QString &title, const QString &message, QString &
 bool WinegameUi::selectNextDisc(bool &isDir, QString &file, const QString &dir)
 {
 	NextDisc *dlg = new NextDisc(qApp->desktop());
+	dlg->move((qApp->desktop()->width() - dlg->width()) / 2,
+				  (qApp->desktop()->height() - dlg->height()) / 2 );
+	execdlg:
 	if (dlg->exec() != QDialog::Accepted)
 		return false;
 	if (dlg->source == Pashazz::Mountpoint)

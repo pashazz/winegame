@@ -66,13 +66,16 @@ void DiskDialog::on_buttonBox_accepted()
 	/*Т.к. сейчас мало игр поддерживается, спрашиваем feedback.
 	  (хотя и вне зависимости от того, используется ли Native или нет)
  */
-	if (QMessageBox::question(this, tr("Feedback"), tr("Do you want to provide a small feedback report? It will help us improving WineGame"), QMessageBox::Yes, QMessageBox::No)
-									  == QMessageBox::Yes)
+	if (core->feedback())
 	{
-		QDir dir (dvd->diskDirectory());
-		QStringList list = dirList(dir);
-		FeedbackDialog *dlg = new FeedbackDialog(this, list, dvd->sourceReader()->realName());
-		dlg->exec();
+		if (QMessageBox::question(this, tr("Feedback"), tr("Do you want to provide a small feedback report? It will help us improving WineGame"), QMessageBox::Yes, QMessageBox::No)
+			== QMessageBox::Yes)
+			{
+			QDir dir (dvd->diskDirectory());
+			QStringList list = dirList(dir);
+			FeedbackDialog *dlg = new FeedbackDialog(this, list, dvd->sourceReader()->realName());
+			dlg->exec();
+		}
 	}
 	EjectDialog *dlg = new EjectDialog (this);
 	connect(dlg, SIGNAL(ejectRequested(bool&)), dvd, SLOT(eject(bool&)));
@@ -96,7 +99,7 @@ void DiskDialog::on_buttonBox_accepted()
 	else
 	{
 		Prefix *prefix = coll->getPrefix(prid);
-		disconnect(dlg, SIGNAL(ejectRequested(bool&)), dvd, SLOT(eject(bool&)));
+		dvd->setReader(worker->reader(prid));
 		prefix->setDiscAttributes(dvd->diskDirectory(), dvd->device());
 		if (dvd->exe().isEmpty())
 			prefix->runApplication(QFileDialog::getOpenFileName(this, tr("Select EXE file"), dvd->diskDirectory(), tr("Windows executables (*.exe)")));
