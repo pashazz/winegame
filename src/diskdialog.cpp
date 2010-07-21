@@ -77,6 +77,8 @@ void DiskDialog::on_buttonBox_accepted()
 	EjectDialog *dlg = new EjectDialog (this);
 	connect(dlg, SIGNAL(ejectRequested(bool&)), dvd, SLOT(eject(bool&)));
 	dlg->show();
+	dlg->move((qApp->desktop()->width() - dlg->width()) / 2,
+				  (qApp->desktop()->height() - dlg->height()) / 2 );
 	if (!coll->havePrefix(prid))
 	{
 		TreeModel *model = static_cast<TreeModel*>(ui->treeApps->model());
@@ -89,7 +91,6 @@ void DiskDialog::on_buttonBox_accepted()
 		}
 		dvd->setReader(reader);
 		QStringList obj = QStringList() << dvd->diskDirectory() << dvd->device();
-
 		coll->install(reader, dvd->exe(), obj, false);
 }
 	else

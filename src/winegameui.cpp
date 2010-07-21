@@ -55,6 +55,8 @@ void WinegameUi::showProgressBar(QString title)
  progress->setModal (true);
  progress->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint);
  progress->show();
+ progress->move( (qApp->desktop()->width() - progress->width()) / 2,
+			   (qApp->desktop()->height() - progress->height()) / 2 );
 }
 
 void WinegameUi::showProgressBar(QString title, const char *cancelSlot, QObject *pointer)
@@ -65,6 +67,8 @@ void WinegameUi::showProgressBar(QString title, const char *cancelSlot, QObject 
 	progress->setModal (true);
 	progress->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint);
 	progress->show();
+	progress->move( (qApp->desktop()->width() - progress->width()) / 2,
+				  (qApp->desktop()->height() - progress->height()) / 2 );
 }
 
 void WinegameUi::progressRange(int aval, int total)
@@ -113,7 +117,7 @@ void WinegameUi::selectExe(const QString &title, QString &file, QString home)
 
 void WinegameUi::showUserWaitMessage(const QString &message)
 {
-	waitDialog = new QDialog (0);
+	waitDialog = new QDialog (qApp->desktop());
 	waitDialog->setModal(true);
 	waitDialog->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint);
 	QHBoxLayout *layout = new QHBoxLayout(waitDialog);
@@ -122,6 +126,8 @@ void WinegameUi::showUserWaitMessage(const QString &message)
 	layout->addWidget(label);
 	waitDialog->setLayout(layout);
 	waitDialog->show();
+	waitDialog->move((qApp->desktop()->width() - waitDialog->width()) / 2,
+				  (qApp->desktop()->screen(0)->height() - waitDialog->height()) / 2 );
 }
 void WinegameUi::closeWaitMessage()
 {
@@ -140,7 +146,7 @@ void WinegameUi::getText(const QString &title, const QString &message, QString &
 
 bool WinegameUi::selectNextDisc(bool &isDir, QString &file, const QString &dir)
 {
-	NextDisc *dlg = new NextDisc();
+	NextDisc *dlg = new NextDisc(qApp->desktop());
 	if (dlg->exec() != QDialog::Accepted)
 		return false;
 	if (dlg->source == Pashazz::Mountpoint)

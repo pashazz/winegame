@@ -37,7 +37,7 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	if (runner->success())
 	{
 		SourceReader *reader = runner->sourceReader();
-		GameDialog *dlg = new GameDialog (0, reader, lib);
+		GameDialog *dlg = new GameDialog (qApp->desktop(), reader, lib);
 		if (dlg->exec() == QDialog::Rejected)
 		{
 			runner->cancel();
@@ -46,11 +46,12 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		}
 
 		/* о возможности сменить диск*/
-		EjectDialog *edlg = new EjectDialog ();
+		EjectDialog *edlg = new EjectDialog (qApp->desktop());
 
 		QObject::connect(edlg, SIGNAL(ejectRequested(bool&)), runner, SLOT(eject(bool&)));
 		edlg->show();
-
+		edlg->move((qApp->desktop()->width() - edlg->width()) / 2,
+					  (qApp->desktop()->height() - edlg->height()) / 2 );
 		PrefixCollection collection (lib->database(), lib, 0);
 		if (collection.havePrefix(reader->ID()))
 		{
@@ -70,7 +71,7 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	{
 		if (runner->isMounted())
 		{
-		DiskDialog *dlg = new DiskDialog (0, runner, lib, worker);
+		DiskDialog *dlg = new DiskDialog (qApp->desktop(), runner, lib, worker);
 		dlg->exec();
 	}
 	}
