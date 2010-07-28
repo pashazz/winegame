@@ -1,4 +1,4 @@
-/*
+     /*
     Winegame - small utility to prepare Wine and install win32 apps in it.
     Copyright (C) 2010 Pavel Zinin <pzinin@gmail.com>
 
@@ -26,6 +26,7 @@
 #include "feedbackdialog.h"
 #include "treemodel.h"
 #include "ejectdialog.h"
+#include "appsettings.h"
 
 namespace Ui {
     class DiskDialog;

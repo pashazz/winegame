@@ -61,12 +61,6 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_Packages">
-    <property name="title">
-     <string>&amp;Packages</string>
-    </property>
-    <addaction name="actUpdate"/>
-   </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="locale">
      <locale language="C" country="AnyCountry"/>
@@ -89,6 +83,12 @@
     <addaction name="action_Settings"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
+   </widget>
+   <widget class="QMenu" name="menu_Packages">
+    <property name="title">
+     <string>&amp;Packages</string>
+    </property>
+    <addaction name="actUpdate"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Help"/>

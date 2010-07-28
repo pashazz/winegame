@@ -24,6 +24,7 @@
 #include "settingsdialog.h"
 #include "shortcutdialog.h"
 #include "treemodel.h"
+#include "appsettings.h"
 
 namespace Ui {
     class MainWindow;
@@ -32,21 +33,22 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
 	MainWindow(corelib *lib, QWidget *parent = 0);
-    ~MainWindow();
+	 ~MainWindow();
 
 protected:
     void changeEvent(QEvent *e);
+    void closeEvent (QCloseEvent *e);
 private:
-    Ui::MainWindow *ui;
+	Ui::MainWindow *ui;
 	corelib *core;
 	QSqlDatabase db;
 	PluginWorker *worker;
 	PrefixCollection *coll;
-	void saveGeom();
 	void buildList();
 	void launchEngine(const QModelIndex &index);
 	TreeModel *model;
-
+	bool install;
+	void setSettings (int role);
 private slots:
 	void on_actAboutPlugins_triggered();
 	void on_treeGames_activated(QModelIndex index);
@@ -58,10 +60,9 @@ private slots:
 	void on_actionAbout_Qt_triggered();
 	void on_action_Quit_triggered();
 	void on_action_Settings_triggered();
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+	 void on_buttonBox_accepted();
+	 void on_buttonBox_rejected();
 
-	//Обработчики событий prefix
-	};
+};
 
 #endif // MAINWINDOW_H

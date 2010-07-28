@@ -24,16 +24,10 @@
 MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 		QMainWindow(parent),
 		ui(new Ui::MainWindow),
-		core (lib), db(lib->database()), worker(new PluginWorker(this, lib)), coll(new PrefixCollection(lib->database(), lib, worker, this))
+		core (lib), db(lib->database()), worker(new PluginWorker(this, lib)), coll(new PrefixCollection(lib->database(), lib, worker, this)),
+		install (false)
 {
 	ui->setupUi(this);
-	QFile f (QDir::homePath() + "/.config/winegame.geom");
-    if (f.open(QIODevice::ReadOnly))
-    {
-		restoreGeometry(f.readAll());
-		f.close();
-	}
-	//Update packages
 	if (core->autoSync())
 	{
 		foreach (FormatInterface *plugin, worker->plugins())
@@ -45,6 +39,7 @@ MainWindow::MainWindow(corelib *lib, QWidget *parent) :
 	model = new TreeModel(this, coll, worker->plugins(), false);
 	ui->treeGames->setModel(model);
 	ui->treeGames->expandAll();
+	setSettings (1);
 }
 
 MainWindow::~MainWindow()
@@ -65,8 +60,7 @@ void MainWindow::changeEvent(QEvent *e)
 }
 
 void MainWindow::on_buttonBox_rejected()
-{
-    saveGeom();
+{   
     qApp->exit(2);
 }
 
@@ -76,7 +70,6 @@ void MainWindow::buildList()
 	model->resetDatas();
 	ui->treeGames->expandAll();
 }
-
 
 void MainWindow::launchEngine(const QModelIndex &index)
 {
@@ -101,8 +94,8 @@ void MainWindow::launchEngine(const QModelIndex &index)
 			return;
 		}
 	}
+		install = true;
 		Prefix *prefix = coll->install(reader, fileName);
-		buildList();
 		if (!prefix)
 			statusBar()->showMessage(tr("Installation error"), 3000);
 		else if (QMessageBox::question(this, tr("Application installed successfully"), tr("Do you want to configure parameters for this application?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
@@ -110,12 +103,15 @@ void MainWindow::launchEngine(const QModelIndex &index)
 			PrefixDialog *dlg = new PrefixDialog (this, prefix, coll);
 			dlg->exec();
 		}
+		install = false;
 	}
 	else
 	{
+		install = true;
 		Prefix *p =  coll->getPrefix(prefixName);
 		PrefixDialog *dlg = new PrefixDialog(this, p, coll);
 		dlg->exec();
+		install = false;
 	}
 	buildList();
 }
@@ -133,13 +129,6 @@ else
 }
 }
 
-void MainWindow::saveGeom()
-{
-	QFile f (QDir::homePath() + "/.config/winegame.geom");
-    f.open(QIODevice::WriteOnly | QIODevice::Truncate);
-	f.write(saveGeometry());
-	f.close();
-}
 
 void MainWindow::on_action_Settings_triggered()
 {
@@ -195,7 +184,6 @@ void MainWindow::on_treeGames_doubleClicked(QModelIndex index)
 	launchEngine(index);
 }
 
-
 void MainWindow::on_treeGames_activated(QModelIndex index)
 {
 	QString note = index.data(34).toString();
@@ -207,4 +195,39 @@ void MainWindow::on_actAboutPlugins_triggered()
 {
 	PluginDialog *dlg = new PluginDialog(this, worker);
 	dlg->exec();
+}
+
+void MainWindow::closeEvent (QCloseEvent *e)
+{
+    if (install)
+    {
+	core->client ()->showNotify (tr( "Unable to quit"), tr("Please wait while installation ends"));
+	e->ignore ();
+    }
+    else
+    {
+	setSettings (2);
+	e->accept ();
+    }
+}
+
+void MainWindow::setSettings (int role)
+{
+    static QString confDir = QProcessEnvironment::systemEnvironment ().value ("XDG_CONFIG_HOME", QDir::home ().filePath (".config"));
+    static AppSettings s (this, QDir (confDir));
+    switch (role)
+    {
+    case 1:
+	{
+	    //restore state
+	    restoreState (s.readState ("MainWindow"));
+	    restoreGeometry (s.readGeometry ("MainWindow"));
+	    break;
+	}
+    case 2:
+	{ //save state
+	   s.writeState (saveState (), "MainWindow");
+	   s.writeGeometry (saveGeometry (), "MainWindow");
+	}
+    }
 }

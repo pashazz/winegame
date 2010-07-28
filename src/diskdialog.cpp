@@ -65,8 +65,9 @@ void DiskDialog::on_buttonBox_accepted()
 	//About creating report
 	/*Т.к. сейчас мало игр поддерживается, спрашиваем feedback.
 	  (хотя и вне зависимости от того, используется ли Native или нет)
- */
-	if (core->feedback())
+	*/
+	AppSettings s (this, QDir (QDir::home ().filePath (".config")));
+	if (s.feedBack ())
 	{
 		if (QMessageBox::question(this, tr("Feedback"), tr("Do you want to provide a small feedback report? It will help us improving WineGame"), QMessageBox::Yes, QMessageBox::No)
 			== QMessageBox::Yes)
