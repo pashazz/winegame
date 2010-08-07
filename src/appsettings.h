@@ -7,7 +7,7 @@ class AppSettings : protected QSettings
 {
     Q_OBJECT
 public:
-    explicit AppSettings(QObject *parent = 0, const QDir &configHome = QDir("/"));
+    explicit AppSettings(QObject *parent = 0);
     bool feedBack ();
     void createConfigValue (const QString &key, const QVariant &value);
     void writeState (const QByteArray &data, const QString &object);

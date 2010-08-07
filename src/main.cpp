@@ -108,11 +108,11 @@ int main(int argc, char *argv[])
     a.setOrganizationName("Pashazz");
 	a.setOrganizationDomain("org");
 #ifdef Q_WS_WIN
-	QMessageBox::critical(0, tr("Proprietary OS detected"), tr("Winegame will not work  when Ballmer sees."));
+	QMessageBox::critical(0, QObject::tr("Proprietary OS detected"), QObject::tr("Winegame will not work  when Ballmer sees."));
 	return 0;
 #endif
 #ifdef Q_WS_MAC
-	QMessageBox::critical(tr("Proprietary OS detected"), tr("Winegame will not work  when Jobs sees."));
+	QMessageBox::critical(0,  QObject::tr("Proprietary OS detected"), QObject::tr("Winegame will not work  when Jobs sees."));
 	return 0;
 #endif
 	if (!QSqlDatabase::drivers().contains("QSQLITE"))
@@ -122,10 +122,10 @@ int main(int argc, char *argv[])
 	}
 	  //Our winegame GUI client
 	WinegameUi *client = new WinegameUi(); //опасные утечки памяти
-	corelib *core = new corelib (0, client);
-	core->init(QDir::homePath() + "/." + a.applicationName ().toLower());
+	corelib *core = new corelib (0, client, QDir::homePath() + "/." + a.applicationName ().toLower());
+	core->init();
 	//Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
-	if (a.arguments().length() > 2)
+	if (a.arguments().length() > 2) //todo: перенести в отдельное приложение.
 	{
 		  if (a.arguments().at(1) == "-r")
 		{
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 		  }
 	  }
 	
-	if (a.arguments().length() > 1) {
+		if (a.arguments().length() > 1) {
 		QFileInfo info (a.arguments().at(1));
 		if (!info.exists())
 		{

@@ -1,12 +1,8 @@
 #include "appsettings.h"
 
-AppSettings::AppSettings(QObject *parent, const QDir &configHome)
-    :QSettings (configHome.filePath ("wggui.conf"), QSettings::IniFormat, parent)
-{
-    qDebug () << "ConfigHome" << configHome.filePath ("wggui.conf");
-    //Then go to methods
-}
-
+AppSettings::AppSettings(QObject *parent)
+    :QSettings ("Pashazz", "Winegame", parent)
+{}
 void AppSettings::createConfigValue (const QString &key, const QVariant &value)
 {
     if (this->value(key).isNull ())

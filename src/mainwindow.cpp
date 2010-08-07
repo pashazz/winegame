@@ -213,8 +213,7 @@ void MainWindow::closeEvent (QCloseEvent *e)
 
 void MainWindow::setSettings (int role)
 {
-    static QString confDir = QProcessEnvironment::systemEnvironment ().value ("XDG_CONFIG_HOME", QDir::home ().filePath (".config"));
-    static AppSettings s (this, QDir (confDir));
+    static AppSettings s (this);
     switch (role)
     {
     case 1:
