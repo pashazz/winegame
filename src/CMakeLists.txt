@@ -59,8 +59,8 @@ set (RESDIR ${CMAKE_SOURCE_DIR}/resources)
 
 # Sources, Headers
 set (SOURCES about.cpp  diskdialog.cpp  gamedialog.cpp  main.cpp  mainwindow.cpp  prefixdialog.cpp  settingsdialog.cpp  shortcutdialog.cpp  winegameui.cpp  wineversionsdialog.cpp treemodel.cpp package.cpp plugindialog.cpp feedbackdialog.cpp ejectdialog.cpp nextdisc.cpp appsettings.cpp)
-set (QOBJ_HEADERS about.h  diskdialog.h  gamedialog.h  mainwindow.h  prefixdialog.h  settingsdialog.h  shortcutdialog.h  winegameui.h  wineversionsdialog.h treemodel.h plugindialog.h feedbackdialog.h ejectdialog.h nextdisc.h appsettings.h)
-set (HEADERS package.h)
+set (QOBJ_HEADERS about.h  diskdialog.h  gamedialog.h  mainwindow.h  prefixdialog.h  settingsdialog.h  shortcutdialog.h  wineversionsdialog.h treemodel.h plugindialog.h feedbackdialog.h ejectdialog.h nextdisc.h appsettings.h)
+set (HEADERS package.h winegameui.h)
 
 #Генерируем формы
 set (UIS about.ui  diskdialog.ui  gamedialog.ui  mainwindow.ui  prefixdialog.ui  settingsdialog.ui  shortcutdialog.ui  wineversionsdialog.ui plugindialog.ui feedbackdialog.ui ejectdialog.ui nextdisc.ui)

@@ -16,8 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
-
 #include "winegameui.h"
+
 
 WinegameUi::~WinegameUi()
 {
@@ -25,12 +25,12 @@ WinegameUi::~WinegameUi()
 	delete progress;
 }
 
-void WinegameUi::error(QString title, QString text)
+void WinegameUi::error(const QString &title, const QString &text)
 {
 	QMessageBox::critical(qApp->desktop(), title, text);
 }
 
-void WinegameUi::showNotify(QString title, QString body)
+void WinegameUi::showNotify(const QString &title, const QString &body)
 {
 	/// знаю что тупизм,но никто не хочет помогать
 	if (QProcessEnvironment::systemEnvironment().contains("KDE_FULL_SESSION")) //пока кеды юзают KDialog
@@ -48,7 +48,7 @@ void WinegameUi::showNotify(QString title, QString body)
 	}
 }
 
-void WinegameUi::showProgressBar(QString title)
+void WinegameUi::showProgressBar(const QString &title)
 {
  progress = new QProgressDialog(qApp->desktop());
  progress->setWindowTitle(title);
@@ -59,10 +59,10 @@ void WinegameUi::showProgressBar(QString title)
 			   (qApp->desktop()->height() - progress->height()) / 2 );
 }
 
-void WinegameUi::showProgressBar(QString title, const char *cancelSlot, QObject *pointer)
+void WinegameUi::showProgressBar(const QString &title, const char *cancelSlot, QObject *pointer)
 {
 	progress = new QProgressDialog(qApp->desktop());
-	connect (progress, SIGNAL(canceled()),  pointer, cancelSlot);
+	 QObject::connect (progress, SIGNAL(canceled()),  pointer, cancelSlot);
 	progress->setWindowTitle(title);
 	progress->setModal (true);
 	progress->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinimizeButtonHint);
@@ -80,7 +80,7 @@ void WinegameUi::progressRange(int aval, int total)
 int WinegameUi::getVideoMemory()
 {
 	int mem = 0;
-	 mem= QInputDialog::getInt(qApp->desktop(),tr("WineGame"), tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
+	 mem = QInputDialog::getInt(qApp->desktop(), "WineGame", QObject::tr("Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used"), 128, 1, 4096);
 	 if (mem == 0)
 		 mem = 128;
 	return mem;
@@ -91,7 +91,7 @@ void WinegameUi::endProgress()
 	progress->close();
 }
 
-void WinegameUi::progressText(QString text)
+void WinegameUi::progressText(const QString &text)
 {
 	progress->setLabelText(text);
 }
@@ -111,7 +111,7 @@ void WinegameUi::selectExe(const QString &title, QString &file, QString home)
 {
 	if (home.isEmpty())
 		home = QDir::currentPath();
-	QString myFile = QFileDialog::getOpenFileName(qApp->desktop(), title, home, tr("Windows executables (*.exe)"));
+	QString myFile = QFileDialog::getOpenFileName(qApp->desktop(), title, home, QObject::tr("Windows executables (*.exe)"));
 	file = myFile;
 }
 
@@ -157,12 +157,12 @@ bool WinegameUi::selectNextDisc(bool &isDir, QString &file, const QString &dir)
 		//Return a directory.
 		isDir = true;
 		select:
-		file = QFileDialog::getExistingDirectory(0, tr("Select mount point"), QDir::rootPath());
+		file = QFileDialog::getExistingDirectory(0, QObject::tr("Select mount point"), QDir::rootPath());
 		if (file.isEmpty())
 			return false;
 		else if (QDir (file).entryList(QDir::AllEntries | QDir::NoDotAndDotDot).count() == 0)
 		{
-			QMessageBox::warning(0, tr("Directory is empty"), tr("Directory is empty. Select ahother directory."));
+			QMessageBox::warning(0, QObject::tr("Directory is empty"), QObject::tr("Directory is empty. Select ahother directory."));
 			goto select;
 		}
 		return true;
@@ -171,11 +171,11 @@ bool WinegameUi::selectNextDisc(bool &isDir, QString &file, const QString &dir)
 	{
 		isDir = false;
 		QStringList filters;
-		filters << tr("ISO images (*.iso)"); //ядро должно поддерживать ISO9660
-		filters << tr("Alcohol images (*.mdf)");
-		filters << tr("Mac OS X images (*.dmg)"); //ядро должно поддерживать HFS
-		filters << tr("All files (*.*)");
-		file = QFileDialog::getOpenFileName(0, tr("Select disc image"), dir, filters.join(";;"));
+		filters << QObject::tr("ISO images (*.iso)"); //ядро должно поддерживать ISO9660
+		filters << QObject::tr("Alcohol images (*.mdf)");
+		filters << QObject::tr("Mac OS X images (*.dmg)"); //ядро должно поддерживать HFS
+		filters << QObject::tr("All files (*.*)");
+		file = QFileDialog::getOpenFileName(0, QObject::tr("Select disc image"), dir, filters.join(";;"));
 		return !file.isEmpty();
 	}
 }

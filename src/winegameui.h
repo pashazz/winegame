@@ -22,24 +22,24 @@
 #include "uiclient.h"
 #include "nextdisc.h"
 #include <QtGui>
+
 class WinegameUi : public UiClient
 {
-	Q_OBJECT
 public:
 	WinegameUi() {}
 	~WinegameUi();
-	void showNotify (QString title, QString body);
-	void error (QString title, QString text);
-	void showProgressBar (QString title); //показываем прогрессбар с заголовком title
-	void showProgressBar (QString title,  const char * cancelSlot, QObject *pointer);
-	void progressText (QString text) ; //показать текст text на прогрессбаре
+	void showNotify (const QString &title, const QString &body);
+	void error (const QString &title, const QString &text);
+	void showProgressBar (const QString &title); //показываем прогрессбар с заголовком title
+	void showProgressBar (const QString &title,  const char * cancelSlot, QObject *pointer);
+	void progressText (const QString &text) ; //показать текст text на прогрессбаре
 	void progressRange (int, int); //прогресс операции
 	void endProgress (); //закрытие бара.
 	int getVideoMemory();
 	QString desktopLocation() { return QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);} //GUI интерфейс предоставляет десктоп по-умолчанию.
 	bool questionDialog(const QString &title, const QString &text);
 	void infoDialog (const QString &title, const QString &text);
-	void selectExe(const QString &title, QString &file, QString home= "");
+	void selectExe(const QString &title, QString &file, QString home =  "");
 	void showUserWaitMessage (const QString &message); //показать модальный диалог (или что-то типа того, чтобы пользователь понял, что идет операция).
 	void closeWaitMessage(); //закрытие диалога
 	void getText(const QString &title, const QString &message, QString &result);
