@@ -213,7 +213,7 @@ void MainWindow::closeEvent (QCloseEvent *e)
 
 void MainWindow::setSettings (int role)
 {
-    static AppSettings s (this);
+	AppSettings s (this);
     switch (role)
     {
     case 1:
