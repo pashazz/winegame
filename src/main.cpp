@@ -36,8 +36,8 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 	}
 	if (runner->success())
 	{
-		SourceReader *reader = runner->sourceReader();
-		GameDialog *dlg = new GameDialog (qApp->desktop(), reader, lib);
+		Prefix *prefix = runner->prefix();
+		GameDialog *dlg = new GameDialog (qApp->desktop(), worker->reader(prefix->ID()), lib);
 		if (dlg->exec() == QDialog::Rejected)
 		{
 			runner->cancel();
@@ -53,16 +53,15 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 		edlg->move((qApp->desktop()->width() - edlg->width()) / 2,
 					  (qApp->desktop()->height() - edlg->height()) / 2 );
 		PrefixCollection collection (lib->database(), lib, 0);
-		if (collection.havePrefix(reader->ID()))
+		if (collection.havePrefix(prefix->ID()))
 		{
-			Prefix *prefix =	collection.getPrefix(reader->ID());
 			prefix->setDiscAttributes(runner->diskDirectory(), runner->device());
 			prefix->runApplication(runner->exe());
 		}
 		else
 		{
 			QStringList obj = QStringList () << runner->diskDirectory() << runner->device();
-			collection.install(reader, runner->exe(), obj, false);
+			collection.install(worker->reader(prefix->ID()), runner->exe(), obj, false);
 		}
 		edlg->close();
 		edlg->deleteLater();

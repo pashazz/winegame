@@ -74,7 +74,7 @@ void DiskDialog::on_buttonBox_accepted()
 			{
 			QDir dir (dvd->diskDirectory());
 			QStringList list = dirList(dir);
-			FeedbackDialog *dlg = new FeedbackDialog(this, list, dvd->sourceReader()->realName());
+			FeedbackDialog *dlg = new FeedbackDialog(this, list, dvd->prefix()->name());
 			dlg->exec();
 		}
 	}
@@ -93,14 +93,14 @@ void DiskDialog::on_buttonBox_accepted()
 			dlg->close();
 			return;
 		}
-		dvd->setReader(reader);
+		dvd->setPrefix(reader->prefix());
 		QStringList obj = QStringList() << dvd->diskDirectory() << dvd->device();
 		coll->install(reader, dvd->exe(), obj, false);
 }
 	else
 	{
 		Prefix *prefix = coll->getPrefix(prid);
-		dvd->setReader(worker->reader(prid));
+		dvd->setPrefix(prefix);
 		prefix->setDiscAttributes(dvd->diskDirectory(), dvd->device());
 		if (dvd->exe().isEmpty())
 			prefix->runApplication(QFileDialog::getOpenFileName(this, tr("Select EXE file"), dvd->diskDirectory(), tr("Windows executables (*.exe)")));
