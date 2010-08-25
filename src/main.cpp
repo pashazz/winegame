@@ -29,6 +29,14 @@ void runDVD (QString path, corelib *lib) //запуск с DVD
 {
 	PluginWorker *worker = new PluginWorker(qApp, lib);
 	DVDRunner *runner = new DVDRunner (lib, path, worker);
+	if (lib->autoSync())
+	{
+		foreach (FormatInterface *plugin, worker->plugins())
+		{
+			plugin->updateAllWines(coll);
+		}
+	}
+
 	if (lib->autorun(runner->diskDirectory()).isEmpty() && runner->isMounted())
 	{
 		if (QMessageBox::warning(0, QObject::tr("Incorrect path"), QObject::tr("This does not like a disc with software: no autorun.inf found."), QMessageBox::Cancel, QMessageBox::Ignore) == QMessageBox::Cancel)
@@ -103,7 +111,7 @@ int main(int argc, char *argv[])
      QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
     //Set some refspecs
     a.setApplicationName("WineGame");
-	a.setApplicationVersion("0.1.91");
+	a.setApplicationVersion("0.1.92");
     a.setOrganizationName("Pashazz");
 	a.setOrganizationDomain("org");
 #ifdef Q_WS_WIN
