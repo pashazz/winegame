@@ -25,17 +25,15 @@
 #include "gamedialog.h"
 #include "ejectdialog.h"
 
+/*!
+  Чтобы включить режим Portable, раскомментируйте следующую строчку
+  */
+
+//#define WINESTUFF_PORTABLE
 void runDVD (QString path, corelib *lib) //запуск с DVD
 {
 	PluginWorker *worker = new PluginWorker(qApp, lib);
 	DVDRunner *runner = new DVDRunner (lib, path, worker);
-	if (lib->autoSync())
-	{
-		foreach (FormatInterface *plugin, worker->plugins())
-		{
-			plugin->updateAllWines(coll);
-		}
-	}
 
 	if (lib->autorun(runner->diskDirectory()).isEmpty() && runner->isMounted())
 	{
@@ -129,7 +127,15 @@ int main(int argc, char *argv[])
 	}
 	  //Our winegame GUI client
 	WinegameUi *client = new WinegameUi(); //опасные утечки памяти
-	corelib *core = new corelib (0, client, QDir::homePath() + "/." + a.applicationName ().toLower());
+
+	QString confDir;
+#ifdef WINESTUFF_PORTABLE
+	confDir = QDir(qApp->applicationDirPath()).filePath("MyWinegame");
+#else
+	confDir = QDir::home().filePath("." + qApp->applicationName().toLower());
+#endif
+
+	corelib *core = new corelib(qApp, client, confDir);
 	core->init();
 	//Перехватываем параметр -r для запуска EXE-приложения из префикса с нужными настройками.
 	if (a.arguments().length() > 2) //todo: перенести в отдельное приложение.
