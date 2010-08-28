@@ -12,42 +12,12 @@
         <translation>Разработчики</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Pavel Zinin &amp;lt;pzinin@gmail.com&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Main Developer&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline;&quot;&gt;From: Sergiev Posad, Russia&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Art</source>
         <translation>Иконки (оформление)</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Matthias Exhumed &amp;lt;&lt;/span&gt;&lt;a href=&quot;http://3xhumed.deviantart.com/&quot;&gt;&lt;span style=&quot; font-size:16pt; text-decoration: underline; color:#0057ae;&quot;&gt;http://3xhumed.deviantart.com/&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Software &amp;amp; Game Icons&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline;&quot;&gt;From: Germany&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Translators</source>
         <translation>Переводчики</translation>
-    </message>
-    <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Pavel Zinin &amp;lt;pzinin@gmail.com&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Russian translation (Русская локализация)&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline;&quot;&gt;From: Sergiev Posad, Russia&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -57,13 +27,53 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;WineGame - utility for installing Windows programs and games in Linux&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Version 0.1.91&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://winegame.googlecode.com&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0057ae;&quot;&gt;http://winegame.googlecode.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;WineGame - утилита для установки Windows-приложений и игр в Linux&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Версия 0.1.91&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://winegame.googlecode.com&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0057ae;&quot;&gt;http://winegame.googlecode.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Pavel Zinin &amp;lt;pzinin@gmail.com&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Main Developer&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;From: Sergiev Posad, Russia&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Matthias Exhumed &amp;lt;&lt;/span&gt;&lt;a href=&quot;http://3xhumed.deviantart.com/&quot;&gt;&lt;span style=&quot; font-size:16pt; text-decoration: underline; color:#0057ae;&quot;&gt;http://3xhumed.deviantart.com/&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Software &amp;amp; Game Icons&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;From: Germany&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Pavel Zinin &amp;lt;pzinin@gmail.com&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Russian translation (Русская локализация)&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;From: Sergiev Posad, Russia&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;WineGame - utility for installing Windows programs and games in Linux&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Version 0.1.92&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://winegame.googlecode.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;http://winegame.googlecode.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -295,11 +305,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Application installed successfully</source>
-        <translation>Приложение установлено успешно</translation>
+        <translation type="obsolete">Приложение установлено успешно</translation>
     </message>
     <message>
         <source>Do you want to configure parameters for this application?</source>
-        <translation>Хотите ли вы настроить параметры для только что установленного приложения?</translation>
+        <translation type="obsolete">Хотите ли вы настроить параметры для только что установленного приложения?</translation>
     </message>
     <message>
         <source>Give a readable for your application</source>
@@ -412,6 +422,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Make launcher on Desktop</source>
         <translation>Создать ярлык на рабочем столе</translation>
+    </message>
+    <message>
+        <source>Unable to quit</source>
+        <translation>Не могу выйти</translation>
+    </message>
+    <message>
+        <source>Please wait while installation ends</source>
+        <translation>Пожалуйста, подождите, пока установка закончится</translation>
     </message>
 </context>
 <context>
@@ -625,6 +643,14 @@ p, li { white-space: pre-wrap; }
         <source>Remove this system and close dialog</source>
         <translation>Удалить эту систему и закрыть диалог</translation>
     </message>
+    <message>
+        <source>Components</source>
+        <translation>Компоненты</translation>
+    </message>
+    <message>
+        <source>Failed to instal &apos;%1&apos; component</source>
+        <translation>Не удалось установить компонент &apos;%1&apos;</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -642,7 +668,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used</source>
-        <translation type="obsolete">Введите размер памяти вашей видеокарты (в мегабайтах). Если вы нажмете Отмена, тогда будет использовано значение по умолчанию</translation>
+        <translation>Введите размер памяти вашей видеокарты (в мегабайтах). Если вы нажмете Отмена, тогда будет использовано значение по умолчанию</translation>
     </message>
     <message>
         <source>Initialization error</source>
@@ -667,6 +693,54 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>This does not like a disc with software: no autorun.inf found.</source>
         <translation>Это не похоже на диск с программами: не найдено autorun.inf.</translation>
+    </message>
+    <message>
+        <source>Proprietary OS detected</source>
+        <translation>Проприетарная ОС :)</translation>
+    </message>
+    <message>
+        <source>Winegame will not work  when Ballmer sees.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Winegame will not work  when Jobs sees.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Windows executables (*.exe)</source>
+        <translation>Исполняемые файлы Windows (*.exe)</translation>
+    </message>
+    <message>
+        <source>Select mount point</source>
+        <translation>Выберите точку монтирования</translation>
+    </message>
+    <message>
+        <source>Directory is empty</source>
+        <translation>Папка пуста</translation>
+    </message>
+    <message>
+        <source>Directory is empty. Select ahother directory.</source>
+        <translation>Папка пуста. Выберите другую папку.</translation>
+    </message>
+    <message>
+        <source>ISO images (*.iso)</source>
+        <translation>Образы ISO (*.iso)</translation>
+    </message>
+    <message>
+        <source>Alcohol images (*.mdf)</source>
+        <translation>Образы Alcohol (*.mdf)</translation>
+    </message>
+    <message>
+        <source>Mac OS X images (*.dmg)</source>
+        <translation>Образы Mac OS X (*.dmg)</translation>
+    </message>
+    <message>
+        <source>All files (*.*)</source>
+        <translation>Все файлы (*.*)</translation>
+    </message>
+    <message>
+        <source>Select disc image</source>
+        <translation>Выберите образ диска</translation>
     </message>
 </context>
 <context>
@@ -776,6 +850,21 @@ for mount ISO images</source>
     </message>
 </context>
 <context>
+    <name>TrixDialog</name>
+    <message>
+        <source>Install component</source>
+        <translation>Установить компонент</translation>
+    </message>
+    <message>
+        <source>Enter component name:</source>
+        <translation>Введите имя компонента:</translation>
+    </message>
+    <message>
+        <source>Warning: this form is only for advanced users</source>
+        <translation>Внимание: эта форма предназначена только для опытных пользователей</translation>
+    </message>
+</context>
+<context>
     <name>WineVersionsDialog</name>
     <message>
         <source>Using Default wine version</source>
@@ -802,47 +891,58 @@ for mount ISO images</source>
     </message>
     <message>
         <source>WineGame</source>
-        <translation>WineGame</translation>
+        <translation type="obsolete">WineGame</translation>
     </message>
     <message>
         <source>Enter memory size of your video card (in megabytes). If you click Cancel, then default will be used</source>
-        <translation>Введите размер памяти вашей видеокарты (в мегабайтах). Если вы нажмете Отмена, тогда будет использовано значение по умолчанию</translation>
+        <translation type="obsolete">Введите размер памяти вашей видеокарты (в мегабайтах). Если вы нажмете Отмена, тогда будет использовано значение по умолчанию</translation>
     </message>
     <message>
         <source>Windows executables (*.exe)</source>
-        <translation>Исполняемые файлы Windows (*.exe)</translation>
+        <translation type="obsolete">Исполняемые файлы Windows (*.exe)</translation>
     </message>
     <message>
         <source>Select mount point</source>
-        <translation>Выберите точку монтирования</translation>
+        <translation type="obsolete">Выберите точку монтирования</translation>
     </message>
     <message>
         <source>Directory is empty</source>
-        <translation>Папка пуста</translation>
+        <translation type="obsolete">Папка пуста</translation>
     </message>
     <message>
         <source>Directory is empty. Select ahother directory.</source>
-        <translation>Папка пуста. Выберите другую папку.</translation>
+        <translation type="obsolete">Папка пуста. Выберите другую папку.</translation>
     </message>
     <message>
         <source>ISO images (*.iso)</source>
-        <translation>Образы ISO (*.iso)</translation>
+        <translation type="obsolete">Образы ISO (*.iso)</translation>
     </message>
     <message>
         <source>Alcohol images (*.mdf)</source>
-        <translation>Образы Alcohol (*.mdf)</translation>
+        <translation type="obsolete">Образы Alcohol (*.mdf)</translation>
     </message>
     <message>
         <source>Mac OS X images (*.dmg)</source>
-        <translation>Образы Mac OS X (*.dmg)</translation>
+        <translation type="obsolete">Образы Mac OS X (*.dmg)</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
-        <translation>Все файлы (*.*)</translation>
+        <translation type="obsolete">Все файлы (*.*)</translation>
     </message>
     <message>
         <source>Select disc image</source>
-        <translation>Выберите образ диска</translation>
+        <translation type="obsolete">Выберите образ диска</translation>
+    </message>
+</context>
+<context>
+    <name>WinetricksModel</name>
+    <message>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation>Описание</translation>
     </message>
 </context>
 </TS>
