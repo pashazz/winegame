@@ -98,11 +98,11 @@ void MainWindow::launchEngine(const QModelIndex &index)
 		Prefix *prefix = coll->install(reader, fileName);
 		if (!prefix)
 			statusBar()->showMessage(tr("Installation error"), 3000);
-		else if (QMessageBox::question(this, tr("Application installed successfully"), tr("Do you want to configure parameters for this application?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+	/*	else if (QMessageBox::question(this, tr("Application installed successfully"), tr("Do you want to configure parameters for this application?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
 		{
 			PrefixDialog *dlg = new PrefixDialog (this, prefix, coll);
 			dlg->exec();
-		}
+		} */ //Disabled for release
 		install = false;
 	}
 	else
