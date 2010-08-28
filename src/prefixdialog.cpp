@@ -18,6 +18,7 @@
 
 #include "prefixdialog.h"
 #include "shortcutdialog.h"
+#include "trixdialog.h"
 #include "ui_prefixdialog.h"
 
 PrefixDialog::PrefixDialog(QWidget *parent, Prefix *prefix, PrefixCollection *coll) :
@@ -124,4 +125,18 @@ void PrefixDialog::on_cmdTest_clicked()
 	   delete pr;
 	  pr = collection->getPrefix(id);
    }
+}
+
+void PrefixDialog::on_pushButton_clicked()
+{
+	TrixDialog *dlg = new TrixDialog(this);
+	if (dlg->exec() == QDialog::Accepted)
+	{
+		QString comp = dlg->componentName();
+		if (!comp.isEmpty())
+		{
+			if (!collection->launchWinetricks(pr, QStringList(comp)))
+				QMessageBox::critical(this, tr("Error"), tr("Failed to instal '%1' component").arg(comp));
+		}
+	}
 }

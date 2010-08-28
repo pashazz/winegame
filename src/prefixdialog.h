@@ -41,7 +41,8 @@ private:
 	Prefix *pr;
 	PrefixCollection *collection;
 private slots:
-	void on_cmdTest_clicked();
+	void on_pushButton_clicked();
+ void on_cmdTest_clicked();
 	void on_cmdControl_clicked();
     void on_cmdRemove_clicked();
     void on_cmdBoot_clicked();
